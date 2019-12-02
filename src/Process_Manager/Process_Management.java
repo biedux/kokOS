@@ -19,6 +19,7 @@ public class Process_Management {
         ProcessList.add(init);
     }
 
+    // Nowy proces
     public PCB fork(PCB parent, int priority, int tim, String fName, int fSize){
 
         // Nowy proces
@@ -26,5 +27,25 @@ public class Process_Management {
         process.setParentID(parent.getID());
         parent.ChildrenList.add(process);
         return process;
+    }
+
+    // Zabijanie procesu
+    public void kill(PCB process){
+        process.setState(PCB.StateList.Terminated);
+        for(PCB child : process.ChildrenList){
+            child.setParentID(0);
+        }
+        for(PCB processFromList:ProcessList){
+            if(process.getID()==processFromList.getID()){
+                ProcessList.remove(processFromList);
+            }
+        }
+    }
+
+    // Wyświetlanie wszystkich procesów
+    public void showAllProcesses(){
+        for(PCB process:ProcessList){
+            process.printProcessInfo();
+        }
     }
 }
