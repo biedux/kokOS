@@ -29,6 +29,15 @@ package put.poznan.pl;
 
 
             //tu bedzie ZAPIS STRONICY W RAMCE
+            public static boolean writeFrame(Vector<Byte> data, int frame){
+                if ((frame < 0) || (frame > 15)){
+                    return false;
+                }
+                for (int i = 0; i < data.size(); i++){
+                    memory[frame * 16 + i] = memory.get(i);
+                }
+                return true;
+            }
 
 
 
