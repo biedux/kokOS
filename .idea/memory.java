@@ -10,8 +10,8 @@ package put.poznan.pl;
                 try {
                     memory[i] = data;
                 }
-                catch () {
-                    //tutaj jak cos jebnie
+                catch (Exception e) {
+                    System.out.println(e.getMessage());
                 }
             }
 
@@ -21,8 +21,8 @@ package put.poznan.pl;
                 try {
                     return memory[i];
                 }
-                catch () {
-                    //tu jak jebnie
+                catch (Exception e) {
+                    System.out.println(e.getMessage());
                     return 0;
                 }
             }
@@ -34,7 +34,7 @@ package put.poznan.pl;
                     return false;
                 }
                 for (int i = 0; i < data.size(); i++){
-                    memory[frame * 16 + i] = data.get(i);
+                    memory[frame * 16 + i] = data[i];
                 }
                 return true;
             }
@@ -43,12 +43,33 @@ package put.poznan.pl;
 
 
             //tu bedzie ODCZYT STRONICY Z RAMKI
-
+            public static Vector<Char> readFrame(int frame){
+                Vector<Char> odczyt = new Vector<Char>();
+                try {
+                    for (int i = 0; i < 16; i++){
+                        odczyt.add(memory[frame * 16 + i]);
+                    }
+                }
+                catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+                return odczyt;
+            }
 
 
 
             //tu bedzie WYSWIETLENIE ZAWARTOSCI RAMU (do debugowania)
+            public static void printRawRam() {
+                for (int i = 0; i < 16; i++) {
+                    System.out.println(memory[i]);
+                    for (int j = 0; j < 16; j++) {
+                        System.out.println(String.format(memory[i * 16 + j]));
+                    }
+                }
+                System.out.println("");
 
+                Utils.log("showing raw contents of RAM");
+            }
 
 
 
