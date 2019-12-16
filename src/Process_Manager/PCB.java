@@ -193,6 +193,22 @@ public class PCB {
         this.ZF = ZF;
     }
 
+    public void setBaseTime(int baseTime) {
+        BaseTime = baseTime;
+    }
+
+    public void setCurrTime(int currTime) {
+        CurrTime = currTime;
+    }
+
+    public void setBasePriority(int basePriority) {
+        BasePriority = basePriority;
+    }
+
+    public void setCurrPriority(int currPriority) {
+        CurrPriority = currPriority;
+    }
+
     public List<PCB> getChildrenList() {
         return ChildrenList;
     }
