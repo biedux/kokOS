@@ -14,7 +14,7 @@ public class Process_Management {
     public Process_Management(){
 
         // Inicjalizacja głównego procesu przy starcie rodzica
-        init=new PCB("init",0,0,"",0);
+        init=new PCB("init","",0);
         init.setState(init.State.Ready);
         ProcessList.add(init);
     }
@@ -23,9 +23,12 @@ public class Process_Management {
     public PCB fork(PCB parent, int priority, int tim, String fName, int fSize){
 
         // Nowy proces
-        PCB process=new PCB(parent.getName(),priority,tim,fName,fSize);
+        PCB process=new PCB(parent.getName(),fName,fSize);
         process.setParentID(parent.getID());
+        process.setState(process.State.Ready);
+        ProcessList.add(process);
         parent.ChildrenList.add(process);
+        //ustawianie czasu i priorytetu
         return process;
     }
 
@@ -38,6 +41,7 @@ public class Process_Management {
         for(PCB processFromList:ProcessList){
             if(process.getID()==processFromList.getID()){
                 ProcessList.remove(processFromList);
+                processFromList=null;
             }
         }
     }
