@@ -53,7 +53,7 @@ public class PCB {
 
 
 
-    public PCB(String Name, int priority, int time, String fileName, int sizeOfFile){
+    public PCB(String Name, String fileName, int sizeOfFile){
         this.ID=CountProcess;
         CountProcess++;
 
@@ -68,8 +68,8 @@ public class PCB {
         this.DX=0;
 
         this.Counter=0;
-        this.BasePriority=priority;
-        this.BaseTime=time;
+        //this.BasePriority=10;
+        //this.BaseTime=5;
 
         ZF=true;
         CF=false;
