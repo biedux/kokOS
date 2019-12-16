@@ -1,0 +1,10 @@
+package Process_Manager;
+
+public class Main {
+    public static void main(String[] args){
+        Process_Management PM=new Process_Management();
+        PCB P1=PM.fork(PM.init,10,5,"",1);
+        PCB P2=PM.fork(PM.init,10,5,"",1);
+        PM.showAllProcesses();
+    }
+}
