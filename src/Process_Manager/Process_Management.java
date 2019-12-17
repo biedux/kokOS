@@ -41,7 +41,7 @@ public class Process_Management {
         for(PCB processFromList:ProcessList){
             if(process.getID()==processFromList.getID()){
                 ProcessList.remove(processFromList);
-                processFromList=null;
+                process=null;
             }
         }
     }
