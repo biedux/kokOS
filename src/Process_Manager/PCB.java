@@ -161,6 +161,14 @@ public class PCB {
         System.out.println("Obecny stan rejestru DX: " + this.DX);
     }
 
+    public int getCounter() {
+        return Counter;
+    }
+
+    public void setCounter(int counter) {
+        Counter = counter;
+    }
+
     public int getBasePriority() {
         return BasePriority;
     }
