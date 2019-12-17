@@ -6,5 +6,7 @@ public class Main {
         PCB P1=PM.fork(PM.init,10,5,"",1);
         PCB P2=PM.fork(PM.init,10,5,"",1);
         PM.showAllProcesses();
+        PM.kill(P1);
+        PM.showAllProcesses();
     }
 }
