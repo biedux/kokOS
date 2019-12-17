@@ -20,10 +20,10 @@ public class Process_Management {
     }
 
     // Nowy proces
-    public PCB fork(PCB parent, int priority, int tim, String fName, int fSize){
+    public PCB fork(PCB parent, String name, int priority, int tim, String fName, int fSize){
 
         // Nowy proces
-        PCB process=new PCB(parent.getName(),fName,fSize);
+        PCB process=new PCB(name,fName,fSize);
         process.setParentID(parent.getID());
         process.setState(process.State.Ready);
         ProcessList.add(process);
@@ -41,7 +41,7 @@ public class Process_Management {
         for(PCB processFromList:ProcessList){
             if(process.getID()==processFromList.getID()){
                 ProcessList.remove(processFromList);
-                process=null;
+                processFromList=null;
             }
         }
     }
