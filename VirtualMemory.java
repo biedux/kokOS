@@ -33,18 +33,19 @@ import java.util.*;
         }
 
         static void putPageInRam(int procID, int pageID) {
-            Vector<Character> Programwstronie = PageFile.get(procID).get(pageID);
-            System.out.println(procID + " +  " + pageID +" "+  Programwstronie);
-
+           Vector<Character> Programwstronie = PageFile.get(procID).get(pageID);
+        System.out.println(procID + " +  " + pageID +" "+  Programwstronie);
+            int i =0;
             if(victimQueue.size() >16)
             {
+                System.out.println("Mamy ramke");
 
             }
-            else { int i =0;
+            else {
                 while (i != victimQueue.size())
-                { if(victimQueue.get(i).odniesienia = true)
+                { if(victimQueue.get(i).valid = true)
                 {
-                    victimQueue.get(i).odniesienia = false;
+                    victimQueue.get(i).valid= false;
                     //takepageout(pageID)
                     //updatequeue --dodać strone na koniec
                     i++;
@@ -77,10 +78,14 @@ import java.util.*;
         {
             PageFile.put(pID, pr);
         }
-
-        static void demandPage(int ProcessID, int PageID)
+ //Uzywana przez ram żeby dostać konkretny numer ramki w której znaduje się stronica
+        static int demandPage(int ProcessID, int PageID)
         {
-            putPageInRam(ProcessID, PageID);
+            if (!PageTables.get(ProcessID).get(PageID).valid)
+           {
+              putPageInRam(ProcessID,PageID);
+            }
+            return PageTables.get(ProcessID).get(PageID).nrramki;
         }
 
     public static class Main {
