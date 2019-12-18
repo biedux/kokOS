@@ -14,8 +14,8 @@ public class Lock {
     //PM uzupełniany przez jedyny systemowy Management, aby móc sterować procesami
     private Process_Management PM;
 
-    //Blokowanie zamka
-    public void lock (int ProcessID)
+    //Blokowanie (pozyskanie) zamka
+    public void acquire (int ProcessID)
     {
         if (isLocked)
         {
@@ -35,8 +35,8 @@ public class Lock {
         }
     }
 
-    //Odblokowanie zamka i ewnetualne przekazanie następnemu procesowi w kolejce
-    public void unlock (int ProcessID)
+    //Odblokowanie (zwolnienie) zamka i ewnetualne przekazanie następnemu procesowi w kolejce
+    public void release (int ProcessID)
     {
         if (isLocked && (holdersID == ProcessID)) {
             isLocked = false;
@@ -57,6 +57,12 @@ public class Lock {
                 });
             }
         }
+    }
+
+    //Sprawdzenie zamka (zwraca false (0) jeśli zamek zajęty; true (1) jeśli zamek wolny)
+    public boolean tryLock ()
+    {
+        return isLocked;
     }
 
     //Konstruktor zamka
