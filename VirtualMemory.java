@@ -6,11 +6,10 @@ import java.util.*;
 
         //plik wymiany (procesID,Program)
         static Map<Integer, Vector<Vector<Character>>> PageFile = new HashMap<>();
-        // mapa wszystkich użytych tablic stonic (procesID , tablica )
+        // mapa wszystkich użytych tablic stonic (ProcesID , tablica )
         static Map<Integer, Vector<Page> >PageTables =new HashMap<>();
         /**Kolejka ramek*/
         static Vector<Page> victimQueue = new Vector<>();
-
 
         //metoda która pobiera nowy proces,wczytuje do pliku wymiany program, nadaje tablice stronic i wcztytuje 1 stronice do ramul
         void nowyproces(/*PCB proces*/)
@@ -32,30 +31,27 @@ import java.util.*;
             //  putPageInRam(proces.processId, 0);
         }
 
-        static void putPageInRam(int procID, int pageID) {
-           Vector<Character> Programwstronie = PageFile.get(procID).get(pageID);
-        System.out.println(procID + " +  " + pageID +" "+  Programwstronie);
+        static void putPageInRam(int ProcessID, int pageID) {
+           Vector<Character> Programwstronie = PageFile.get(ProcessID).get(pageID);
+        System.out.println(ProcessID + " +  " + pageID +" "+  Programwstronie);
             int i =0;
             if(victimQueue.size() >16)
             {
                 System.out.println("Mamy ramke");
-
             }
             else {
                 while (i != victimQueue.size())
                 { if(victimQueue.get(i).valid = true)
                 {
                     victimQueue.get(i).valid= false;
-                    //takepageout(pageID)
+                    takepageout(ProcessID,pageID);
                     //updatequeue --dodać strone na koniec
                     i++;
-
                 }
                 else
                 {
                     System.out.println("Wyjmujemy stone!");
-                    //takepageout(pageID)
-                    //tu wsadzamy stonice
+                    takepageout(ProcessID,pageID);
                 }
 
                 }
@@ -63,10 +59,10 @@ import java.util.*;
 
         }
 
-        static boolean pageExists(int procID, int pageID){
+        static boolean pageExists(int ProcessID, int pageID){
 
             try{
-                PageTables.get(procID).get(pageID);
+                PageTables.get(ProcessID).get(pageID);
                 return true;
             } catch (Exception e) {
                 System.out.println("Stronica nie istnieje");
@@ -74,10 +70,11 @@ import java.util.*;
             return false;
         }
 
-        void putProcessToPageFile(int pID, Vector<Vector<Character>> pr)
+        void putProcessToPageFile(int procesID, Vector<Vector<Character>> pr)
         {
-            PageFile.put(pID, pr);
+            PageFile.put(procesID, pr);
         }
+
  //Uzywana przez ram żeby dostać konkretny numer ramki w której znaduje się stronica
         static int demandPage(int ProcessID, int PageID)
         {
@@ -87,15 +84,30 @@ import java.util.*;
             }
             return PageTables.get(ProcessID).get(PageID).nrramki;
         }
-
-    public static class Main {
-
-        public static void main(String[] args) {
-          demandPage(1,1);
-           // putProcessToPageFile(1, )
-
+        static void updatePageTable(int ProcesID,int PageID, int FrameID)
+        {
+            int numerdozastapienia;
+            numerdozastapienia = PageTables.get(ProcesID).get(PageID).nrramki;
+       //  PageTables.replace(ProcesID,numerdozastapienia,FrameID);
         }
-    }
+
+        static void takepageout(int ProcesID, int pageID)
+        {
+            PageTables.remove(pageID);
+            updatePageTable(ProcesID,pageID,-1);
+        }
+
+        public void readPageTable(int ProcesID,int PageID,Vector<Page> wektor){
+            for (int i=0;i<wektor.size();i++)
+            {
+                System.out.println(PageID + " " + PageTables.get(ProcesID).get(PageID).nrramki + " " + PageTables.get(ProcesID).get(PageID).valid );
+            }
+        }
+        public void readPageFile(int ProcesID,int PageID){
+                for (int i=0;i<PageFile.size();i++)
+                {
+                    System.out.println(PageFile.get(ProcesID).get(PageID) + " " );
+                }
+            }
 
 
-}
