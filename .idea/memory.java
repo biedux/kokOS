@@ -61,11 +61,9 @@ public class memory {
 
     //tu bedzie WYSWIETLENIE ZAWARTOSCI RAMU (do debugowania)
     public static void printRawRam() {
-        for (int i = 0; i < 16; i++) {
+        System.out.println("Wyswietlam surowy ram: \n");
+        for (int i = 0; i < 256; i++) {
             System.out.println(memory[i]);
-            for (int j = 0; j < 16; j++) {
-                System.out.println(String.format(String.valueOf(memory[i * 16 + j])));
-            }
         }
         System.out.println("");
     }
