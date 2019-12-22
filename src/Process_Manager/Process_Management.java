@@ -14,29 +14,42 @@ public class Process_Management {
     public Process_Management(){
 
         // Inicjalizacja głównego procesu przy starcie rodzica
-        init=new PCB("init","",0);
+        init=new PCB("init","");
         init.setState(init.State.Ready);
         ProcessList.add(init);
     }
 
     // Nowy proces
-    public PCB fork(PCB parent, String name, int priority, int tim, String fName, int fSize){
+    public PCB fork(PCB parent, String name, int priority, String fName){
 
         // Nowy proces
-        PCB process=new PCB(name,fName,fSize);
+        PCB process=new PCB(name,fName);
         process.setParentID(parent.getID());
         process.setState(process.State.Ready);
+        process.setPriority(priority);
         ProcessList.add(process);
         parent.ChildrenList.add(process);
+        if(parent.getID()!=0){
+            parent.setState(PCB.StateList.Waiting);
+        }
         //ustawianie czasu i priorytetu
         return process;
     }
 
     // Zabijanie procesu
-    public void kill(PCB process){
+    public void kill(PCB parent, PCB process){
+        boolean finished=true;
         process.setState(PCB.StateList.Terminated);
+        for(PCB proc:parent.ChildrenList){
+            if(proc.getState()!= PCB.StateList.Terminated){
+                finished=false;
+            }
+        }
+        if(parent.getID()!=0&&finished==true){
+            parent.setState(PCB.StateList.Ready);
+        }
         for(PCB child : process.ChildrenList){
-            child.setParentID(0);
+            child.setParentID(process.getParentID());
         }
         for(PCB processFromList:ProcessList){
             if(process.getID()==processFromList.getID()){
