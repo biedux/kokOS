@@ -199,7 +199,7 @@ public class PCB {
 
     public void printProcessInfo() {
         //System.out.println("Proces o nazwie: " + this.Name + ", ID: " + this.ID + ", stanie: " + this.State + " i ID rodzica: " + this.ParentID);
-        System.out.printf("%-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s\n", "Name", "Id", "Priority", "State", "RegA", "RegB", "RegC", "RegD", "Counter");
-        System.out.printf("%-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s\n", this.Name, this.ID, this.Priority, this.State, this.AX, this.BX, this.CX, this.DX, this.Counter);
+        System.out.printf("%-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s\n", "Name", "Id", "Priority", "State", "RegA", "RegB", "RegC", "RegD", "Counter", "Parent ID");
+        System.out.printf("%-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s\n", this.Name, this.ID, this.Priority, this.State, this.AX, this.BX, this.CX, this.DX, this.Counter, this.getParentID());
     }
 }
