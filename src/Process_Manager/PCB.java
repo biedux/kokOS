@@ -29,15 +29,16 @@ public class PCB {
     private static int CountProcess = 0;
 
     // Czas procesora
-    private int BaseTime;
-    private int CurrTime;
+    private int Time;
 
     // Priorytety
-    private int BasePriority;
-    private int CurrPriority;
+    private int Priority;
 
     // Rejestry.
-    private int AX, BX, CX, DX, Counter;
+    private int AX, BX, CX, DX;
+
+    // Licznik rozkazow
+    private int Counter;
 
     // Flagi przeniesienia i zera
     private boolean ZF, CF;
@@ -53,13 +54,12 @@ public class PCB {
 
 
 
-    public PCB(String Name, String fileName, int sizeOfFile){
+    public PCB(String Name, String fileName){
         this.ID=CountProcess;
         CountProcess++;
 
         this.Name=Name;
         this.fileName=fileName;
-        this.sizeOfFile=sizeOfFile;
         this.State=StateList.New;
 
         this.AX=0;
@@ -82,9 +82,9 @@ public class PCB {
     }
 
     public void setID(int ID) {
-        System.out.println("Stare ID procesu: " + this.ID);
+        //System.out.println("Stare ID procesu: " + this.ID);
         this.ID = ID;
-        System.out.println("Nowe ID procesu: " + this.ID);
+        //System.out.println("Nowe ID procesu: " + this.ID);
     }
 
     public String getName() {
@@ -92,9 +92,9 @@ public class PCB {
     }
 
     public void setName(String name) {
-        System.out.println("Stara nazwa procesu: " + this.Name);
+        //System.out.println("Stara nazwa procesu: " + this.Name);
         Name = name;
-        System.out.println("Nowa nazwa procesu: " + this.Name);
+        //System.out.println("Nowa nazwa procesu: " + this.Name);
     }
 
     public int getParentID() {
@@ -102,9 +102,9 @@ public class PCB {
     }
 
     public void setParentID(int parentID) {
-        System.out.println("Stare ID procesu rodzica: " + this.ParentID);
+        //System.out.println("Stare ID procesu rodzica: " + this.ParentID);
         ParentID = parentID;
-        System.out.println("Nowe ID procesu rodzica: " + this.ParentID);
+        //System.out.println("Nowe ID procesu rodzica: " + this.ParentID);
     }
 
     public StateList getState() {
@@ -112,9 +112,9 @@ public class PCB {
     }
 
     public void setState(StateList state) {
-        System.out.println("Stary stan procesu: " + this.State);
+        //System.out.println("Stary stan procesu: " + this.State);
         State = state;
-        System.out.println("Nowy stan procesu: " + this.State);
+        //System.out.println("Nowy stan procesu: " + this.State);
     }
 
     public static int getCountProcess() {
@@ -138,51 +138,43 @@ public class PCB {
     }
 
     public void setAX(int AX) {
-        System.out.println("Poprzedni stan rejestru AX: " + this.AX);
+        //System.out.println("Poprzedni stan rejestru AX: " + this.AX);
         this.AX = AX;
-        System.out.println("Obecny stan rejestru AX: " + this.AX);
+        //System.out.println("Obecny stan rejestru AX: " + this.AX);
     }
 
     public void setBX(int BX) {
-        System.out.println("Poprzedni stan rejestru BX: " + this.BX);
+        //System.out.println("Poprzedni stan rejestru BX: " + this.BX);
         this.BX = BX;
-        System.out.println("Obecny stan rejestru BX: " + this.BX);
+        //System.out.println("Obecny stan rejestru BX: " + this.BX);
     }
 
     public void setCX(int CX) {
-        System.out.println("Poprzedni stan rejestru CX: " + this.CX);
+        //System.out.println("Poprzedni stan rejestru CX: " + this.CX);
         this.CX = CX;
-        System.out.println("Obecny stan rejestru CX: " + this.CX);
+        //System.out.println("Obecny stan rejestru CX: " + this.CX);
     }
 
     public void setDX(int DX) {
-        System.out.println("Poprzedni stan rejestru DX: " + this.DX);
+        //System.out.println("Poprzedni stan rejestru DX: " + this.DX);
         this.DX = DX;
-        System.out.println("Obecny stan rejestru DX: " + this.DX);
-    }
-
-    public int getCounter() {
-        return Counter;
-    }
-
-    public void setCounter(int counter) {
-        Counter = counter;
-    }
-
-    public int getBasePriority() {
-        return BasePriority;
+        //System.out.println("Obecny stan rejestru DX: " + this.DX);
     }
 
     public int getBaseTime() {
-        return BaseTime;
+        return Time;
     }
 
-    public int getCurrPriority() {
-        return CurrPriority;
+    public void setTime(int time) {
+        Time = time;
     }
 
-    public int getCurrTime() {
-        return CurrTime;
+    public int Priority() {
+        return Priority;
+    }
+
+    public void setPriority(int priority) {
+        Priority = priority;
     }
 
     public boolean isCF() {
@@ -201,27 +193,13 @@ public class PCB {
         this.ZF = ZF;
     }
 
-    public void setBaseTime(int baseTime) {
-        BaseTime = baseTime;
-    }
-
-    public void setCurrTime(int currTime) {
-        CurrTime = currTime;
-    }
-
-    public void setBasePriority(int basePriority) {
-        BasePriority = basePriority;
-    }
-
-    public void setCurrPriority(int currPriority) {
-        CurrPriority = currPriority;
-    }
-
     public List<PCB> getChildrenList() {
         return ChildrenList;
     }
 
     public void printProcessInfo() {
-        System.out.println("Proces o nazwie: " + this.Name + ", ID: " + this.ID + ", stanie: " + this.State + " i ID rodzica: " + this.ParentID);
+        //System.out.println("Proces o nazwie: " + this.Name + ", ID: " + this.ID + ", stanie: " + this.State + " i ID rodzica: " + this.ParentID);
+        System.out.println("Name Id Priority State RegA RegB RegC RegD Counter");
+        System.out.println(this.Name + " " + this.ID + " " + this.Priority + " " + this.State + " " + this.AX + " " + this.BX + " " + this.CX + " " + this.DX + " " + this.Counter);
     }
 }
