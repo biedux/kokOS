@@ -37,26 +37,14 @@ public class Process_Management {
     }
 
     // Zabijanie procesu
-    public void kill(PCB parent, PCB process){
-        boolean finished=true;
-        process.setState(PCB.StateList.Terminated);
-        for(PCB proc:parent.ChildrenList){
-            if(proc.getState()!= PCB.StateList.Terminated){
-                finished=false;
+    public void kill(PCB process){
+        if(process.getState() == PCB.StateList.Waiting){
+            for(PCB child : process.ChildrenList){
+                child.setParentID(process.getParentID());
             }
+            process.setState(PCB.StateList.Terminated);
         }
-        if(parent.getID()!=0&&finished==true){
-            parent.setState(PCB.StateList.Ready);
-        }
-        for(PCB child : process.ChildrenList){
-            child.setParentID(process.getParentID());
-        }
-        for(PCB processFromList:ProcessList){
-            if(process.getID()==processFromList.getID()){
-                ProcessList.remove(processFromList);
-                processFromList=null;
-            }
-        }
+        ProcessList.remove(process);
     }
 
     // Wyświetlanie wszystkich procesów
