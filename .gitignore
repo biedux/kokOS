@@ -1,2 +1,5 @@
 # Default ignored files
-/.idea/workspace.xml
+.idea/
+.iml
+kokOS.iml
+.out/
