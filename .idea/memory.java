@@ -71,7 +71,7 @@ public class memory {
 
 
     //tu bedzie ZAPIS BAJTU ZGODNIE Z TABLICA STRONIC
-    void writeToFrame(char data, int adress, int frame){
+    public void writeToFrame(char data, int adress, int frame){
         try {
             memory[frame * 16 + (adress % 16)] = data;
         }
