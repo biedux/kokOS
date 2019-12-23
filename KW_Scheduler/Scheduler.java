@@ -75,6 +75,7 @@ public class Scheduler
         int VirtualTime=pcb.getVirtualTime();
         int NewVirtualTime=(currTime-baseTime)*weight+VirtualTime;
         pcb.setVirtualTime(NewVirtualTime);
+        sort(Heap);
         //return NewVirtualTime; // nie wiem czy ten return bedzie potrzebny czy nie przerzuce sie na void
     }
 
@@ -99,6 +100,6 @@ public class Scheduler
             running.setBaseTime(CurrTime);
             running.setState(PCB.StateList.Running);;
         }
-        sort(Heap);
+        sort(Heap); // nie wiem do konca czy to jest potrzebne 
     }}
   
