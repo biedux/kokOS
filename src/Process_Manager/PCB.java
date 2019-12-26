@@ -68,13 +68,11 @@ public class PCB {
         this.DX=0;
 
         this.Counter=0;
-        //this.BasePriority=10;
-        //this.BaseTime=5;
 
         ZF=true;
         CF=false;
 
-        System.out.println("Utworzono proces: " + this.Name + " o ID: " + this.ID);
+        //System.out.println("Utworzono proces: " + this.Name + " o ID: " + this.ID);
     }
 
     public int getID() {

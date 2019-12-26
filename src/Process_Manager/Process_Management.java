@@ -2,6 +2,7 @@ package Process_Manager;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Process_Management {
 
@@ -36,15 +37,47 @@ public class Process_Management {
         return process;
     }
 
-    // Zabijanie procesu
+    // Zabijanie procesu (usuniecie procesu i przekazanie dzieci rodzicowi)
     public void kill(PCB process){
-        if(process.getState() == PCB.StateList.Waiting){
-            for(PCB child : process.ChildrenList){
-                child.setParentID(process.getParentID());
+        for(PCB parent:ProcessList){
+            if(process.getParentID()==parent.getID()){
+                parent.ChildrenList.remove(process);
+                if(process.getState() == PCB.StateList.Waiting){
+                    for(PCB child : process.ChildrenList){
+                        child.setParentID(process.getParentID());
+                        parent.ChildrenList.add(child);
+                    }
+                    process.setState(PCB.StateList.Terminated);
+                }
             }
-            process.setState(PCB.StateList.Terminated);
         }
         ProcessList.remove(process);
+    }
+
+    // Wait
+    public void wait(PCB proc){
+        if(proc.getState() != PCB.StateList.Terminated){
+            proc.setState(PCB.StateList.Terminated);
+        }
+    }
+
+    // Drzewo procesów
+    public void showTree(PCB proc){
+        if(ProcessList.contains(proc)){
+            String lev="";
+            if(proc.getID()!=0){
+                lev+="+-";
+                for(int i=proc.getParentID();i>=0;i--){
+                    if(proc.getParentID()>1) i--;
+                    lev+="--";
+                }
+            }
+            System.out.println(lev+proc.getName());
+            //proc.printProcessInfo();
+            for(PCB child:proc.ChildrenList){
+                showTree(child);
+            }
+        }
     }
 
     // Wyświetlanie wszystkich procesów
