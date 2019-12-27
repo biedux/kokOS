@@ -30,6 +30,46 @@ public class PCB {
 
     // Czas procesora
     private int Time;
+    
+    //Konrada życzenia
+    private int BaseTime;
+    private int VirtualTime;
+    private int weight;
+    private int CurrTime;
+
+    public int getBaseTime() {
+        return BaseTime;
+    }
+
+    public void setBaseTime(int baseTime) {
+        BaseTime = baseTime;
+    }
+    
+    public int getVirtualTime() {
+        return VirtualTime;
+    }
+
+    public void setVirtualTime(int virtualTime) {
+        VirtualTime = virtualTime;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public int getCurrTime() {
+        return CurrTime;
+    }
+
+    public void setCurrTime(int currTime) {
+        CurrTime = currTime;
+    }
+    
+    //Po Konradzie
 
     // Priorytety
     private int Priority;
@@ -159,7 +199,7 @@ public class PCB {
         //System.out.println("Obecny stan rejestru DX: " + this.DX);
     }
 
-    public int getBaseTime() {
+    public int getTime() {
         return Time;
     }
 
