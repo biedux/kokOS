@@ -1,11 +1,5 @@
 # kokOS
-. Wydaje mi się, że mój kod jest skończony, pozostaje go przetestować i dodać tablice przeliczania priorytetów do wag, ale to już powinniśmy ustalić wspólnie. 
+Algorytm prawdopodobnie działa prawidłowo, wymaga jedynie kosmetycznych zmian w kodzie, żeby to lepiej wyglądało. 
+Insert() --> powinna zostać użyta, gdy zmieniamy stan procesu na gotowy 
 
-Działanie tej klasy wymaga:
-1. Istnienie zmiennej int CurrTime => zmienna licząca ilość rozkazów assemblerowych, które wykonały się od uruchomienia programu. 
-2. Zmian w PCB:
-a) dodania do PCB zmiennych i dodania do nich getterów i setterów:
-  private int BaseTime; 
-  
-  private int VirtualTime;
-  private weight;
+
