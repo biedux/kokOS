@@ -18,8 +18,8 @@ public class Scheduler
     LinkedList<PCB> Heap= new LinkedList<PCB>();
 
     long CurrTime;// zmienna inkrementujaca sie  co wykonany rozka, marcin ciechan ja obsluzy
-    int min_granularity = 4; // minimalny czas, na jaki proces moze otryzmać procesor
-    int period = 20; // okres, ustalany z gory, czas w jakim powinien każdy proces otrzymać procesor
+    long  min_granularity = 1; // minimalny czas, na jaki proces moze otryzmać procesor
+    long period = 20; // okres, ustalany z gory, czas w jakim powinien każdy proces otrzymać procesor
     //PCB running = new PCB("proces2","filename2" );
 
     // pm.fork("p6", 4,"f6"); // tej zmiennej bedziemy przypisywać PCB procesu dzialajacego
@@ -37,7 +37,7 @@ public class Scheduler
 
     void PrioToWeight(PCB pcb) //funkcja zwracajca przeliczone priorytety na wagi
     {
-        int weight = pcb.getPriority() *10; // przyklad
+        int weight = pcb.getPriority() *1; // przyklad
         pcb.setWeight(weight);
     }
 
@@ -45,8 +45,9 @@ public class Scheduler
     long HeapWeight() // funkcja zwracajaca sume wag w kolejce
     {
         long sum=0;
-        for(int i=0;i<=Heap.size();i++) {
-            long weight = Heap.get(i).getWeight();
+        for(int i=0;i<Heap.size();i++) {
+            long weight;
+            weight = Heap.get(i).getWeight();
             sum+=weight;
         }
         return sum;
@@ -93,13 +94,14 @@ public class Scheduler
 
     void VirtualTime(PCB pcb) // zakładam,ze przy zmianie stanu na aktywny w baseTime wpiszemy czas, podczas ktorego process dostał procesor
     {
-        int weight = pcb.getWeight();
-        long currTime=CurrTime;
-        long baseTime=pcb.getBaseTime();
+        long weight = pcb.getWeight();
+       // long currTime=CurrTime;
+       // long baseTime=pcb.getBaseTime();
         long VirtualTime=pcb.getVirtualTime();
-        long NewVirtualTime=(currTime-baseTime)*weight+VirtualTime;
+        //long NewVirtualTime=(currTime-baseTime)*weight+VirtualTime;
+        long NewVirtualTime=1*weight+VirtualTime;
         pcb.setVirtualTime(NewVirtualTime);
-        sort(Heap);
+        // sort(Heap);
         //return NewVirtualTime; // nie wiem czy ten return bedzie potrzebny czy nie przerzuce sie na void
     }
 
@@ -108,6 +110,8 @@ public class Scheduler
     void check() {    //CurrTime=System.nanoTime();
 
          running.setTimeSlice(running.getTimeSlice()-1);
+        PCB min = min();
+
         if (running.getState() == PCB.StateList.Terminated && (Heap.size() == 0)) // jesli proces został wykonany oraz wielkosc kolejki rowna sie zero to wykonujemy dummy
         {
             Delete(running);
@@ -117,56 +121,35 @@ public class Scheduler
       else  { if (running.getState() == PCB.StateList.Terminated) //  jesli aktywny proces sie wykonał to go usunąć
         {
             Delete(running);
+            running = min;
+            TimeSlice(running);
+            //running.setBaseTime(CurrTime);
+            running.setState(PCB.StateList.Running);
+
         } else {
             VirtualTime(running);
 
-
-        PCB min = min();
+         sort(Heap);
+            PCB min1 = min();
 
         if(running.getTimeSlice()<=0)
         {
             running.setState(PCB.StateList.Ready);
-            running = min;
+            running = min1;
             TimeSlice(running);
-            running.setBaseTime(CurrTime);
+            //running.setBaseTime(CurrTime);
             running.setState(PCB.StateList.Running);
+
         }
 
 
 
-        else if(running.getVirtualTime() > min.getVirtualTime()) //jesli czas wirtualny dzialajacego jest mniejszy od minimalnego
+        else if(running.getVirtualTime() > min1.getVirtualTime()) //jesli czas wirtualny dzialajacego jest mniejszy od minimalnego
         {
             running.setState(PCB.StateList.Ready);
-            running = min;
+            running = min1;
             TimeSlice(running);
-            running.setBaseTime(CurrTime);
+            //running.setBaseTime(CurrTime);
             running.setState(PCB.StateList.Running);
 
         }}}
-
-        sort(Heap); // nie wiem do koncza czyt o jest potrzebne
-    }
-
-
-
-
-
-        //------------------------------------------------------------------------------------------
-       /* System.out.println(CurrTime);
-        System.out.println("running: " + running.getName() + " ID "+running.getID()+ " virtualTime "+ running.getVirtualTime()
-        + " base time: "+ running.getBaseTime() + "currTime" + running.getCurrTime() );
-
-        for (int k=0; k<Heap.size(); k++)
-        {System.out.println("proces numer: "+k+ " w kolejce to " + Heap.get(k).getName()+ " o id: "+ Heap.get(k).getID() +
-                " vruntime: "+ Heap.get(k).getVirtualTime()+" base time: " +Heap.get(k).getBaseTime() + "currTime"+Heap.get(k).getCurrTime());}
-*/
-
-   /* public static void main(String args[]){
-        Scheduler s= new Scheduler();
-        PCB pcb= new PCB("poces", "plik");
-    }*/
-
-
-}
-
-
