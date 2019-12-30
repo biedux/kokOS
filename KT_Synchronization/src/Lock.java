@@ -8,53 +8,38 @@ public class Lock {
     //ID procesu "trzymającego" zamek
     private int holdersID = 0;
 
-    //Lista ID procesów, które chcą wejśc do zamka, ale nie mogą ponieważ jest zablokowany
-    private LinkedList<Integer> queue = new LinkedList<Integer>();
-
-    //PM uzupełniany przez jedyny systemowy Management, aby móc sterować procesami
-    private Process_Management PM;
+    //Lista PCB procesów, które chcą wejśc do zamka, ale nie mogą ponieważ jest zablokowany
+    private LinkedList<PCB> queue = new LinkedList<PCB>();
 
     //Blokowanie (pozyskanie) zamka
-    public void acquire (int ProcessID)
+    public void acquire (PCB ProcessCB)
     {
         if (isLocked)
         {
-            queue.add(ProcessID);
-            PM.ProcessList.forEach(pcb->
-            {
-                if(pcb.getID() == ProcessID)
-                {
-                    pcb.setState(PCB.StateList.Waiting);
-                }
-            });
+            queue.add(ProcessCB);
+            ProcessCB.setState(PCB.StateList.Waiting)
         }
         else
         {
-            holdersID = ProcessID;
+            holdersID = ProcessCB.getID();
             isLocked = true;
         }
     }
 
     //Odblokowanie (zwolnienie) zamka i ewnetualne przekazanie następnemu procesowi w kolejce
-    public void release (int ProcessID)
+    public void release (PCB ProcessCB)
     {
-        if (isLocked && (holdersID == ProcessID)) {
+        if (isLocked && (holdersID == ProcessCB.getID())) {
             isLocked = false;
             holdersID = 0;
             if(queue.size()>0)
             {
-                holdersID = queue.removeFirst();
-                PM.ProcessList.forEach(pcb ->
-                {
-                    if (pcb.getID() == holdersID) {
-                        pcb.setState(PCB.StateList.Ready);
-                        isLocked = true;
-                    }
-                    else
-                    {
-                        holdersID = 0;
-                    }
-                });
+                ProcessCB = queue.removeFirst();
+                holdersID = ProcessCB.getID();
+                
+                ProcessCB.setState(PCB.StateList.Ready);
+                isLocked = true;
+                   
             }
         }
     }
@@ -66,9 +51,8 @@ public class Lock {
     }
 
     //Konstruktor zamka
-    public Lock (Process_Management ProcessManagement)
+    public Lock ()
     {
-        PM = ProcessManagement;
     }
 
 }
