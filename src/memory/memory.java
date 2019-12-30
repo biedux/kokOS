@@ -5,15 +5,17 @@ import java.util.Vector;
 public class memory {
     private static char[] memory = new char[256];
 
+    //16 ramek po 16 bajtów
+    // ostatnia ramka zarezerwowana na pipe'y
 
-    //ZAPIS POJEDYNCZEGO BAJTU
-    void write(char data, int i){
-        try {
-            memory[i] = data;
+
+    //tu bedzie WYSWIETLENIE ZAWARTOSCI RAMU (do debugowania)
+    public static void printRawRam() {
+        System.out.println("Wyswietlam surowy ram: \n");
+        for (int i = 0; i < 256; i++) {
+            System.out.println(memory[i]);
         }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        System.out.println("\n");
     }
 
 
@@ -25,6 +27,29 @@ public class memory {
         catch (Exception e) {
             System.out.println(e.getMessage());
             return 0;
+        }
+    }
+
+
+    //tu funkcje do PIPE
+
+    //ZAPIS POJEDYNCZEGO BAJTU
+    public void write(char data, int i){
+        try {
+            memory[i] = data;
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    //zapis do PIPE
+    public void writePipe(char data, int adresLogicz){     //adresy od 0 do 15 dozwolone
+        try {
+            memory[adresLogicz + 240] = data;
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -57,15 +82,15 @@ public class memory {
         return odczyt;
     }
 
-
-
-    //tu bedzie WYSWIETLENIE ZAWARTOSCI RAMU (do debugowania)
-    public static void printRawRam() {
-        System.out.println("Wyswietlam surowy ram: \n");
-        for (int i = 0; i < 256; i++) {
-            System.out.println(memory[i]);
+    //odczyt z PIPE
+    public char readPipe(int adresLogicz){     //adresy od 0 do 15 dozwolone
+        try {
+            return memory[adresLogicz + 240];
         }
-        System.out.println("");
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return 0;
     }
 
 
