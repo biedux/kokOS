@@ -263,6 +263,29 @@ public class PCB {
     public Vector<Integer> getDescriptor() {
         return descriptor;
     }
+    
+    public int Pipe(int[] pdesc) { //funkcja tworzaca pipe
+
+        Random rand = new Random();
+        int read = rand.nextInt(32);
+        int write = rand.nextInt(32);//|| 32
+
+        while (descriptor.contains(write)) {
+            write = rand.nextInt(32);
+        }
+        write = pdesc[1];
+        descriptor.add(write);
+
+        while (descriptor.contains(read)) {
+            read = rand.nextInt(32);
+        }
+        read = pdesc[0];
+        descriptor.add(read);
+
+        PipeQueue queueToAdd = new PipeQueue(write, read);
+        Pipes.add(queueToAdd);
+        return 0;
+    }
 
     public int writeToPipe(int fd, Vector<Byte> buffer, Integer nbyte) { //funkcja zapisujaca do pipe
         int written = 0;
@@ -317,29 +340,6 @@ public class PCB {
 
     public static void close ( int i){
         System.out.print("The descriptor is closed\n");
-    }
-
-    public int Pipe(int[] pdesc) { //funkcja tworzaca pipe
-
-        Random rand = new Random();
-        int read = rand.nextInt(32);
-        int write = rand.nextInt(32);//|| 32
-
-        while (descriptor.contains(write)) {
-            write = rand.nextInt(32);
-        }
-        write = pdesc[1];
-        descriptor.add(write);
-
-        while (descriptor.contains(read)) {
-            read = rand.nextInt(32);
-        }
-        read = pdesc[0];
-        descriptor.add(read);
-
-        PipeQueue queueToAdd = new PipeQueue(write, read);
-        Pipes.add(queueToAdd);
-        return 0;
     }
 
     public void printProcessInfo() {
