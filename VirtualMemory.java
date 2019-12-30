@@ -175,7 +175,7 @@ class PCB
              char readChar(PCB proces,int adress)
              {
                  int frameid = find(proces,adress);
-                 char czytany = memory.readFromFrame(adress,frameid);
+                 char czytany = memory.readFrame(frameid);
                  return  czytany;
              }
 
