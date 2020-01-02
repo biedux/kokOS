@@ -43,10 +43,10 @@ import java.util.*;
                 Vector<Character> Programwstornie = PageFile.get(procID).get(pageID);
                System.out.println(pageID +" "+  Programwstornie);
                 int i =0;
-                if(victimQueue.size() <32)
+                if(victimQueue.size() <15)
                 {
                     System.out.println("Mamy ramke");
-                    for(int fID = 0; fID < 32; fID++)
+                    for(int fID = 0; fID < 15; fID++)
                     {
                         if(putPageIn(fID, Programwstornie))
                             {
@@ -55,7 +55,6 @@ import java.util.*;
                                 break;
                             }
                         }
-
                 }
                 else {
                     /**Jeśli nie ma ramki musimy znalezc ofiarę*/
@@ -160,7 +159,7 @@ import java.util.*;
              }
              int find(PCB proces,int adress)
              {
-                 int pageid=((adress - adress %16)/16);
+                 int pageid=((adress - adress %32)/32);
                  int frameid = matchPage(proces,pageid);
                  return  frameid;
              }
