@@ -1,15 +1,7 @@
 package Virtual;
 
 import java.util.*;
-class PCB
-{
-    int processId;
-    Vector<Character> code;
 
-    Vector<Page> getPageTable() {
-        return null;
-    }
-}
         public class VirtualMemory {
            static memory Ram;
             /**Plik wymiany.
@@ -39,9 +31,9 @@ class PCB
 
                     }
                     program.add(page);
-                    putInfoToPageTable(proces.processId, pageTable);
-                    putProcessToPageFile (proces.processId, program);
-                    putPageInRam(proces, proces.processId, 0);
+                    putInfoToPageTable(proces.ID, pageTable);
+                    putProcessToPageFile (proces.ID, program);
+                    putPageInRam(proces, proces.ID, 0);
 
                 }
             }
@@ -51,10 +43,10 @@ class PCB
                 Vector<Character> Programwstornie = PageFile.get(procID).get(pageID);
                System.out.println(pageID +" "+  Programwstornie);
                 int i =0;
-                if(victimQueue.size() <16)
+                if(victimQueue.size() <32)
                 {
                     System.out.println("Mamy ramke");
-                    for(int fID = 0; fID < 16; fID++)
+                    for(int fID = 0; fID < 32; fID++)
                     {
                         if(putPageIn(fID, Programwstornie))
                             {
@@ -114,11 +106,11 @@ class PCB
             //pcb do odebrania tablicy storinic procesu
             static int demandPage(PCB proces, int PageID)
             {
-                if (!PageTables.get(proces.processId).get(PageID).valid)
+                if (!PageTables.get(proces.ID).get(PageID).valid)
                 {
-                    putPageInRam(proces,proces.processId, PageID);
+                    putPageInRam(proces,proces.ID, PageID);
                 }
-                return PageTables.get(proces.processId).get(PageID).nrramki;
+                return PageTables.get(proces.ID).get(PageID).nrramki;
             }
 
             static void takepageout(PCB proces,int frameID)
@@ -132,7 +124,7 @@ class PCB
                 Vector <Character> page;
                 page = Ram.readFrame(frameID);
 
-                putPageInPageFile(pageID, proces.processId, page);
+                putPageInPageFile(pageID, proces.ID, page);
                 updatePageTables(-1, -1, -1, false);
             }
             static void updatePageTables(int procID, int pageID, int frameID, boolean value)
@@ -153,7 +145,7 @@ class PCB
             static boolean processExists(int procID){
                 return PageFile.containsKey(procID);
             }
-            
+
 
             /**Funkcje dla Ciechana*/
              int matchPage(PCB proces,int pageID)
@@ -163,7 +155,7 @@ class PCB
                     System.out.println("Stronica jest w ramie");
                        return pageTable.get(pageID).nrramki;
                 }
-               else putPageInRam(proces,proces.processId,pageID);
+               else putPageInRam(proces,proces.ID,pageID);
                    return 0;
              }
              int find(PCB proces,int adress)
@@ -175,7 +167,7 @@ class PCB
              char readChar(PCB proces,int adress)
              {
                  int frameid = find(proces,adress);
-                 char czytany = memory.readFrame(frameid);
+                 char czytany = memory.readFromFrame(adress,frameid);
                  return  czytany;
              }
 
@@ -219,8 +211,3 @@ class PCB
                     System.out.println("");
                 } else System.out.println("Error: process with given ID doesn't exist.");
             }
-
-       
-
-
-}
