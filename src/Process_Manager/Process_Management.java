@@ -38,6 +38,8 @@ public class Process_Management {
     }
 
     // Zabijanie procesu (usuniecie procesu i przekazanie dzieci rodzicowi)
+
+    //Dwie opcje, zabija dzieci lub nie (pgit=null)
     public void kill(PCB process){
         for(PCB parent:ProcessList){
             if(process.getParentID()==parent.getID()){
@@ -55,10 +57,17 @@ public class Process_Management {
     }
 
     // Wait
-    public void wait(PCB proc){
-        if(proc.getState() != PCB.StateList.Terminated){
-            proc.setState(PCB.StateList.Terminated);
+
+    //bez argumentu - wykonanie ostatniego procesu
+    //argument - wykonanie procesu o danym id
+    //dziecko się wykona - staje się zombie
+    public boolean wait(PCB proc){
+        for(PCB child:proc.ChildrenList){
+            if(child.getState() != PCB.StateList.Terminated){
+                return false;
+            }
         }
+        return true;
     }
 
     // Drzewo procesów
