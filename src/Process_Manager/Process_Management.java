@@ -55,6 +55,30 @@ public class Process_Management {
         }
         ProcessList.remove(process);
     }
+    
+    //Zabicie grupy(podajemy rodzica i usuwa całą gałąź-dzieci danego rodzica i jego samego)
+    
+    public void setRemoved(PCB process){
+        for(PCB parent:ProcessList){
+            if(process.getParentID()==parent.getID()){
+                parent.ChildrenList.remove(process);
+                if(process.getState() == PCB.StateList.Waiting || process.getChildrenList()!=null) {
+                    for (PCB child : process.ChildrenList) {
+                        setRemoved(child);
+                    }
+                }
+            }
+        }
+        process.setState(PCB.StateList.Terminated);
+        Killed.add(process);
+    }
+
+    public void killByGroup(PCB process){
+        setRemoved(process);
+        for(PCB proc:Killed){
+            ProcessList.remove(proc);
+        }
+    }
 
     // Wait
 
