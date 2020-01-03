@@ -56,8 +56,8 @@ public class Process_Management {
         ProcessList.remove(process);
     }
     
-    //Zabicie grupy(podajemy rodzica i usuwa całą gałąź-dzieci danego rodzica i jego samego)
-    
+    private List<PCB> Killed=new LinkedList<PCB>();
+
     public void setRemoved(PCB process){
         for(PCB parent:ProcessList){
             if(process.getParentID()==parent.getID()){
