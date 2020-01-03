@@ -254,6 +254,16 @@ public class PCB {
         return ChildrenList;
     }
 
+    public int getCounter() {
+        return Counter;
+    }
+    
+    public void setCounter(int counter) {
+        Counter = counter;
+    }
+
+    l
+
     //Pipe
 //    public final Vector<PipeQueue> Pipes = new Vector<>();
 //    public final Vector<Integer> descriptor = new Vector<>();
