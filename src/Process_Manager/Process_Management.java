@@ -1,16 +1,15 @@
 package Process_Manager;
 
 import Processor.*;
-
+import VirtualMemory.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Process_Management {
-    Scheduler scheduler=new Scheduler();
+    public Scheduler scheduler=new Scheduler();
+
+    public VirtualMemory vm=new VirtualMemory();
 
     // Lista procesów
     public List<PCB> ProcessList=new LinkedList<PCB>();
@@ -31,17 +30,18 @@ public class Process_Management {
 
     public String readFile(String fName) throws FileNotFoundException {
         String programm="";
-        File file = new File(fName);
-        Scanner prog = new Scanner(file);
-        while(prog.hasNextLine()){
-            programm+=prog.nextLine()+" ";
+        if (fName != "") {
+            File file = new File(fName);
+            Scanner prog = new Scanner(file);
+            while(prog.hasNextLine()){
+                programm+=prog.nextLine()+" ";
+            }
         }
         return programm;
     }
 
     // Nowy proces
-    public PCB fork(PCB parent, String name, int priority, String fName){
-
+    public PCB fork(PCB parent, String name, int priority, String fName) throws FileNotFoundException {
         // Nowy proces
         PCB process=new PCB(name,fName);
         process.setParentID(parent.getID());
@@ -53,6 +53,8 @@ public class Process_Management {
             parent.setState(PCB.StateList.Waiting);
         }
         //ustawianie czasu i priorytetu
+        process.setCode(readFile(fName));
+        vm.nowyproces(process);
         scheduler.InsertFirst(process);
         return process;
     }
