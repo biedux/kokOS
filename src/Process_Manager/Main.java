@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.Vector;
 import Pipes.*;
+import RAM.Memory;
+import VirtualMemory.VirtualMemory;
 
 
 public class Main {
@@ -49,15 +51,24 @@ public class Main {
          */
 
         //CP P1 P4 120 ""
-
         PCB P1=PM.fork(PM.init, "P1",120,"test.txt");
-        PCB P2=PM.fork(PM.init,"P2",120,"");
+        //PCB P2=PM.fork(PM.init,"P2",120,"test2.txt");
         PCB P3=PM.fork(PM.init,"P3",120,"");
         PM.showTree(PM.init);
         PM.scheduler.check();
         System.out.println(PM.readFile(P1.getFileName()));
+        P1.setCounter(PM.readFile(P1.getFileName()).length()-1);
+        System.out.println(PM.readFile(P1.getFileName()).length() - 1 + " rozmiar");
+//        System.out.println(PM.readFile(P2.getFileName()));
+//        P2.setCounter(PM.readFile(P2.getFileName()).length()-1);
+//        System.out.println(PM.readFile(P2.getFileName()).length() - 1 + " rozmiar");
         PM.showAllProcesses();
-
+        Memory.printRawRam();
+        //VirtualMemory.printPageFile(P1.getID());
+        //VirtualMemory.printPageTable(P1.getID());
+        //VirtualMemory.printQueue();
+//        VirtualMemory.printPageFile(P2.getID());
+//        VirtualMemory.printPageTable(P2.getID());
 //        int[] pdesc = new int[2];
 //
 //        P5.pipe.close(pdesc[0]);
