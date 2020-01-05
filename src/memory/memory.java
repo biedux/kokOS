@@ -13,9 +13,8 @@ public class memory {
 
     //tu bedzie WYSWIETLENIE ZAWARTOSCI RAMU (do debugowania)
     public static void printRawRam() {
-        System.out.println("//////////////////////");
-        System.out.println("Wyswietlam surowy ram:");
-        System.out.println("//////////////////////\n");
+        System.out.println("////////////////////////////////////////////////////////////////");
+        System.out.println("                   Wyswietlam surowy ram:\n");
         int tmp = 0;
         for (int i = 0; i < 512; i++) {
             System.out.print(memory[i] + "|");
@@ -24,7 +23,8 @@ public class memory {
             }
             tmp++;
         }
-        System.out.println("\n");
+        System.out.println(" ");
+        System.out.println("////////////////////////////////////////////////////////////////\n");
     }
 
 
