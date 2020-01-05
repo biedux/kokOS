@@ -1,11 +1,11 @@
 package Process_Manager;
 
 import Pipes.*;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Vector;
+import VirtualMemory.*;
 
 public class PCB {
 
@@ -31,6 +31,9 @@ public class PCB {
 
     // Licznik procesów, który pomaga w nadawaniu ID.
     private static int CountProcess = 0;
+
+    // Zapis kodu
+    private String code;
 
     // Czas procesora
     private int Time;
@@ -97,7 +100,7 @@ public class PCB {
     private boolean ZF, CF;
 
     // Tablica stronic.
-    //private PageTab processTab;
+    public Vector<Page> PageTable;
 
     // Nazwa pliku z danymi programu - niedopowiedziane przez moduły.
     private String fileName;
@@ -225,6 +228,22 @@ public class PCB {
         //System.out.println("Poprzedni stan rejestru DX: " + this.DX);
         this.DX = DX;
         //System.out.println("Obecny stan rejestru DX: " + this.DX);
+    }
+
+    public Vector<Page> getPageTable() {
+        return PageTable;
+    }
+
+    public void setPageTable(Vector<Page> pageTable) {
+        PageTable = pageTable;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public int getTime() {
