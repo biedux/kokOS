@@ -48,45 +48,47 @@ public class Main {
         close(pdesc[1]);
          */
 
-        PCB P1=PM.fork(PM.init, "P1",120,"");
+        //CP P1 P4 120 ""
+
+        PCB P1=PM.fork(PM.init, "P1",120,"test.txt");
         PCB P2=PM.fork(PM.init,"P2",120,"");
         PCB P3=PM.fork(PM.init,"P3",120,"");
-        PCB P4=PM.fork(P1,"P4",120,"");
-        PCB P5=PM.fork(P2,"P5",120,"");
-        PCB P8=PM.fork(P4,"P8",120,"");
-        PCB P9=PM.fork(P8,"P9",120,"");
-
-        int[] pdesc = new int[2];
-
-        P5.pipe.close(pdesc[0]);
-        P5.pipe.Pipe(pdesc);
-
-        Vector<Byte> be = new Vector<Byte>(4);
-        Vector<Byte> en = new Vector<Byte>(4);
-
-        //jaki proces tworzy dzieccko pid dziecka
-        //PCB
-
-        //Plik z programem z wiadomoscia
-        Byte b = '3';
-        Byte c = 'i';
-        be.add(b);
-        en.add(c);
-
-        P5.pipe.writeToPipe(pdesc[1], be, 1);
-
-        PCB P6=PM.fork(P5,"P6",120,"");
-        P6.pipe.close(pdesc[1]);
-
-        P5.pipe.readFromPipe(pdesc[0], en, 1);
-        P5.pipe.readFromPipe(pdesc[0], en, 1);
-        System.out.println(en);
-        P6.pipe.close(pdesc[0]);
-        P5.pipe.close(pdesc[1]);
-
-        PCB P7=PM.fork(PM.init,"P7",120,"");
-        System.out.println("Drzewo procesow:");
         PM.showTree(PM.init);
+        PM.scheduler.check();
+        System.out.println(PM.readFile(P1.getFileName()));
+        PM.showAllProcesses();
+
+//        int[] pdesc = new int[2];
+//
+//        P5.pipe.close(pdesc[0]);
+//        P5.pipe.Pipe(pdesc);
+//
+//        Vector<Byte> be = new Vector<Byte>(4);
+//        Vector<Byte> en = new Vector<Byte>(4);
+//
+//        //jaki proces tworzy dzieccko pid dziecka
+//        //PCB
+//
+//        //Plik z programem z wiadomoscia
+//        Byte b = '3';
+//        Byte c = 'i';
+//        be.add(b);
+//        en.add(c);
+//
+//        P5.pipe.writeToPipe(pdesc[1], be, 1);
+//
+//        PCB P6=PM.fork(P5,"P6",120,"");
+//        P6.pipe.close(pdesc[1]);
+//
+//        P5.pipe.readFromPipe(pdesc[0], en, 1);
+//        P5.pipe.readFromPipe(pdesc[0], en, 1);
+//        System.out.println(en);
+//        P6.pipe.close(pdesc[0]);
+//        P5.pipe.close(pdesc[1]);
+//
+//        PCB P7=PM.fork(PM.init,"P7",120,"");
+//        System.out.println("Drzewo procesow:");
+//        PM.showTree(PM.init);
         //PM.kill(P5);
         //System.out.println("\nDrzewo procesow:");
         //PM.showTree(PM.init);
