@@ -6,43 +6,37 @@ import java.util.LinkedList;
 import java.util.*;
 
 public class Scheduler {
-    Process_Management PM = new Process_Management();
-   /* public void setRunning(PCB Running) {
+    /* public void setRunning(PCB Running) {
         Running = running;
-    }
+    }*/
 
-    */
+    LinkedList<PCB> Heap = new LinkedList<PCB>();
 
-    Process_Management pm = new Process_Management();
-    public LinkedList<PCB> Heap = new LinkedList<PCB>();
-
-    public long CurrTime;// zmienna inkrementujaca sie  co wykonany rozka, marcin ciechan ja obsluzy
-    public long min_granularity = 1; // minimalny czas, na jaki proces moze otryzmać procesor
-    public long period = 20; // okres, ustalany z gory, czas w jakim powinien każdy proces otrzymać procesor
+    long CurrTime;// zmienna inkrementujaca sie  co wykonany rozka, marcin ciechan ja obsluzy
+    long min_granularity = 1; // minimalny czas, na jaki proces moze otryzmać procesor
+    long period = 20; // okres, ustalany z gory, czas w jakim powinien każdy proces otrzymać procesor
     //PCB running = new PCB("proces2","filename2" );
 
     // pm.fork("p6", 4,"f6"); // tej zmiennej bedziemy przypisywać PCB procesu dzialajacego
     //PCB running=p7;
 
-    public PCB dummy = pm.init;
+    public PCB dummy=new PCB("","");
     public PCB running = dummy;
 
-    public LinkedList<PCB> sort(LinkedList<PCB> Heap) // funkcja sortujaca kolejke po CurrTime, CurrTime= vruntime +Currtime
+    LinkedList<PCB> sort(LinkedList<PCB> Heap) // funkcja sortujaca kolejke po CurrTime, CurrTime= vruntime +Currtime
     {
-
         Collections.sort(Heap, Comparator.comparingLong(PCB::getVirtualTime));
-
         return Heap;
     }
 
-    public void PrioToWeight(PCB pcb) //funkcja zwracajca przeliczone priorytety na wagi
+    void PrioToWeight(PCB pcb) //funkcja zwracajca przeliczone priorytety na wagi
     {
         int weight = pcb.getPriority() * 1; // przyklad
         pcb.setWeight(weight);
     }
 
 
-    public long HeapWeight() // funkcja zwracajaca sume wag w kolejce
+    long HeapWeight() // funkcja zwracajaca sume wag w kolejce
     {
         long sum = 0;
         for (int i = 0; i < Heap.size(); i++) {
@@ -53,12 +47,11 @@ public class Scheduler {
         return sum;
     }
 
-    public PCB min() { // funkcja wywolujaca process o najmniejszym czasie wirtualnym
-
+    PCB min() { // funkcja wywolujaca process o najmniejszym czasie wirtualnym
         return Heap.get(0);
     }
 
-    public LinkedList<PCB> Insert(PCB pcb) { // dodaje proces do kolejki i ja sortuje
+    LinkedList<PCB> Insert(PCB pcb) { // dodaje proces do kolejki i ja sortuje
 
         PrioToWeight(pcb);
         pcb.setVirtualTime(0);
@@ -67,7 +60,6 @@ public class Scheduler {
     }
 
     public LinkedList<PCB> InsertFirst(PCB pcb) { // dodaje proces do kolejki i ja sortuje
-
         PrioToWeight(pcb);
         //pcb.setVirtualTime(0);
         Heap.add(pcb);
@@ -78,22 +70,21 @@ public class Scheduler {
     }
 
 
-    public LinkedList<PCB> Delete(PCB pcb) // pytanie czy tu caly blok kontrolny procesu dostane czy tylko jego id
+    LinkedList<PCB> Delete(PCB pcb) // pytanie czy tu caly blok kontrolny procesu dostane czy tylko jego id
     {
         Heap.remove(pcb);
         return sort(Heap);
         /// wysylanie procesu do dominika mozna by tu zmiane stanu zrobic
     }
 
-    public void TimeSlice(PCB pcb) { // wylicza time slice dla procesu, tylko nie wiem czy
+    void TimeSlice(PCB pcb) { // wylicza time slice dla procesu, tylko nie wiem czy
         long timeslice = period * pcb.getWeight() / HeapWeight();
         if (timeslice < min_granularity)
             timeslice = min_granularity;
         pcb.setTimeSlice((int) timeslice);
-
     }
 
-    public void VirtualTime(PCB pcb) // zakładam,ze przy zmianie stanu na aktywny w baseTime wpiszemy czas, podczas ktorego process dostał procesor
+    void VirtualTime(PCB pcb) // zakładam,ze przy zmianie stanu na aktywny w baseTime wpiszemy czas, podczas ktorego process dostał procesor
     {
         long weight = pcb.getWeight();
         // long currTime=CurrTime;
