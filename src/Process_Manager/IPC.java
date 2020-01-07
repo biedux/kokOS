@@ -28,7 +28,8 @@ public class IPC {
                         Byte a = buffer.get(i);
                                              //buffer- segment danych w procesie, do którego majá zostac przekazane dane
                         e.eQueue.add(a);
-                        writePipe(char data = nbyte, int adresLogicz =);
+                        memory.writePipe(a, i);
+
                         written++;
                     }
                 else if (nbyte > 64 - e.eQueue.size()) {
@@ -51,6 +52,7 @@ public class IPC {
                     if (!e.eQueue.isEmpty()) {
                         Byte a = e.eQueue.remove();
                         buffer.add(a);
+                        memory.readPipe(a, i);
                         read++;
                     } else if (e.eQueue.isEmpty()) {
                         writePipe(char data =0, int adresLogicz =0);
@@ -65,7 +67,7 @@ public class IPC {
     }
 
     public static void closePipe() {
-        clearPIPE();
+        memory.clearPIPE();
         //System.out.print("The pipe has been closed... R.I.P.");
 
     }
@@ -128,8 +130,8 @@ public class IPC {
         P5.pipe.readFromPipe(pdesc[0], en, 1);
         P5.pipe.readFromPipe(pdesc[0], en, 1); //to tez chyba w petle powedruje
         System.out.println(en);
-        readPipe(int adresLogicz); //or
-        readPipeFrame();
+        memory.readPipe(int adresLogicz); //or
+        memory.readPipeFrame();
         //fcja wyswietlanie ram
 
         P6.pipe.close(pdesc[0]);
