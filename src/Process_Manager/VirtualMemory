@@ -21,11 +21,12 @@ public class VirtualMemory {
 
 
     //metoda która pobiera nowy proces,wczytuje do pliku wymiany program, nadaje tablice stronic i wcztytuje 1 stronice do ramu
-    public void nowyproces(PCB proces) {
+    public static void nowyproces(PCB proces) {
         Vector<Vector<Character>> program = new Vector<>(new Vector<>());
         proces.setPageTable(new Vector<Page>());
         Vector<Page> pageTable = proces.getPageTable();
-        int maxPageID = proces.getCode().length() / 16;
+        double maxPageID = Math.ceil(proces.getCode().length() / 16);
+        if(maxPageID==0) maxPageID=1;
         for (int currentPageID = 0; currentPageID < maxPageID; currentPageID++) {
             Vector<Character> page = new Vector<>();
             pageTable.add(new Page());
@@ -33,15 +34,16 @@ public class VirtualMemory {
                 try {
                     //jbc zmienic
                     page.add(proces.getCode().charAt(j + currentPageID * 32));
+
                 } catch (Exception e) {
                     //System.out.println(e.getMessage());
                 }
 
             }
             program.add(page);
-            putInfoToPageTable(proces.ID, pageTable);
-            putProcessToPageFile(proces.ID, program);
-            putPageInRam(proces, proces.ID, 0);
+            putInfoToPageTable(proces.getID(), pageTable);
+            putProcessToPageFile(proces.getID(), program);
+            putPageInRam(proces, proces.getID(), 0);
         }
     }
 
@@ -78,9 +80,9 @@ public class VirtualMemory {
                         victimQueue.add(pageTable.get(i).nrramki);
                     }
                 }
-            }
-
         }
+
+    }
 
 
 
@@ -100,7 +102,7 @@ public class VirtualMemory {
         return false;
     }
 
-    void putProcessToPageFile(int pID, Vector<Vector<Character>> program) {
+    static void putProcessToPageFile(int pID, Vector<Vector<Character>> program) {
         PageFile.put(pID, program);
     }
 
@@ -138,7 +140,7 @@ public class VirtualMemory {
         PageFile.put(procID, tmp);
     }
 
-    void putInfoToPageTable(int pID, Vector<Page> pageTable) {
+    static void putInfoToPageTable(int pID, Vector<Page> pageTable) {
         PageTables.put(pID, pageTable);
     }
 
@@ -196,7 +198,9 @@ public class VirtualMemory {
     public static void printPageFile(int processID) {
         if (processExists(processID)) {
             Vector<Vector<Character>> pages = PageFile.get(processID);
-            for (int i = 0; i < pages.size()-1; i++) {
+            int size=pages.size();
+            if(size>1) size-=1;
+            for (int i = 0; i < size; i++) {
                 System.out.println("Page no." + i);
                 for (int j = 0; j < pages.get(i).size(); j++) {
                     System.out.println(pages.get(i).get(j)+" ");
@@ -204,5 +208,14 @@ public class VirtualMemory {
             }
             System.out.println("");
         } else System.out.println("Error: process with given ID doesn't exist.");
+    }
+
+    public static void printPageFile() {
+        System.out.println(PageFile.toString());
+
+
+
+            System.out.println("");
+
     }
 }
