@@ -7,7 +7,8 @@ public class IPC {
     public final Vector<PipeQueue> Pipes = new Vector<>();
     public final Vector<Integer> descriptor = new Vector<>();
 
-    public IPC(){}
+    public IPC() {
+    }
 
     public Vector<PipeQueue> getPipes() {
         return Pipes;
@@ -24,13 +25,16 @@ public class IPC {
 
                 if (nbyte < 64 - e.eQueue.size())
                     for (int i = 0; i < nbyte; i++) {
-                        Byte a = buffer.get(i); //buffer- segment danych w procesie, do którego majá zostac przekazane dane
-
+                        Byte a = buffer.get(i);
+                                             //buffer- segment danych w procesie, do którego majá zostac przekazane dane
                         e.eQueue.add(a);
+                        writePipe(char data = nbyte, int adresLogicz =);
                         written++;
                     }
                 else if (nbyte > 64 - e.eQueue.size()) {
-                    //zwracana wartosc w RAM na 1 miejscu 0
+                    char data=(char)written;
+                    writePipe(char data = written, int adresLogicz =0);
+                    System.out.println(a);
                 }
             }
             System.out.print("Writing to a pipe:  ");
@@ -39,8 +43,7 @@ public class IPC {
         return written;
     }
 
-    public int readFromPipe ( int fd, Vector<Byte > buffer, Integer nbyte)
-    {
+    public int readFromPipe(int fd, Vector<Byte> buffer, Integer nbyte) {
         int read = 0;
         for (PipeQueue e : Pipes) {
             if (e.descR == fd) {
@@ -50,7 +53,8 @@ public class IPC {
                         buffer.add(a);
                         read++;
                     } else if (e.eQueue.isEmpty()) {
-                        //zapis 0
+                        writePipe(char data =0, int adresLogicz =0);
+
                     }
                     break;
                 }
@@ -60,13 +64,13 @@ public class IPC {
         return read;
     }
 
-    public static void closePipe () {
+    public static void closePipe() {
         clearPIPE();
         //System.out.print("The pipe has been closed... R.I.P.");
 
     }
 
-    public static void close ( int pdesc[]){
+    public static void close(int pdesc[]) {
         System.out.print("The descriptor is closed");
     }
 
@@ -90,40 +94,47 @@ public class IPC {
         Pipes.add(queueToAdd);
         return 0;
     }
-public static void WritePipe(){
-    int[] pdesc = new int[2];
-     P5.pipe.close(pdesc[0]);
-     P5.pipe.Pipe(pdesc);
-     Vector<Byte> be = new Vector<Byte>(4);
-    Scanner myObj = new Scanner(System.in);
-    System.out.println("Enter data");
-    Byte b = myObj.nextByte();
-    Byte c= myObj.nextByte();
-    Byte d = myObj.nextByte();
-    Byte e = myObj.nextByte(); //nie wiem czy by tego nie wrzucic w jakas petle i pytac usera ile znakow chce zapisac
-    //System.out.println(b);
-    be.add(b);
-    be.add(c);
-    be.add(d);
-    be.add(e);
+
+    public static void WritePipe() {
+        int[] pdesc = new int[2];
+        P5.pipe.close(pdesc[0]);
+        P5.pipe.Pipe(pdesc);
+        Vector<Byte> be = new Vector<Byte>(4);
+        Scanner myObj = new Scanner(System.in);
+        System.out.println("Enter data");
+        Byte b = myObj.nextByte();
+        Byte c = myObj.nextByte();
+        Byte d = myObj.nextByte();
+        Byte e = myObj.nextByte(); //nie wiem czy by tego nie wrzucic w jakas petle i pytac usera ile znakow chce zapisac
+        //System.out.println(b);
+        be.add(b);
+        be.add(c);
+        be.add(d);
+        be.add(e);
 
         P5.pipe.writeToPipe(pdesc[1], be, 4);
         System.out.println(be);
-        PCB P6=PM.fork(P5,"P6",120,"");
+
+        PCB P6 = PM.fork(P5, "P6", 120, "");
         P6.pipe.close(pdesc[1]); //tez nie wiem czy to jest na pewno dobrze rozdzielone, imo tak
 
 
-}
-public static void ReadPipe(){
-    WritePipe();
-    P5.pipe.readFromPipe(pdesc[0], en, 1);
-    P5.pipe.readFromPipe(pdesc[0], en, 1);
-    P5.pipe.readFromPipe(pdesc[0], en, 1);
-    P5.pipe.readFromPipe(pdesc[0], en, 1); //to tez chyba w petle powedruje
-    System.out.println(en);
-    P6.pipe.close(pdesc[0]);
-    P5.pipe.close(pdesc[1]);
-}
+    }
+
+    public static void ReadPipe() {
+        WritePipe();
+        P5.pipe.readFromPipe(pdesc[0], en, 1);
+        P5.pipe.readFromPipe(pdesc[0], en, 1);
+        P5.pipe.readFromPipe(pdesc[0], en, 1);
+        P5.pipe.readFromPipe(pdesc[0], en, 1); //to tez chyba w petle powedruje
+        System.out.println(en);
+        readPipe(int adresLogicz); //or
+        readPipeFrame();
+        //fcja wyswietlanie ram
+
+        P6.pipe.close(pdesc[0]);
+        P5.pipe.close(pdesc[1]);
+    }
 
 
 //    public static void main(String[] arg) {
