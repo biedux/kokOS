@@ -6,15 +6,15 @@ public class memory {
     private static char[] memory = new char[512];
 
     //16 ramek po 32 bajty
-    // ostatnia ramka zarezerwowana na pipe'y
+    // ostatnia ramka zarezerwowana na pipe'y i to co ciechan chce
 
 
     //FUNKCJE DO DEBUGGINGU
 
     //tu bedzie WYSWIETLENIE ZAWARTOSCI RAMU (do debugowania)
     public static void printRawRam() {
-        System.out.println("////////////////////////////////////////////////////////////////");
-        System.out.println("                   Wyswietlam surowy ram:\n");
+        System.out.println("________________________________________________________________");
+        System.out.println("|                  Wyswietlam surowy ram:                      |\n");
         int tmp = 0;
         for (int i = 0; i < 512; i++) {
             System.out.print(memory[i] + "|");
@@ -23,8 +23,7 @@ public class memory {
             }
             tmp++;
         }
-        System.out.println(" ");
-        System.out.println("////////////////////////////////////////////////////////////////\n");
+        System.out.println("----------------------------------------------------------------\n");
     }
 
 
@@ -54,24 +53,30 @@ public class memory {
     //FUNKCJE DO PIPE
 
     //odczyt z PIPE
-    public static char readPipe(int adresLogicz){     //adresy od 0 do 31 dozwolone
-        try {
-            return memory[adresLogicz + 480];
+    public static char readPipe(int adresLogicz){     //adresy od 0 do 15 dozwolone
+        if (adresLogicz < 16){
+            try {
+                return memory[adresLogicz + 480];
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            return 0;
+        } else {
+            return 0;
         }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return 0;
     }
 
 
     //zapis do PIPE
-    public static void writePipe(char data, int adresLogicz){     //adresy od 0 do 31 dozwolone
-        try {
-            memory[adresLogicz + 480] = data;
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
+    public static void writePipe(char data, int adresLogicz){     //adresy od 0 do 15 dozwolone
+        if (adresLogicz < 16){
+            try {
+                memory[adresLogicz + 480] = data;
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
@@ -79,7 +84,7 @@ public class memory {
     public static Vector<Character> readPipeFrame(){
         Vector<Character> odczyt = new Vector<Character>();
         try {
-            for (int i = 0; i < 32; i++){
+            for (int i = 0; i < 16; i++){
                 odczyt.add(memory[480 + i]);
             }
         }
@@ -89,6 +94,74 @@ public class memory {
         return odczyt;
     }
 
+    //czyszczenie PIPE
+    public static void clearPIPE(){
+        for (int i = 0; i < 16; i++){
+            try {
+                memory[480 + i] = ' ';
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+
+    //FUNKCJE DLA M.CIECHAN
+
+    //odczyt chara z ramki MC
+    public static char readMC(int adresLogicz){     //adresy od 0 do 15 dozwolone
+        if (adresLogicz < 16){
+            try {
+                return memory[adresLogicz + 496];
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            return 0;
+        } else {
+            return 0;
+        }
+    }
+
+
+    //zapis chara do MC
+    public static void writeMC(char data, int adresLogicz){     //adresy od 0 do 15 dozwolone
+        if (adresLogicz < 16){
+            try {
+                memory[adresLogicz + 496] = data;
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    //odczyt ramki MC
+    public static Vector<Character> readMCFrame(){
+        Vector<Character> odczyt = new Vector<Character>();
+        try {
+            for (int i = 0; i < 16; i++){
+                odczyt.add(memory[496 + i]);
+            }
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return odczyt;
+    }
+
+    //czyszczenie MC
+    public static void clearMC(){
+        for (int i = 0; i < 16; i++){
+            try {
+                memory[496 + i] = ' ';
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
 
     //FUNKCJE UŻYTKOWE
 

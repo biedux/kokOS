@@ -8,6 +8,14 @@ public class Main {
         }
         memory.printRawRam();
         memory.writeToFrame(' ', 3, 0);
+        for (int i = 0; i < 16; i++){
+            memory.writeMC('x', i);
+        }
+        memory.printRawRam();
+        for (int i = 0; i < 16; i++){
+            memory.writePipe('Z', i);
+        }
+        memory.clearMC();
         memory.printRawRam();
     }
 }
