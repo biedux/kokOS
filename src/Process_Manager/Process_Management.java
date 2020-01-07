@@ -52,10 +52,12 @@ public class Process_Management {
         if(parent.getID()!=0){
             parent.setState(PCB.StateList.Waiting);
         }
-        //ustawianie czasu i priorytetu
+
         process.setCode(readFile(fName));
-        vm.nowyproces(process);
-        scheduler.InsertFirst(process);
+
+        VirtualMemory.nowyproces(process);
+
+        scheduler.Insert(process);
         return process;
     }
 
@@ -82,6 +84,7 @@ public class Process_Management {
                         parent.ChildrenList.add(child);
                     }
                     process.setState(PCB.StateList.Terminated);
+                    //process release RAM i virtual
                 }
             }
         }
@@ -102,6 +105,7 @@ public class Process_Management {
             }
         }
         process.setState(PCB.StateList.Terminated);
+        //process release RAM i virtual
         Killed.add(process);
     }
 
@@ -125,6 +129,8 @@ public class Process_Management {
         }
         return true;
     }
+
+
 
     // Drzewo procesów
     public void showTree(PCB proc){
