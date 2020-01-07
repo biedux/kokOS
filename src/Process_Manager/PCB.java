@@ -33,7 +33,7 @@ public class PCB {
     private static int CountProcess = 0;
 
     // Zapis kodu
-    private String code;
+    public String code;
 
     // Czas procesora
     private int Time;
@@ -100,7 +100,7 @@ public class PCB {
     private boolean ZF, CF;
 
     // Tablica stronic.
-    public Vector<Page> PageTable;
+    public Vector<Page> PageTable = new Vector<Page>();
 
     // Nazwa pliku z danymi programu - niedopowiedziane przez moduły.
     private String fileName;
@@ -131,6 +131,7 @@ public class PCB {
 
 
         this.pipe=new IPC();
+
         //System.out.println("Utworzono proces: " + this.Name + " o ID: " + this.ID);
     }
 
