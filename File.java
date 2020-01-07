@@ -1,5 +1,3 @@
-package com.poznan.put;
-
 public class File
 {
     String name;

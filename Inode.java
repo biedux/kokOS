@@ -1,5 +1,3 @@
-package com.poznan.put;
-
 public class Inode
 {
     public boolean state; //otwarty/uzywany przez proces

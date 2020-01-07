@@ -1,5 +1,3 @@
-package com.poznan.put;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -29,6 +27,9 @@ public class Main {
                 d.inodes_table[i].printInode();
             }*/
 
+            d.openFile("dupa", first);
+            System.out.println(d.readFile("dupa", 35));
+            d.closeFile("dupa", first);
             d.deleteFile("dupa");
 
 

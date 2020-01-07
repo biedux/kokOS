@@ -1,5 +1,3 @@
-package com.poznan.put;
-
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -359,10 +357,116 @@ public class Disc
        }
    }
 
-   public void readFile(String name)
-   {
+    public String readFile(String name, int amount) throws Exception
+    {
+        String ret = "";
+        if(catalog.get(name) != null)
+        {
+            File file = catalog.get(name);
+            int num = file.number;
+            if(inodes_table[num] != null)
+            {
+                if (inodes_table[num].lock.tryLock() == true || inodes_table[num].state == true)
+                {
+                    String c = "";
+                    int s = inodes_table[num].size;
+                    if(s <= 32)
+                    {
+                        int direct = inodes_table[num].blocks[0];
+                        for(int i = file.positionPtr; i < (amount >(s - file.positionPtr)?s:amount+file.positionPtr); i++)
+                        {
+                            c += disc[direct*32+i];
+                        }
+                        if(amount+file.positionPtr >= s)
+                        {
+                            file.positionPtr = s;
+                        }
+                        else
+                        {
+                            file.positionPtr += amount;
+                        }
+                    }
+                    else
+                    {
+                        int direct = inodes_table[num].blocks[0];
+                        int inDriect = inodes_table[num].blocks[1];
+                        int tmp = amount;
+                        int in = file.positionPtr;
+                        int in_last = in;
+                        if(in < 32)
+                        {
+                            for(;in < (amount>(32 - file.positionPtr)?32:amount+file.positionPtr); in++)
+                            {
+                                c += disc[direct*32+in];
+                                --tmp;
+                            }
+                        }
+                        if(tmp>(32-in) && in < s)
+                        {
+                            int restS = tmp;
+                            int tmp2;
+                            if(restS > s - 32)
+                            {
+                                tmp = s - 32;
+                                restS = tmp;
+                            }
+                            tmp2 = tmp;
+                            int j = (((in)/32)-1);
+                            int z = j;
 
-   }
+                            int firstL = (in - 32 * (j + 1));
+                            int i;
+
+                            int con = (restS > s - in ? (in + s - in) / 32 : (in + restS) / 32);
+                            int dif = con - j;
+                            for(; j < con; j++)
+                            {
+                                int w = disc[inDriect*32+j];
+                                for(i = firstL; i < (dif > 1 ? 32 : (tmp >= (s-in)?(firstL+(s-in)):(firstL+tmp))); i++)
+                                {
+                                    c += disc[w*32+i];
+                                    --tmp2;
+                                }
+                                if(firstL == 0)
+                                {
+                                    in+=i;
+                                }
+                                else
+                                {
+                                    in+=(i-firstL);
+                                }
+                                dif--;
+                                firstL=0;
+                                tmp=tmp2;
+                            }
+                        }
+                        if(amount+in_last >= s)
+                        {
+                            file.positionPtr = s;
+                        }
+                        else
+                        {
+                            file.positionPtr += amount;
+                        }
+                    }
+                    ret = c + "\n";
+                }
+                else
+                {
+                    throw new Exception("Plik nie jest otwarty");
+                }
+            }
+            else
+            {
+                throw new Exception("Dany i-wezel nie istnieje");
+            }
+        }
+        else
+        {
+            throw new Exception("Plik o podanej nazwie nie istnieje");
+        }
+        return ret;
+    }
 
    public void deleteFile(String name) throws Exception
    {
