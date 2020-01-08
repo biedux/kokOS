@@ -1,8 +1,5 @@
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.*;
 
 public class Disc
 {
@@ -13,10 +10,11 @@ public class Disc
     private static int inodesTableSize = 32; //rozmiar tablicy i-węzłów
 
     public char[] disc;
-    public Inode[] inodes_table;
+    public static Inode[] inodes_table;
     public BitSet bitArray;
     public Hashtable<String,File> catalog;
-    public ArrayList<File> open_file_table;
+    //public ArrayList<File> open_file_table;
+    OpenFileTab open_file_table;
 
     //KONTENER POMOCNICZY - MOŻE SIĘ NIE PRZYDAĆ, A MOŻE SIĘ SPIERDOLIĆ
     public ArrayList<Integer> IndexBlocks;
@@ -27,7 +25,8 @@ public class Disc
         bitArray = new BitSet(blocksAmount);
         inodes_table = new Inode[inodesTableSize];
         catalog = new Hashtable<String,File>(32);
-        open_file_table = new ArrayList<File>();
+        //open_file_table = new ArrayList<File>();
+        open_file_table = new OpenFileTab();
 
         // Wypełnianie tablicy bitów wartościami 1 (true) - wszystkie bloki startowo wolne
         for(int i = 0; i < blocksAmount; i++)
@@ -41,6 +40,10 @@ public class Disc
             disc[i] = (char)0;
         }
         IndexBlocks = new ArrayList<>();
+    }
+
+    public static Inode[] getInodeTableInstance(){
+        return inodes_table;
     }
 
     public int findFreeSpace()
@@ -71,7 +74,7 @@ public class Disc
         return -1; //brak wolnych i-węzłów
     }
 
-    public void createFile(String name, String userName) throws Exception //działa (jeszcze bez uprawnień)
+    public void createFile(String name, String userName) throws Exception //działa
     {
         int space = findFreeSpace();
         if (catalog.get(name) != null) //kiedy nazwa zostala znaleziona w katalogu
@@ -90,14 +93,15 @@ public class Disc
             inode.user = new User(userName);
 
             //PIERWSZY NUMER BLOKU DYSKOWEGO//
-            inode.blocks[0] = space; // nadanie nr pierwszego bloku bezposredniego
+            inode.blocks[0] = space; // nadanie nr bloku bezposredniego
             //poczatkowo nie jest wykorzystywane adresowanie indeksowe
-            //ponieważ size = 0 to tylko jeden blok zajety
+            //ponieważ size = 0 to tylko jeden blok zajety - zarezerwowany
             inode.blocks[1] = -1;
 
             file.name = name;
             file.number = num;
             file.positionPtr = 0;
+            file.type = File.Types.FILE;
             catalog.put(name, file);
             //Wpisanie do tablicy i-węzłów
             inodes_table[file.number] = inode;
@@ -114,21 +118,21 @@ public class Disc
     {
         if (catalog.get(name) != null)
         {
-            for (int i = 0; i < 32; i++)
+            File file = catalog.get(name);
+            int i = file.number;
+            if (inodes_table[i] != null)
             {
-                if (inodes_table[i] != null)
+                if (inodes_table[i].state == true || inodes_table[i].lock.tryLock() == true)
                 {
-                    if (inodes_table[i].state == true || inodes_table[i].lock.tryLock() == true)
-                    {
-                        throw new Exception("Plik jest otwarty"); //tu dodać swój wyjątek
-                    }
-                    else
-                    {
-                        inodes_table[i].lock.acquire(pcb);
-                        inodes_table[i].state = true;
-                        File file = catalog.get(name);
-                        open_file_table.add(file);
-                    }
+                    throw new Exception("Plik jest otwarty"); //tu dodać swój wyjątek
+                }
+                else
+                {
+                    //inodes_table[i].lock.acquire(pcb);
+                    //inodes_table[i].state = true;
+                    //open_file_table.add(file);
+                    open_file_table.addFile(pcb, file);
+                    file.positionPtr = 0;
                 }
             }
         }
@@ -142,21 +146,21 @@ public class Disc
     {
         if (catalog.get(name) != null)
         {
-            for (int i = 0; i < 32; i++)
+            File file = catalog.get(name);
+            int i = file.number;
+            if (inodes_table[i] != null)
             {
-                if (inodes_table[i] != null)
+                if (inodes_table[i].state == false || inodes_table[i].lock.tryLock() == false)
                 {
-                    if (inodes_table[i].state == false || inodes_table[i].lock.tryLock() == false)
-                    {
-                        throw new Exception("Plik nie jest otwarty"); //tu dodać swój wyjątek
-                    }
-                    else
-                    {
-                        inodes_table[i].lock.release(pcb);
-                        inodes_table[i].state = false;
-                        File file = catalog.get(name);
-                        open_file_table.remove(file);
-                    }
+                    throw new Exception("Plik nie jest otwarty"); //tu dodać swój wyjątek
+                }
+                else
+                {
+                    //inodes_table[i].lock.release(pcb);
+                    //inodes_table[i].state = false;
+                    //open_file_table.remove(file);
+                    open_file_table.removeFile(pcb, file);
+                    file.positionPtr = 0;
                 }
             }
         }
@@ -166,7 +170,7 @@ public class Disc
         }
     }
 
-    public void writeFile(String name, String data) throws Exception //dopracowywane, ale działa
+    public void writeFile(String name, String data) throws Exception //działa
     {
         if(catalog.get(name) != null)
         {
@@ -234,129 +238,130 @@ public class Disc
             throw new Exception("Plik o podanej nazwie nie istnieje");
         }
     }
-   public void appendFile(String name, String newData) throws Exception //działa, zobaczymy jak długo XD
-   {
-       if(catalog.get(name) != null)
-       {
-           File file = catalog.get(name);
-           int num = file.number;
-           if(inodes_table[num] != null)
-           {
-               if (inodes_table[num].lock.tryLock() == true || inodes_table[num].state == true)
-               {
-                   boolean flag = false; //sprawdzacz miejsca
-                   int dataSize = inodes_table[num].size;
-                   int newDataSize = newData.length();
-                   int total = dataSize + newDataSize;
-                   int direct;
+    public void appendFile(String name, String newData) throws Exception //działa, zobaczymy jak długo XD
+    {
+        if(catalog.get(name) != null)
+        {
+            File file = catalog.get(name);
+            int num = file.number;
+            if(inodes_table[num] != null)
+            {
+                if (inodes_table[num].lock.tryLock() == true || inodes_table[num].state == true)
+                {
+                    boolean flag = false; //sprawdzacz miejsca
+                    int dataSize = inodes_table[num].size;
+                    int newDataSize = newData.length();
+                    int total = dataSize + newDataSize;
+                    int direct;
 
-                   if(total <= 32)
-                   {
-                       flag = true;
-                       int index = 0;
-                       direct = inodes_table[num].blocks[0];
-                       for(int i = dataSize; index < newData.length(); index++, i++)
-                       {
-                           disc[direct*32+i] = newData.charAt(index);
-                       }
-                       inodes_table[num].size += newData.length();
-                   }
-                   else if (dataSize < 32 && ((newDataSize - (32 - dataSize) + 32 - 1) / 32) + 1 <= freeBlockAmount)
-                   {
-                       flag = true;
-                       direct = inodes_table[num].blocks[0];
-                       int index = 0;
-                       for(int i = dataSize; i < 32; i++, index++)
-                       {
-                           disc[direct*32+i] = newData.charAt(index);
-                           --newDataSize;
-                       }
+                    if(total <= 32)
+                    {
+                        flag = true;
+                        int index = 0;
+                        direct = inodes_table[num].blocks[0];
+                        for(int i = dataSize; index < newData.length(); index++, i++)
+                        {
+                            disc[direct*32+i] = newData.charAt(index);
+                        }
+                        inodes_table[num].size += newData.length();
+                    }
+                    else if (dataSize < 32 && ((newDataSize - (32 - dataSize) + 32 - 1) / 32) + 1 <= freeBlockAmount)
+                    {
+                        flag = true;
+                        direct = inodes_table[num].blocks[0];
+                        int index = 0;
+                        for(int i = dataSize; i < 32; i++, index++)
+                        {
+                            disc[direct*32+i] = newData.charAt(index);
+                            --newDataSize;
+                        }
 
-                       int n = (newDataSize + 32 - 1)/32; //pomocnicze
-                       int inDirect = findFreeSpace();
-                       IndexBlocks.add(inDirect);
-                       inodes_table[num].blocks[1] = inDirect;
+                        int n = (newDataSize + 32 - 1)/32; //pomocnicze
+                        int inDirect = findFreeSpace();
+                        IndexBlocks.add(inDirect);
+                        inodes_table[num].blocks[1] = inDirect;
 
-                       for(int j = 0; j < n; j++)
-                       {
-                           disc[inDirect*32+j] = (char)findFreeSpace();
-                       }
-                       for(int j = 0; j < n; j++)
-                       {
-                           int x = disc[inDirect*32+j];
-                           for(int i = 0; index < newData.length(); i++, index++)
-                           {
-                               disc[x*32+i] = newData.charAt(index);
-                           }
-                       }
+                        for(int j = 0; j < n; j++)
+                        {
+                            disc[inDirect*32+j] = (char)findFreeSpace();
+                        }
+                        for(int j = 0; j < n; j++)
+                        {
+                            int x = disc[inDirect*32+j];
+                            for(int i = 0; index < newData.length(); i++, index++)
+                            {
+                                disc[x*32+i] = newData.charAt(index);
+                            }
+                        }
 
-                       inodes_table[num].size += newData.length();
-                   }
-                   else
-                   {
-                       int restS = dataSize - 32;
-                       int indexBlock = (restS + 32 - 1) / 32;
-                       int inDirectBlock = inodes_table[num].blocks[1];
-                       int amount = (indexBlock * 32) - restS; //ilość wolnych miejsc w bloku
-                       if((((newData.length() - amount) + 32 - 1) / 32) <= freeBlockAmount)
-                       {
-                           flag = true;
-                           if(newData.length() > amount)
-                           {
-                               int newBlocks = ((newData.length() - amount) + 32 - 1) / 32; //ilość bloków do nadpisu
-                               int save = disc[inDirectBlock*32+indexBlock-1]; //liczone od 0
-                               int index = 0;
-                               for(int i = 32 - amount; i < 32; i++, index++)
-                               {
-                                   disc[save*32+i] = newData.charAt(index);
-                               }
+                        inodes_table[num].size += newData.length();
+                    }
+                    else
+                    {
+                        int restS = dataSize - 32;
+                        int indexBlock = (restS + 32 - 1) / 32;
+                        int inDirectBlock = inodes_table[num].blocks[1];
+                        int amount = (indexBlock * 32) - restS; //ilość wolnych miejsc w bloku
+                        if((((newData.length() - amount) + 32 - 1) / 32) <= freeBlockAmount)
+                        {
+                            flag = true;
+                            if(newData.length() > amount)
+                            {
+                                int newBlocks = ((newData.length() - amount) + 32 - 1) / 32; //ilość bloków do nadpisu
+                                int save = disc[inDirectBlock*32+indexBlock-1]; //liczone od 0
+                                int index = 0;
+                                for(int i = 32 - amount; i < 32; i++, index++)
+                                {
+                                    disc[save*32+i] = newData.charAt(index);
+                                }
 
-                               for(int j = 0, tmp = indexBlock; j < newBlocks; j++, tmp++)
-                               {
-                                   disc[inDirectBlock*32+tmp] = (char)findFreeSpace();
-                               }
-                               for(int j = 0, tmp = indexBlock; j < newBlocks; j++, tmp++)
-                               {
-                                   int x = disc[inDirectBlock*32+tmp];
-                                   for(int i = 0; index < newData.length(); i++, index++)
-                                   {
-                                       disc[x*32+i] = newData.charAt(index);
-                                   }
-                               }
-                           }
-                           else
-                           {
-                               int save = disc[inDirectBlock*32+indexBlock-1];
-                               int nextIndex = 0;
-                               for(int i = 32 - amount; nextIndex < newData.length(); i++, nextIndex++)
-                               {
-                                   disc[save*32+i] = newData.charAt(nextIndex);
-                               }
-                           }
-                           inodes_table[num].size += newData.length();
-                       }
-                   }
-                   if(flag == false)
-                   {
-                       throw new Exception("Brak miejsca na dysku");
-                   }
-               }
-               else
-               {
-                   throw new Exception("Plik nie jest otwarty");
-               }
-           }
-           else
-           {
-               throw new Exception("Dany i-wezel nie istnieje");
-           }
-       }
-       else
-       {
-           throw new Exception("Plik o podanej nazwie nie istnieje");
-       }
-   }
+                                for(int j = 0, tmp = indexBlock; j < newBlocks; j++, tmp++)
+                                {
+                                    disc[inDirectBlock*32+tmp] = (char)findFreeSpace();
+                                }
+                                for(int j = 0, tmp = indexBlock; j < newBlocks; j++, tmp++)
+                                {
+                                    int x = disc[inDirectBlock*32+tmp];
+                                    for(int i = 0; index < newData.length(); i++, index++)
+                                    {
+                                        disc[x*32+i] = newData.charAt(index);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                int save = disc[inDirectBlock*32+indexBlock-1];
+                                int nextIndex = 0;
+                                for(int i = 32 - amount; nextIndex < newData.length(); i++, nextIndex++)
+                                {
+                                    disc[save*32+i] = newData.charAt(nextIndex);
+                                }
+                            }
+                            inodes_table[num].size += newData.length();
+                        }
+                    }
+                    if(flag == false)
+                    {
+                        throw new Exception("Brak miejsca na dysku");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Plik nie jest otwarty");
+                }
+            }
+            else
+            {
+                throw new Exception("Dany i-wezel nie istnieje");
+            }
+        }
+        else
+        {
+            throw new Exception("Plik o podanej nazwie nie istnieje");
+        }
+    }
 
+    //amount - ilość znaków, które chcemy sczytać
     public String readFile(String name, int amount) throws Exception
     {
         String ret = "";
@@ -468,75 +473,169 @@ public class Disc
         return ret;
     }
 
-   public void deleteFile(String name) throws Exception
-   {
-       if(catalog.get(name) != null)
-       {
-           File file = catalog.get(name);
-           int num = file.number;
-           if(inodes_table[num] != null)
-           {
-               if (inodes_table[num].lock.tryLock() == false || inodes_table[num].state == false)
-               {
-                   if(inodes_table[num].LinkCounter > 1)
-                   {
-                       catalog.remove(name);
-                       --inodes_table[num].LinkCounter;
-                   }
-                   else
-                   {
-                       int amountIn = inodes_table[num].size > 32 ? 2:1;
-                       int direct;
-                       int inDirect;
-                       if(amountIn == 1)
-                       {
-                           direct = inodes_table[num].blocks[0];
-                           Arrays.fill(disc, direct*32, direct*32+32, (char)0);
-                           bitArray.set(direct);
-                           inodes_table[num] = null;
-                           catalog.remove(name);
-                           ++freeBlockAmount;
-                       }
-                       else if (amountIn == 2)
-                       {
-                           direct = inodes_table[num].blocks[0];
-                           Arrays.fill(disc, direct*32, direct*32+32, (char)0);
-                           bitArray.set(direct);
-                           ++freeBlockAmount;
-                           inDirect = inodes_table[num].blocks[1];
-                           int tmp = 0;
+    public void deleteFile(String name) throws Exception
+    {
+        if(catalog.get(name) != null)
+        {
+            File file = catalog.get(name);
+            int num = file.number;
+            if(inodes_table[num] != null)
+            {
+                if (inodes_table[num].lock.tryLock() == false || inodes_table[num].state == false)
+                {
+                    if(inodes_table[num].LinkCounter > 1)
+                    {
+                        catalog.remove(name);
+                        --inodes_table[num].LinkCounter;
+                    }
+                    else
+                    {
+                        int amountIn = inodes_table[num].size > 32 ? 2:1;
+                        int direct;
+                        int inDirect;
+                        if(amountIn == 1)
+                        {
+                            direct = inodes_table[num].blocks[0];
+                            Arrays.fill(disc, direct*32, direct*32+32, (char)0);
+                            bitArray.set(direct);
+                            inodes_table[num] = null;
+                            catalog.remove(name);
+                            ++freeBlockAmount;
+                        }
+                        else if (amountIn == 2)
+                        {
+                            direct = inodes_table[num].blocks[0];
+                            Arrays.fill(disc, direct*32, direct*32+32, (char)0);
+                            bitArray.set(direct);
+                            ++freeBlockAmount;
+                            inDirect = inodes_table[num].blocks[1];
+                            int tmp = 0;
 
-                           while((int)disc[inDirect*32+tmp] != 65535)
-                           {
-                               int f = disc[inDirect*32+tmp];
-                               Arrays.fill(disc, f*32, f*32+32, (char)0);
-                               bitArray.set(f);
-                               ++freeBlockAmount;
-                               tmp++;
+                            while((int)disc[inDirect*32+tmp] != 65535)
+                            {
+                                int f = disc[inDirect*32+tmp];
+                                Arrays.fill(disc, f*32, f*32+32, (char)0);
+                                bitArray.set(f);
+                                ++freeBlockAmount;
+                                tmp++;
 
-                           }
+                            }
 
-                           Arrays.fill(disc, inDirect*32, inDirect*32+32, (char)0);
-                           bitArray.set(inDirect);
-                           inodes_table[num] = null;
-                           catalog.remove(name);
-                       }
-                   }
-               }
-               else
-               {
-                   throw new Exception("Plik jest otwarty");
-               }
-           }
-           else
-           {
-               throw new Exception("Dany i-wezel nie istnieje");
-           }
-       }
-       else
-       {
-           throw new Exception("Plik o podanej nazwie nie istnieje");
-       }
-   }
+                            Arrays.fill(disc, inDirect*32, inDirect*32+32, (char)0);
+                            bitArray.set(inDirect);
+                            inodes_table[num] = null;
+                            catalog.remove(name);
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception("Plik jest otwarty");
+                }
+            }
+            else
+            {
+                throw new Exception("Dany i-wezel nie istnieje");
+            }
+        }
+        else
+        {
+            throw new Exception("Plik o podanej nazwie nie istnieje");
+        }
+    }
 
+    public void createLink(String name, String newName) throws Exception
+    {
+        if(catalog.get(name) != null)
+        {
+            if(catalog.get(newName) == null)
+            {
+                File file = catalog.get(name);
+                File newFile = new File();
+                newFile.name = newName;
+                newFile.number = file.number;
+                newFile.positionPtr = file.positionPtr;
+                inodes_table[file.number].LinkCounter++;
+                newFile.type = File.Types.LINK;
+                catalog.put(newName,newFile);
+            }
+            else
+            {
+                throw new Exception("Nazwa zajeta");
+            }
+        }
+        else
+        {
+            throw new Exception("Plik o podanej nazwie nie istnieje");
+        }
+    }
+
+    public void renameFile(String name, String newName) throws Exception
+    {
+        if(catalog.get(name) != null)
+        {
+            if(catalog.get(newName) == null)
+            {
+                File file = catalog.get(name);
+                int num = file.number;
+                if(inodes_table[num] != null)
+                {
+                    if (inodes_table[num].lock.tryLock() == false || inodes_table[num].state == false)
+                    {
+                        catalog.get(name).name = newName;
+                        catalog.put(newName, file);
+                        catalog.remove(name);
+                    }
+                    else
+                    {
+                        throw new Exception("Plik jest otwarty");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Dany i-wezel nie istnieje");
+                }
+            }
+            else
+            {
+                throw new Exception("Nazwa zajeta");
+            }
+        }
+        else
+        {
+            throw new Exception("Plik o podanej nazwie nie istnieje");
+        }
+    }
+
+    public void ListDirectory()
+    {
+        System.out.println("||||||||||||| KATALOG |||||||||||||\n");
+        for(Map.Entry<String, File> e : catalog.entrySet())
+        {
+            File file = e.getValue();
+            int num = file.number;
+            System.out.println("*********************************");
+            System.out.println(" " + e.getKey());
+            System.out.println("  " + inodes_table[num].size + " B");
+            System.out.println("  " + file.type);
+            System.out.println("\n*********************************\n\n");
+        }
+        System.out.println("|||||||||||||||||||||||||||||||||||\n");
+    }
+
+    public void printDisc()
+    {
+        System.out.println("|||||||||||||||||||||||||||||| DYSK ||||||||||||||||||||||||||||||\n");
+        int tmp = 0;
+        for(int i = 0; i < 1024; i++)
+        {
+            System.out.print(disc[i] + "|");
+            if(tmp % 32 == 31)
+            {
+                System.out.print("\n");
+            }
+            tmp++;
+        }
+        System.out.println("\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
+    }
 }

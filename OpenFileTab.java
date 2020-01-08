@@ -1,5 +1,3 @@
-package com.poznan.put;
-
 import java.util.Hashtable;
 
 public class OpenFileTab
