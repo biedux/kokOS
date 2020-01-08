@@ -18,14 +18,14 @@ public class IPC {
         return descriptor;
     }
 
-    public int writeToPipe(int fd, Vector<Byte> buffer, Integer nbyte) { //funkcja zapisujaca do pipe
+    public int writeToPipe(int fd, Vector<char> buffer, Integer nchar) { //funkcja zapisujaca do pipe
         int written = 0;
         for (PipeQueue e : Pipes) {
             if (e.descW == fd) {
 
                 if (nbyte < 64 - e.eQueue.size())
-                    for (int i = 0; i < nbyte; i++) {
-                        Byte a = buffer.get(i);
+                    for (int i = 0; i < nchar; i++) {
+                        char a = buffer.get(i);
                                              //buffer- segment danych w procesie, do którego majá zostac przekazane dane
                         e.eQueue.add(a);
                         memory.writePipe(a, i);
@@ -44,13 +44,13 @@ public class IPC {
         return written;
     }
 
-    public int readFromPipe(int fd, Vector<Byte> buffer, Integer nbyte) {
+    public int readFromPipe(int fd, Vector<char> buffer, Integer nchar) {
         int read = 0;
         for (PipeQueue e : Pipes) {
             if (e.descR == fd) {
-                for (int i = 0; i < nbyte; i++) {
+                for (int i = 0; i < nchar; i++) {
                     if (!e.eQueue.isEmpty()) {
-                        Byte a = e.eQueue.remove();
+                        char a = e.eQueue.remove();
                         buffer.add(a);
                         memory.readPipe(a, i);
                         read++;
@@ -73,6 +73,7 @@ public class IPC {
     }
 
     public static void close(int pdesc[]) {
+        pdesc = null;
         System.out.print("The descriptor is closed");
     }
 
@@ -101,13 +102,13 @@ public class IPC {
         int[] pdesc = new int[2];
         P5.pipe.close(pdesc[0]);
         P5.pipe.Pipe(pdesc);
-        Vector<Byte> be = new Vector<Byte>(4);
+        Vector<char> be = new Vector<char>(4);
         Scanner myObj = new Scanner(System.in);
         System.out.println("Enter data");
-        Byte b = myObj.nextByte();
-        Byte c = myObj.nextByte();
-        Byte d = myObj.nextByte();
-        Byte e = myObj.nextByte(); //nie wiem czy by tego nie wrzucic w jakas petle i pytac usera ile znakow chce zapisac
+        char b = myObj.nextByte();
+        char c = myObj.nextByte();
+        char d = myObj.nextByte();
+        char e = myObj.nextByte(); //nie wiem czy by tego nie wrzucic w jakas petle i pytac usera ile znakow chce zapisac
         //System.out.println(b);
         be.add(b);
         be.add(c);
