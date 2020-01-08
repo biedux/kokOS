@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Process_Management {
-    public Scheduler scheduler=new Scheduler();
 
     public VirtualMemory vm=new VirtualMemory();
 
@@ -17,14 +16,17 @@ public class Process_Management {
     // Proces główny
     public PCB init;
 
+    public Scheduler scheduler;
+
     public Process_Management(){
 
         // Inicjalizacja głównego procesu przy starcie rodzica
         init=new PCB("init","");
-        init.setState(init.State.Ready);
+        init.setState(init.State.Running);
         init.setID(0);
         PCB.setCountProcess(PCB.getCountProcess()-1);
-        scheduler.dummy=init;
+        scheduler=new Scheduler();
+        scheduler.setRunning(init);
         ProcessList.add(init);
     }
 
@@ -61,6 +63,10 @@ public class Process_Management {
         return process;
     }
 
+    public PCB getInit(){
+        return this.init;
+    }
+
     public PCB findPCB(String pName){
         PCB P=new PCB("","");
         for(PCB proc:ProcessList){
@@ -74,6 +80,8 @@ public class Process_Management {
     // Zabijanie procesu (usuniecie procesu i przekazanie dzieci rodzicowi)
 
     //Dwie opcje, zabija dzieci lub nie (pgit=null)
+    
+    //skok do inita w ostatnim ifie
     public void kill(PCB process){
         for(PCB parent:ProcessList){
             if(process.getParentID()==parent.getID()){
@@ -89,6 +97,9 @@ public class Process_Management {
             }
         }
         ProcessList.remove(process);
+        if(ProcessList.size()==1){
+            init.setState(PCB.StateList.Running);
+        }
     }
 
     private List<PCB> Killed=new LinkedList<PCB>();
@@ -113,6 +124,9 @@ public class Process_Management {
         setRemoved(process);
         for(PCB proc:Killed){
             ProcessList.remove(proc);
+        }
+        if(ProcessList.size()==1){
+            init.setState(PCB.StateList.Running);
         }
     }
 
