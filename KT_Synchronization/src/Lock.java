@@ -2,6 +2,7 @@ import java.util.LinkedList;
 
 public class Lock {
 
+
     //Kluczowe (hehe) pole zamka. Zamknięty zamek - true, otwarty zamek - false
     private boolean isLocked = false;
 
@@ -32,15 +33,42 @@ public class Lock {
         if (isLocked && (holdersID == ProcessCB.getID())) {
             isLocked = false;
             holdersID = 0;
-            if(queue.size()>0)
-            {
-                ProcessCB = queue.removeFirst();
-                holdersID = ProcessCB.getID();
-                
-                ProcessCB.setState(PCB.StateList.Ready);
-                isLocked = true;
-                   
+
+            boolean check = true;
+            while (check) {
+                if (queue.size() > 0) {
+                    ProcessCB = queue.removeFirst();
+                    if(Shell.getPM().ProcessList.contains(ProcessCB))
+                    {
+                        holdersID = ProcessCB.getID();
+                        ProcessCB.setState(PCB.StateList.Ready);
+                        check = false;
+                        isLocked = true;
+                    }
+                }
+                else {
+                    check = false;
+                }
             }
+
+            /* Backup code
+            boolean check = true;
+            while (check) {
+                try {
+                    if (queue.size() > 0) {
+                        ProcessCB = queue.removeFirst();
+                        holdersID = ProcessCB.getID();
+                        ProcessCB.setState(PCB.StateList.Ready);
+                        check = false;
+                        isLocked = true;
+                    }
+                } catch (Exception e) {
+                    check = true;
+                    isLocked = false;
+                    System.out.println(e + " PCB pobrane z kolejki nie istnieje, pobieranie kolejnego.");
+                }
+            }
+            */
         }
     }
 
