@@ -1,14 +1,18 @@
 package Processor;
 
 
-import Process_Manager.*;
+
 import java.util.LinkedList;
 import java.util.*;
+import Process_Manager.*;
 
 public class Scheduler {
-    /* public void setRunning(PCB Running) {
+   /* public void setRunning(PCB Running) {
         Running = running;
-    }*/
+    }
+
+    */
+
 
     LinkedList<PCB> Heap = new LinkedList<PCB>();
 
@@ -20,12 +24,14 @@ public class Scheduler {
     // pm.fork("p6", 4,"f6"); // tej zmiennej bedziemy przypisywać PCB procesu dzialajacego
     //PCB running=p7;
 
-    public PCB dummy=new PCB("","");
+    public PCB dummy =new PCB("init","init.txt");
     public PCB running = dummy;
 
     LinkedList<PCB> sort(LinkedList<PCB> Heap) // funkcja sortujaca kolejke po CurrTime, CurrTime= vruntime +Currtime
     {
+
         Collections.sort(Heap, Comparator.comparingLong(PCB::getVirtualTime));
+
         return Heap;
     }
 
@@ -48,10 +54,11 @@ public class Scheduler {
     }
 
     PCB min() { // funkcja wywolujaca process o najmniejszym czasie wirtualnym
+
         return Heap.get(0);
     }
 
-    LinkedList<PCB> Insert(PCB pcb) { // dodaje proces do kolejki i ja sortuje
+    public LinkedList<PCB> Insert(PCB pcb) { // dodaje proces do kolejki i ja sortuje
 
         PrioToWeight(pcb);
         pcb.setVirtualTime(0);
@@ -60,17 +67,19 @@ public class Scheduler {
     }
 
     public LinkedList<PCB> InsertFirst(PCB pcb) { // dodaje proces do kolejki i ja sortuje
+
         PrioToWeight(pcb);
-        //pcb.setVirtualTime(0);
+        pcb.setVirtualTime(999);
         Heap.add(pcb);
         return sort(Heap);
     }
 
     public Scheduler() {
+        dummy.setState(PCB.StateList.Running);
     }
 
 
-    LinkedList<PCB> Delete(PCB pcb) // pytanie czy tu caly blok kontrolny procesu dostane czy tylko jego id
+    public LinkedList<PCB> Delete(PCB pcb) // pytanie czy tu caly blok kontrolny procesu dostane czy tylko jego id
     {
         Heap.remove(pcb);
         return sort(Heap);
@@ -78,10 +87,13 @@ public class Scheduler {
     }
 
     void TimeSlice(PCB pcb) { // wylicza time slice dla procesu, tylko nie wiem czy
-        long timeslice = period * pcb.getWeight() / HeapWeight();
-        if (timeslice < min_granularity)
-            timeslice = min_granularity;
-        pcb.setTimeSlice((int) timeslice);
+        if(Heap.size()==0){
+            long timeslice = period * pcb.getWeight() / HeapWeight();
+            if (timeslice < min_granularity)
+                timeslice = min_granularity;
+            pcb.setTimeSlice((int) timeslice);
+        }
+
     }
 
     void VirtualTime(PCB pcb) // zakładam,ze przy zmianie stanu na aktywny w baseTime wpiszemy czas, podczas ktorego process dostał procesor
@@ -97,6 +109,9 @@ public class Scheduler {
         //return NewVirtualTime; // nie wiem czy ten return bedzie potrzebny czy nie przerzuce sie na void
     }
 
+    public void showProTimes(PCB proc){
+        System.out.println(proc.getName()+" timeslice "+proc.getTimeSlice()+ " virtual "+proc.getVirtualTime());
+    }
 
     public void check() {    //CurrTime=System.nanoTime();
 
@@ -144,3 +159,4 @@ public class Scheduler {
         }
     }
 }
+
