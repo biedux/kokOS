@@ -212,10 +212,6 @@ public class VirtualMemory {
 
     public static void printPageFile() {
         System.out.println(PageFile.toString());
-
-
-
             System.out.println("");
-
     }
 }
