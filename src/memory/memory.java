@@ -1,8 +1,8 @@
-package memory;
+package Memory;
 
 import java.util.Vector;
 
-public class memory {
+public class Memory {
     private static char[] memory = new char[512];
 
     //16 ramek po 32 bajty
