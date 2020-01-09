@@ -16,17 +16,13 @@ public class Process_Management {
     // Proces główny
     public PCB init;
 
-    public Scheduler scheduler;
+    public Scheduler scheduler=new Scheduler();
 
     public Process_Management(){
 
         // Inicjalizacja głównego procesu przy starcie rodzica
-        init=new PCB("init","");
-        init.setState(init.State.Running);
-        init.setID(0);
-        PCB.setCountProcess(PCB.getCountProcess()-1);
-        scheduler=new Scheduler();
-        scheduler.setRunning(init);
+        init=this.scheduler.dummy;
+        this.scheduler.InsertFirst(init);
         ProcessList.add(init);
     }
 
@@ -44,6 +40,7 @@ public class Process_Management {
 
     // Nowy proces
     public PCB fork(PCB parent, String name, int priority, String fName) throws FileNotFoundException {
+
         // Nowy proces
         PCB process=new PCB(name,fName);
         process.setParentID(parent.getID());
@@ -51,15 +48,12 @@ public class Process_Management {
         process.setPriority(priority);
         ProcessList.add(process);
         parent.ChildrenList.add(process);
-        if(parent.getID()!=0){
-            parent.setState(PCB.StateList.Waiting);
-        }
 
         process.setCode(readFile(fName));
 
         VirtualMemory.nowyproces(process);
 
-        scheduler.Insert(process);
+        this.scheduler.Insert(process);
         return process;
     }
 
@@ -80,7 +74,7 @@ public class Process_Management {
     // Zabijanie procesu (usuniecie procesu i przekazanie dzieci rodzicowi)
 
     //Dwie opcje, zabija dzieci lub nie (pgit=null)
-    
+
     //skok do inita w ostatnim ifie
     public void kill(PCB process){
         for(PCB parent:ProcessList){
@@ -92,14 +86,11 @@ public class Process_Management {
                         parent.ChildrenList.add(child);
                     }
                     process.setState(PCB.StateList.Terminated);
-                    //process release RAM i virtual
                 }
             }
         }
+        this.scheduler.Delete(process);
         ProcessList.remove(process);
-        if(ProcessList.size()==1){
-            init.setState(PCB.StateList.Running);
-        }
     }
 
     private List<PCB> Killed=new LinkedList<PCB>();
@@ -116,7 +107,7 @@ public class Process_Management {
             }
         }
         process.setState(PCB.StateList.Terminated);
-        //process release RAM i virtual
+        this.scheduler.Delete(process);
         Killed.add(process);
     }
 
@@ -124,9 +115,6 @@ public class Process_Management {
         setRemoved(process);
         for(PCB proc:Killed){
             ProcessList.remove(proc);
-        }
-        if(ProcessList.size()==1){
-            init.setState(PCB.StateList.Running);
         }
     }
 
@@ -148,6 +136,8 @@ public class Process_Management {
 
     // Drzewo procesów
     public void showTree(PCB proc){
+        String children="";
+        String parent="";
         if(ProcessList.contains(proc)){
             String lev="";
             if(proc.getID()!=0){
@@ -157,7 +147,13 @@ public class Process_Management {
                     lev+="--";
                 }
             }
-            System.out.println(lev+proc.getName());
+            for(PCB p:proc.ChildrenList){
+                children+=(p.getID()+" ");
+            }
+            if(children=="") children+="Brak";
+            if(proc.getID()!=0) parent+=Integer.toString(proc.getParentID());
+            else parent+="Proces dummy nie ma rodzica ";
+            System.out.println(lev+"ID rodzica: "+parent+" Nazwa procesu: "+proc.getName()+" ID dzieci procesu: "+children);
             //proc.printProcessInfo();
             for(PCB child:proc.ChildrenList){
                 showTree(child);
