@@ -207,7 +207,7 @@ public class VirtualMemory {
      */
     int matchPage(PCB proces, int pageID) {
         Vector<Page> pageTable = proces.getPageTable();
-        if (pageTable.get(pageID).valid) {
+        if (PageTables.get(proces.getID()).get(pageID).valid) {
             System.out.println("Stronica jest w ramie");
             return pageTable.get(pageID).nrramki;
         } else putPageInRam(proces, proces.ID, pageID);
@@ -224,6 +224,10 @@ public class VirtualMemory {
         int frameid = find(proces, adress);
         char czytany = Memory.readFromFrame(adress, frameid);
         return czytany;
+    }
+    void writechar(PCB proces, int adress,char data) {
+        int frameid = find(proces, adress);
+         Memory.writeToFrame(data,adress, frameid);
     }
 
 
