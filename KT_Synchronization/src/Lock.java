@@ -17,7 +17,7 @@ public class Lock {
         if (isLocked)
         {
             queue.add(ProcessCB);
-            ProcessCB.setState(PCB.StateList.Waiting)
+            ProcessCB.setState(PCB.StateList.Waiting);
         }
         else
         {
