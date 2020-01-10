@@ -1,14 +1,16 @@
-package Process_Manager;
+package Interpreter;
 
-import Processor.*;
-import VirtualMemory.*;
+
+//import Processor.*;
+//import VirtualMemory.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Process_Management {
 
-    public VirtualMemory vm=new VirtualMemory();
+    public Memory RAM;
+    public VirtualMemory vm=new VirtualMemory(RAM);
 
     // Lista procesów
     public List<PCB> ProcessList=new LinkedList<PCB>();
@@ -18,12 +20,14 @@ public class Process_Management {
 
     public Scheduler scheduler=new Scheduler();
 
-    public Process_Management(){
+    public Process_Management() throws FileNotFoundException {
 
         // Inicjalizacja głównego procesu przy starcie rodzica
         init=this.scheduler.dummy;
         this.scheduler.InsertFirst(init);
         ProcessList.add(init);
+        init.setCode(readFile("init.txt"));
+        VirtualMemory.nowyproces(init);
     }
 
     public String readFile(String fName) throws FileNotFoundException {
@@ -48,6 +52,7 @@ public class Process_Management {
         process.setPriority(priority);
         ProcessList.add(process);
         parent.ChildrenList.add(process);
+        System.out.println("Id nowego procesu: "+process.getID());
 
         process.setCode(readFile(fName));
 
@@ -76,12 +81,12 @@ public class Process_Management {
     //Dwie opcje, zabija dzieci lub nie (pgit=null)
 
     //skok do inita w ostatnim ifie
-    public void kill(PCB process){
-        for(PCB parent:ProcessList){
-            if(process.getParentID()==parent.getID()){
+    public void kill(PCB process) {
+        for (PCB parent : ProcessList) {
+            if (process.getParentID() == parent.getID()) {
                 parent.ChildrenList.remove(process);
-                if(process.getState() == PCB.StateList.Waiting){
-                    for(PCB child : process.ChildrenList){
+                if (process.getState() == PCB.StateList.Waiting) {
+                    for (PCB child : process.ChildrenList) {
                         child.setParentID(process.getParentID());
                         parent.ChildrenList.add(child);
                     }
@@ -89,8 +94,8 @@ public class Process_Management {
                 }
             }
         }
-        this.scheduler.Delete(process);
         ProcessList.remove(process);
+        this.scheduler.Delete(process);
     }
 
     private List<PCB> Killed=new LinkedList<PCB>();
