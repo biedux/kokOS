@@ -1,0 +1,3 @@
+CP P7 10 tri.txt
+KP P7
+HL

@@ -1,0 +1,5 @@
+CP p1 procesy.txt
+PW a tu co
+PR same
+PC same
+KP p1
