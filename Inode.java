@@ -5,7 +5,8 @@ public class Inode
     public int LinkCounter; //licznik stałych dowiązań
     public Lock lock; //Zamek
     public int [] blocks = new int [2]; //2 pierwsze pola to nr bloków bezpośrednich, ostatnie pole to nr bloku indeksowego
-    public User user; //użytkownik
+    public User owner; //Właściciel pliku
+    Perm_List permissions;
 
     public void printInode()
     {
@@ -14,7 +15,7 @@ public class Inode
         System.out.println("\nLicznik dowiazan: " + LinkCounter);
         System.out.println("\nStan zamka: " + lock.tryLock());
         System.out.println("\nNr bloku bezposredniego: " + blocks[0]);
-        System.out.println("\nNr bloku posredniego: " + blocks[1]);
+        System.out.println("\nNr bloku indeksowego: " + blocks[1]);
     }
 }
 
