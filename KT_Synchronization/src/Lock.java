@@ -7,32 +7,36 @@ public class Lock {
     private boolean isLocked = false;
 
     //ID procesu "trzymającego" zamek
-    private int holdersID = 0;
+    private int holdersID = -1;
 
     //Lista PCB procesów, które chcą wejśc do zamka, ale nie mogą ponieważ jest zablokowany
     private LinkedList<PCB> queue = new LinkedList<PCB>();
 
     //Blokowanie (pozyskanie) zamka
-    public void acquire (PCB ProcessCB)
+    //Zwraca true, jeśli PCB dostał zamek lub false, jeśli PCB wszedł do kolejki
+    public boolean acquire (PCB ProcessCB)
     {
         if (isLocked)
         {
             queue.add(ProcessCB);
             ProcessCB.setState(PCB.StateList.Waiting);
+            return false;
         }
         else
         {
             holdersID = ProcessCB.getID();
             isLocked = true;
+            return true;
         }
     }
 
     //Odblokowanie (zwolnienie) zamka i ewnetualne przekazanie następnemu procesowi w kolejce
-    public void release (PCB ProcessCB)
+    //Zwraca holdersID, jeżeli kolejne PCB w kolejce dostało zamek (plik nadal otwarty) lub -1 jeżeli w kolejce nie ma nic
+    public int release (PCB ProcessCB)
     {
         if (isLocked && (holdersID == ProcessCB.getID())) {
             isLocked = false;
-            holdersID = 0;
+            holdersID = -1;
 
             boolean check = true;
             while (check) {
@@ -70,6 +74,7 @@ public class Lock {
             }
             */
         }
+        return holdersID;
     }
 
     //Sprawdzenie zamka (zwraca false (0) jeśli zamek zajęty; true (1) jeśli zamek wolny)
