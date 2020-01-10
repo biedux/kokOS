@@ -1,4 +1,4 @@
-package Virtual;
+package Interpreter;
 
 import java.util.*;
 
