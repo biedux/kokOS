@@ -37,7 +37,7 @@ public class VirtualMemory {
     static WhatsInside[] RamStatus = new WhatsInside[16];
     void setRamStatus()
     {
-        for(int i=0; i<16; i++)
+        for(int i=0; i<15; i++)
         {
             RamStatus[i] = new WhatsInside();
         }
@@ -48,8 +48,10 @@ public class VirtualMemory {
         Vector<Vector<Character>> program = new Vector<>(new Vector<>());
        // proces.setPageTable(new Vector<Page>());
         Vector<Page> pageTable = proces.getPageTable();
-        double maxPageID = Math.ceil(proces.getCode().length() / 16);
-        if(maxPageID==0) maxPageID=1;
+        System.out.println("Kod: " + proces.getCode());
+        int maxPageID = (int) Math.ceil(proces.getCode().length() / 32)+1;
+        System.out.println("Max pageID: " +maxPageID);
+       // if(maxPageID==0) maxPageID=1;
         for (int currentPageID = 0; currentPageID < maxPageID; currentPageID++) {
             Vector<Character> page = new Vector<>();
             pageTable.add(new Page());
@@ -200,7 +202,8 @@ public class VirtualMemory {
         return PageFile.containsKey(procID);
     }
 
-public static void usunproces(PCB proces)
+
+    public static void usunproces(PCB proces)
     {
         System.out.println("Removing Process " + proces.getID());
         Queue<Integer> tmpQueue = victimQueue, beginQ = new LinkedList<>();
@@ -237,6 +240,8 @@ public static void usunproces(PCB proces)
         System.out.println("Process " + proces.getID() + " has been removed");
     }
 
+
+
     /**
      * Funkcje dla Ciechana
      */
@@ -244,9 +249,11 @@ public static void usunproces(PCB proces)
         Vector<Page> pageTable = proces.getPageTable();
         if (PageTables.get(proces.getID()).get(pageID).valid) {
             System.out.println("Stronica jest w ramie");
-            return pageTable.get(pageID).nrramki;
-        } else putPageInRam(proces, proces.ID, pageID);
-        return 0;
+            return PageTables.get(proces.getID()).get(pageID).nrramki;
+        } else {
+            putPageInRam(proces, proces.ID, pageID);
+            return PageTables.get(proces.getID()).get(pageID).nrramki;
+        }
     }
 
     int find(PCB proces, int adress) {
@@ -287,9 +294,12 @@ public static void usunproces(PCB proces)
 
     public static void printPageFile(int processID) {
         if (processExists(processID)) {
+            System.out.println("Stronice w Pliku Wymiany dla procesu o id: " + processID);
             Vector<Vector<Character>> pages = PageFile.get(processID);
+            System.out.println(pages);
             int size=pages.size();
-            if(size>1) size-=1;
+            System.out.println("Wielkosc" + size);
+            //if(size<1) size-=1;
             for (int i = 0; i < size; i++) {
                 System.out.println("Page no." + i);
                 for (int j = 0; j < pages.get(i).size(); j++) {
@@ -301,7 +311,7 @@ public static void usunproces(PCB proces)
         } else System.out.println("Error: process with given ID doesn't exist.");
     }
 
-     public static void printPageFile() {
+    public static void printPageFile() {
             for ( Integer key : PageFile.keySet() ) {
                 System.out.println("Page file dla procesu o id: " + key);
                 for (int j = 0; j < PageFile.get(key).size(); j++) {
@@ -315,6 +325,25 @@ public static void usunproces(PCB proces)
             System.out.println(" ");
             System.out.println("");
     }
-
+    public static void printPageFile2()
+    {
+        System.out.println("Page file: ");
+        System.out.println(PageFile.toString());
+        System.out.println("");
     }
+    public  static void printPageTable()
+    {
+        System.out.println(PageTables.toString());
+        System.out.println(" ");
+    }
+    public static void printRamStatus()
+    {
+        System.out.println("#### Printing current RAM status ####");
+        for(int i=0; i<15; i++)
+        {
+            System.out.println("Frame ID: " + i + " PageID " + RamStatus[i].PageID + "\t ProcessID " + RamStatus[i].ProcessID);
+        }
+    }
+
 }
+
