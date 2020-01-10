@@ -301,10 +301,20 @@ public static void usunproces(PCB proces)
         } else System.out.println("Error: process with given ID doesn't exist.");
     }
 
-    public static void printPageFile() {
-        System.out.println(PageFile.toString());
-
-        System.out.println("");
+     public static void printPageFile() {
+            for ( Integer key : PageFile.keySet() ) {
+                System.out.println("Page file dla procesu o id: " + key);
+                for (int j = 0; j < PageFile.get(key).size(); j++) {
+                    System.out.println("Page no." + j);
+                   // System.out.println("Nr procesu w pliku wymiany "+i);
+                    Vector<Vector<Character>> pages = PageFile.get(key);
+                    System.out.println(PageFile.get(key).get(j) );
+                    System.out.println("");
+                }
+            }
+            System.out.println(" ");
+            System.out.println("");
+    }
 
     }
 }
