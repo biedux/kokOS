@@ -200,7 +200,42 @@ public class VirtualMemory {
         return PageFile.containsKey(procID);
     }
 
-
+public static void usunproces(PCB proces)
+    {
+        System.out.println("Removing Process " + proces.getID());
+        Queue<Integer> tmpQueue = victimQueue, beginQ = new LinkedList<>();
+        int frame, Qsize;
+        for(int i = 0; i<15; i++)
+        {
+            if(RamStatus[i].ProcessID == proces.getID())
+            {
+                Qsize = tmpQueue.size();
+                for(int j=0; j<Qsize; j++)
+                {
+                    frame = tmpQueue.poll();
+                    if(frame != i)
+                    {
+                        beginQ.add(frame);
+                    } else break;
+                }
+                beginQ.addAll(tmpQueue);
+                tmpQueue.removeAll(tmpQueue);
+                tmpQueue.addAll(beginQ);
+                beginQ.removeAll(beginQ);
+                RamStatus[i].ProcessID = -1;
+                RamStatus[i].PageID = -1;
+                System.out.println("Victim queue updated, removed: pID:" + proces.getID() + " from queue position: " + i);
+            }
+        }
+        //czyszczenie kolejki glownej
+        //victimQueue.removeAll(victimQueue);
+        //aktualizacja zawartosci kolejki glownej
+        //victimQueue.addAll(tmpQueue);
+        /**Removing all records from PageFile and PageTables maps*/
+        PageFile.remove(proces.getID());
+        PageTables.remove(proces.getID());
+        System.out.println("Process " + proces.getID() + " has been removed");
+    }
 
     /**
      * Funkcje dla Ciechana
