@@ -137,6 +137,26 @@ public class memory {
         }
     }
 
+    public static int writeNumMC(int liczba, int adresLogicz){  //adresy od 0 do 15 dozwolone
+        int licznik = 0;
+        if (adresLogicz < 16){
+            try {
+                String tmp = String.valueOf(liczba);
+                for (int i = 0; i < tmp.length();i++){
+                    char wsadz = tmp.charAt(i);
+                    memory[adresLogicz + 496 + i] = wsadz;
+                    licznik++;
+                }
+                System.out.println("Zapisano " + licznik + " bajtów");
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+                return 0;
+            }
+        }
+        return licznik;
+    }
+
     //odczyt ramki MC
     public static Vector<Character> readMCFrame(){
         Vector<Character> odczyt = new Vector<Character>();

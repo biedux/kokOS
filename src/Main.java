@@ -17,5 +17,7 @@ public class Main {
         }
         memory.clearMC();
         memory.printRawRam();
+        memory.writeNumMC(134, 3);
+        memory.printRawRam();
     }
 }
