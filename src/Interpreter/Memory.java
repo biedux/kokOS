@@ -1,8 +1,9 @@
 package Interpreter;
+
 import java.util.Vector;
 
 public class Memory {
-    private static char[] memory = new char[512];
+    private static char[] Memory = new char[512];
 
     //16 ramek po 32 bajty
     // ostatnia ramka zarezerwowana na pipe'y i to co ciechan chce
@@ -16,7 +17,7 @@ public class Memory {
         System.out.println("|                  Wyswietlam surowy ram:                      |\n");
         int tmp = 0;
         for (int i = 0; i < 512; i++) {
-            System.out.print(memory[i] + "|");
+            System.out.print(Memory[i] + "|");
             if(tmp % 32 == 31){
                 System.out.print("\n");
             }
@@ -29,7 +30,7 @@ public class Memory {
     //ODCZYT POJEDYNCZEGO BAJTU
     public static char read(int i) {
         try {
-            return memory[i];
+            return Memory[i];
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -41,7 +42,7 @@ public class Memory {
     //ZAPIS POJEDYNCZEGO BAJTU
     public static void write(char data, int i){
         try {
-            memory[i] = data;
+            Memory[i] = data;
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -52,10 +53,10 @@ public class Memory {
     //FUNKCJE DO PIPE
 
     //odczyt z PIPE
-    public static char readPipe(char a, int adresLogicz){     //adresy od 0 do 15 dozwolone
+    public static char readPipe(int adresLogicz){     //adresy od 0 do 15 dozwolone
         if (adresLogicz < 16){
             try {
-                return memory[adresLogicz + 480];
+                return Memory[adresLogicz + 480];
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -71,7 +72,7 @@ public class Memory {
     public static void writePipe(char data, int adresLogicz){     //adresy od 0 do 15 dozwolone
         if (adresLogicz < 16){
             try {
-                memory[adresLogicz + 480] = data;
+                Memory[adresLogicz + 480] = data;
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -84,7 +85,7 @@ public class Memory {
         Vector<Character> odczyt = new Vector<Character>();
         try {
             for (int i = 0; i < 16; i++){
-                odczyt.add(memory[480 + i]);
+                odczyt.add(Memory[480 + i]);
             }
         }
         catch (Exception e) {
@@ -97,7 +98,7 @@ public class Memory {
     public static void clearPIPE(){
         for (int i = 0; i < 16; i++){
             try {
-                memory[480 + i] = ' ';
+                Memory[480 + i] = ' ';
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -112,7 +113,7 @@ public class Memory {
     public static char readMC(int adresLogicz){     //adresy od 0 do 15 dozwolone
         if (adresLogicz < 16){
             try {
-                return memory[adresLogicz + 496];
+                return Memory[adresLogicz + 496];
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -128,7 +129,7 @@ public class Memory {
     public static void writeMC(char data, int adresLogicz){     //adresy od 0 do 15 dozwolone
         if (adresLogicz < 16){
             try {
-                memory[adresLogicz + 496] = data;
+                Memory[adresLogicz + 496] = data;
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -136,12 +137,56 @@ public class Memory {
         }
     }
 
+    public static int writeNumMC(int liczba, int adresLogicz){  //adresy od 0 do 15 dozwolone
+        int licznik = 0;
+        if (adresLogicz < 16){
+            try {
+                String tmp = String.valueOf(liczba);
+                for (int i = 0; i < tmp.length();i++){
+                    char wsadz = tmp.charAt(i);
+                    Memory[adresLogicz + 496 + i] = wsadz;
+                    licznik++;
+                }
+                Memory[adresLogicz + 496 + licznik] = ' ';
+                licznik++;
+                System.out.println("Zapisano " + licznik + " bajtów");
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+                return 0;
+            }
+        }
+        return licznik;
+    }
+
+    public static int readNumMC(int adresLogicz){   //adresy od 0 do 15
+        try{
+            int i = 0;
+            char tmp;
+            String czytany = "";
+            do{
+                tmp = Memory[adresLogicz + 496 + i];
+                czytany += tmp;
+                i++;
+            } while (Memory[adresLogicz + 496 + i] != ' ');
+            int num = Integer.parseInt(czytany);
+            System.out.println("Odczytano " + num + ".");
+            return num;
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+
+    }
+
+
     //odczyt ramki MC
     public static Vector<Character> readMCFrame(){
         Vector<Character> odczyt = new Vector<Character>();
         try {
             for (int i = 0; i < 16; i++){
-                odczyt.add(memory[496 + i]);
+                odczyt.add(Memory[496 + i]);
             }
         }
         catch (Exception e) {
@@ -154,7 +199,7 @@ public class Memory {
     public static void clearMC(){
         for (int i = 0; i < 16; i++){
             try {
-                memory[496 + i] = ' ';
+                Memory[496 + i] = ' ';
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -170,7 +215,7 @@ public class Memory {
             return false;
         }
         for (int i = 0; i < data.size(); i++){
-            memory[frame * 32 + i] = data.get(i);
+            Memory[frame * 32 + i] = data.get(i);
         }
         return true;
     }
@@ -181,7 +226,7 @@ public class Memory {
         Vector<Character> odczyt = new Vector<Character>();
         try {
             for (int i = 0; i < 32; i++){
-                odczyt.add(memory[frame * 32 + i]);
+                odczyt.add(Memory[frame * 32 + i]);
             }
         }
         catch (Exception e) {
@@ -194,7 +239,7 @@ public class Memory {
     //tu bedzie ZAPIS BAJTU ZGODNIE Z TABLICA STRONIC
     public static void writeToFrame(char data, int adress, int frame){
         try {
-            memory[frame * 32 + (adress % 32)] = data;
+            Memory[frame * 32 + (adress % 32)] = data;
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -206,7 +251,7 @@ public class Memory {
     //tu bedzie ODCZYT BAJTU ZGODNIE Z TABLICA STRONIC
     public static char readFromFrame(int adress, int frame){
         try {
-            return memory[frame * 32 + (adress % 32)];
+            return Memory[frame * 32 + (adress % 32)];
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
