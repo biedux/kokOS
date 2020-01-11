@@ -284,6 +284,10 @@ public class VirtualMemory {
         //System.out.println("w READCHAR:-----------frame id: " + frameid+"  czytany: " + czytany+".");
         return czytany;
     }
+  void writechar(PCB proces, int adress, char data) {
+        int frameid = find(proces, adress);
+        Memory.writeToFrame(data,adress, frameid);
+    }
 
 
     /**
