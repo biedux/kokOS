@@ -148,6 +148,7 @@ public class Memory {
                     licznik++;
                 }
                 Memory[adresLogicz + 496 + licznik] = ' ';
+                licznik++;
                 System.out.println("Zapisano " + licznik + " bajtów");
             }
             catch (Exception e) {

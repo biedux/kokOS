@@ -17,9 +17,14 @@ public class Main {
         }
         Memory.clearMC();
         Memory.printRawRam();
-        Memory.writeNumMC(134, 3);
+        int y = Memory.writeNumMC(134, 0);
+        System.out.println(y);
         Memory.printRawRam();
-        int x = Memory.readNumMC(3);
+        int x = Memory.readNumMC(0);
+        System.out.println(x);
+        Memory.writeNumMC(222,0+y);
+        Memory.printRawRam();
+        x = Memory.readNumMC(0+y);
         System.out.println(x);
     }
 }
