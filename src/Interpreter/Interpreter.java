@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Vector;
 
 //todo
-//sprawdzic skoki, pliki, CP, pipe
-//zrobic zapis i odczytanie z adresu -> funckje od stempla
+// pliki, CP, pipe
+// zrobic zapis i odczytanie z adresu -> funckje od stempla
 //programy dokonczyc
-//matematyczne
 
 enum Rozkazy {
     //nie bedzie tych enumów, ale chwilowo fajnie sie to tu rozpisuje
@@ -54,13 +53,16 @@ enum Rozkazy {
      //IPC ipc;
      private int counter;
      private int id;
+     private boolean czyDoRamu;
+      int ktoryArgDoRamu;
+     private int memoryCounter = 0;
 
      Interpreter() {}
 
      Interpreter(Memory ram, VirtualMemory virt, Process_Management pm, Disc dysk) {
          this.ram = ram;
          this.virtual = virt;
-         this.processManagement = pm;
+         processManagement = pm;
          this.disc = dysk;
      }
 public static String usunOstatni(String str) {
@@ -78,13 +80,38 @@ public ArrayList<String> getArgs(int counter, int ilePobieram) {
     for(int i =0; i<ilePobieram; i++){
         do{
             czytany = virtual.readChar(pcb,counter);
-            arg+=czytany;
-            counter++;
+            //System.out.println("pobrano znak" + czytany);
+            if(czytany.equals('[')){                //tylko do pracy na adresach
+                czyDoRamu = true;
+                ktoryArgDoRamu = i;
+                counter++;
+                do{
+                    czytany = virtual.readChar(pcb,counter);
+                    //System.out.println("pobrano znak" + czytany);
+                    arg += czytany;
+                    counter++;
+
+                }while(czytany!=']');
+                //System.out.println("pobrano argument" + arg);
+
+                arg=usunOstatni(arg);
+                //System.out.println("pobrano argument" + arg);
+
+                //System.out.println("argument po usunieciu ostatniego: " + arg);
+
+            }else {
+                arg += czytany;
+                counter++;
+            }
 
         } while(czytany!=' ');
-        System.out.println("Pobrano argument: " + arg);
+       // System.out.println("Stan czy do ramu" + czyDoRamu + " stan ktory do ramu: "  + ktoryArgDoRamu);
         arg=usunOstatni(arg);
+        System.out.println("Pobrano argument: " + arg);
+        //System.out.println("wsadzany do args argument: " + arg);
+
         args.add(arg);
+
         arg = "";
     }
     pcb.setCounter(counter);
@@ -93,7 +120,7 @@ public ArrayList<String> getArgs(int counter, int ilePobieram) {
 
 public void makeStep() {
         processManagement.scheduler.check();
-         this.pcb=this.processManagement.scheduler.running;
+         this.pcb= processManagement.scheduler.running;
          this.counter = this.pcb.getCounter();
          this.id = this.pcb.getID();
 
@@ -296,28 +323,68 @@ public void makeStep() {
 
              args = getArgs(counter, 2);
 
-             if (args.get(0).equals("A")) {
-                 String temp = args.get(1);
-                 int result = Integer.parseInt(temp);
-                 pcb.setAX(result);
 
-             } else if (args.get(0).equals("B")) {
-                 String temp = args.get(1);
-                 int result = Integer.parseInt(temp);
-                 pcb.setBX(result);
+             if (czyDoRamu) {                                             //wlacza sie tylko jesli operujemy na adresach
+                 int ktoryDoRamu = Integer.parseInt(String.valueOf(ktoryArgDoRamu));
 
-             } else if (args.get(0).equals("C")) {
-                 String temp = args.get(1);
-                 int result = Integer.parseInt(temp);
-                 pcb.setCX(result);
+                 if (ktoryDoRamu == 0) {                          //wstawianie do ramu
 
-             } else if (args.get(0).equals("D")) {
-                 String temp = args.get(1);
-                 int result = Integer.parseInt(temp);
-                 pcb.setDX(result);
+                     if (args.get(1).equals("A")) {
+                         memoryCounter = Memory.writeNumMC(pcb.getAX(), Integer.parseInt(args.get(0)));//WKLADAMY A
+                     } else if (args.get(1).equals("B")) {
+                         memoryCounter = Memory.writeNumMC(pcb.getBX(), Integer.parseInt(args.get(0)));//B
+                     } else if (args.get(1).equals("C")) {
+                         memoryCounter = Memory.writeNumMC(pcb.getCX(), Integer.parseInt(args.get(0)));//C
+                     } else if (args.get(1).equals("D")) {
+                         memoryCounter = Memory.writeNumMC(pcb.getDX(), Integer.parseInt(args.get(0)));//D
 
+                     } else
+                         memoryCounter = Memory.writeNumMC(Integer.parseInt(args.get(1)), Integer.parseInt(args.get(0)));//przypadek jak jest liczba wkładana
+                 }
+                     if (ktoryDoRamu == 1) {                                     //pobieranie z ramu
+                         //arg 0 to rejestr gdzie wsadzimy cos z ramu
+                         //arg 1 to liczzba, ktora siedzi w ramie
+                         if (args.get(0).equals("A")) {
+                             pcb.setAX(Memory.readNumMC(Integer.parseInt(args.get(1))));
+                         } else if (args.get(0).equals("B")) {
+                             pcb.setBX(Memory.readNumMC(Integer.parseInt(args.get(1))));
+                         } else if (args.get(0).equals("C")) {
+                             pcb.setCX(Memory.readNumMC(Integer.parseInt(args.get(1))));
+                         } else if (args.get(0).equals("D")) {
+                             pcb.setDX(Memory.readNumMC(Integer.parseInt(args.get(1))));
+                         }
+
+                     }
+                 }
+
+                     //podmien argument w miescu ktorydoramu na ten pobranyy
+                     //int temporary = Integer.parseInt(args.get(ktoryArgDoRamu));
+                     //System.out.println(temporary);
+
+
+                 else if (args.get(0).equals("A")) {
+                     String temp = args.get(1);
+                     int result = Integer.parseInt(temp);
+                     pcb.setAX(result);
+
+                 } else if (args.get(0).equals("B")) {
+                     String temp = args.get(1);
+                     int result = Integer.parseInt(temp);
+                     pcb.setBX(result);
+
+                 } else if (args.get(0).equals("C")) {
+                     String temp = args.get(1);
+                     int result = Integer.parseInt(temp);
+                     pcb.setCX(result);
+
+                 } else if (args.get(0).equals("D")) {
+                     String temp = args.get(1);
+                     int result = Integer.parseInt(temp);
+                     pcb.setDX(result);
+
+                 }
              }
-         }
+
          //JP
          if(    (cmd.equals("JP"))  ){
              args = getArgs(counter, 1);
@@ -367,8 +434,8 @@ public void makeStep() {
                  String name = args.get(0);
                  String userName = args.get(1);
                  disc.createFile(name, userName);
-             }catch(Exception e){};
-    }
+             }catch(Exception e){}
+         }
 
          //OF
          if(    (cmd.equals("OF"))  ){
@@ -376,7 +443,7 @@ public void makeStep() {
              args = getArgs(counter, 1);
              String name = args.get(0);
              disc.openFile(name, processManagement.findPCB(args.get(1)));
-             }catch(Exception e){};
+             }catch(Exception e){}
          }
 
          //WF
@@ -386,7 +453,7 @@ public void makeStep() {
                  String name = args.get(0);
                  String data = args.get(1);
                  disc.writeFile(name, data);
-             }catch(Exception e){};
+             }catch(Exception e){}
          }
 
          //AF
@@ -396,7 +463,7 @@ public void makeStep() {
              String name = args.get(0);
              String newData = args.get(1);
              disc.appendFile(name, newData);
-             }catch(Exception e){};
+             }catch(Exception e){}
          }
 
          //DF
@@ -405,7 +472,7 @@ public void makeStep() {
                  args = getArgs(counter, 1);
                  String name = args.get(0);
                  disc.deleteFile(name);
-             }catch(Exception e){};
+             }catch(Exception e){}
          }
 
          //RF
@@ -421,7 +488,7 @@ public void makeStep() {
                  args = getArgs(counter, 2);
                  String name = args.get(0);
                  disc.closeFile(name, processManagement.findPCB(args.get(1)));
-             }catch(Exception e){};
+             }catch(Exception e){}
          }
 
 
