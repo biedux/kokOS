@@ -1,24 +1,29 @@
-import java.util.Hashtable;
 import java.util.Scanner;
 
 public class Main {
 
     public static void spis_tresci()
     {
+        System.out.println("********************");
+        System.out.println("ZARZADZANIE DYSKIEM");
         System.out.println("********************\n");
-        System.out.println("ZARZADZANIE DYSKIEM\n");
-        System.out.println("********************\n\n");
-        System.out.println("1. Stworz plik\n");
-        System.out.println("2. Otworz plik\n");
-        System.out.println("3. Zapisz do pliku\n");
-        System.out.println("4. Dopisz na koniec pliku\n");
-        System.out.println("5. Odczytaj z pliku\n");
-        System.out.println("6. Zamknij plik\n");
-        System.out.println("7. Usun plik\n");
-        System.out.println("8. Utworz dowiazanie\n");
-        System.out.println("9. Zmien nazwe pliku\n");
-        System.out.println("10. Wyswietl zawartosc katalogu\n");
-        System.out.println("11.Wyswietl zawartosc dysku\n\n");
+
+        System.out.println("1. Stworz plik");
+        System.out.println("2. Otworz plik");
+        System.out.println("3. Zapisz do pliku");
+        System.out.println("4. Dopisz na koniec pliku");
+        System.out.println("5. Odczytaj z pliku");
+        System.out.println("6. Zamknij plik");
+        System.out.println("7. Usun plik");
+        System.out.println("8. Utworz dowiazanie");
+        System.out.println("9. Zmien nazwe pliku");
+        System.out.println("10. Wyswietl zawartosc katalogu");
+        System.out.println("11. Wyswietl zawartosc dysku");
+        System.out.println("12. Wyswietl zawartosc tablicy otwartych plikow");
+        System.out.println("13. Wyswietl zawartosc i-wezla pliku");
+        System.out.println("14. Wyswietl zawartosc tablicy i-wezlow");
+        System.out.println("15. Utworz uzytkownika");
+        System.out.println("16. Zmien uzytkownika");
 
         System.out.println("Podaj nr polecenia: ");
     }
@@ -27,8 +32,8 @@ public class Main {
     public static void main(String[] args) {
         try
         {
-            Disc disc = new Disc();
-            Hashtable <String, PCB> pcblist = new Hashtable<String, PCB>();
+            Shell shell = new Shell();
+            User_List user_list = new User_List();
             char znak;
             do {
                 spis_tresci();
@@ -40,7 +45,9 @@ public class Main {
                     {
                         System.out.println("Podaj nazwę pliku: ");
                         String name = scan.next();
-                        disc.createFile(name, "root");
+                        System.out.println("Podaj nazwę uzytkownika: ");
+                        String user = scan.next();
+                        Shell.disc.createFile(name, user);
                         System.out.println("Utworzono plik: " + name + "\n\n");
                         break;
                     }
@@ -50,9 +57,10 @@ public class Main {
                         String name = scan.next();
                         System.out.println("Podaj nazwę procesu: ");
                         String pro = scan.next();
-                        PCB process = new PCB("process1", "file");
-                        pcblist.put(pro, process);
-                        disc.openFile(name, process);
+                        PCB process = new PCB(pro, "file");
+                        //PCB..put(pro, process);
+                        Shell.getPM().ProcessList.add(process);
+                        Shell.disc.openFile(name, process);
                         System.out.println("Pomyslnie otworzono plik\n\n");
                         break;
                     }
@@ -60,9 +68,11 @@ public class Main {
                     {
                         System.out.println("Podaj nazwę pliku: ");
                         String name = scan.next();
+                        System.out.println("Podaj nazwę uzytkownika: ");
+                        String user = scan.next();
                         System.out.println("Podaj dane do zapisania: ");
                         String data = scan.next();
-                        disc.writeFile(name, data);
+                        Shell.disc.writeFile(name, user, data);
                         System.out.println("Pomyslnie zapisano do pliku\n\n");
                         break;
                     }
@@ -70,9 +80,11 @@ public class Main {
                     {
                         System.out.println("Podaj nazwę pliku: ");
                         String name = scan.next();
+                        System.out.println("Podaj nazwę uzytkownika: ");
+                        String user = scan.next();
                         System.out.println("Podaj dane do zapisania: ");
                         String data = scan.next();
-                        disc.appendFile(name, data);
+                        Shell.disc.appendFile(name,user, data);
                         System.out.println("Pomyslnie zapisano do pliku\n\n");
                         break;
                     }
@@ -80,10 +92,12 @@ public class Main {
                     {
                         System.out.println("Podaj nazwę pliku: ");
                         String name = scan.next();
+                        System.out.println("Podaj nazwę uzytkownika: ");
+                        String user = scan.next();
                         System.out.println("Podaj ilosc danych do sczytania: ");
                         int amount = scan.nextInt();
                         System.out.println("Dane sczytane z pliku:");
-                        System.out.println(disc.readFile(name, amount) + "\n\n");
+                        System.out.println(Shell.disc.readFile(name,user, amount) + "\n");
                         break;
                     }
                     case 6:
@@ -92,24 +106,25 @@ public class Main {
                         String name = scan.next();
                         System.out.println("Podaj nazwę procesu: ");
                         String pro = scan.next();
-                        if (pcblist.get(pro) == null)
+                        if(Shell.PM.findPCB(pro) == null)
                         {
                             System.out.println("Proces nie istnieje");
-                            break;
                         }
                         else
                         {
-                            disc.closeFile(name, pcblist.get(pro));
-                            pcblist.remove(pro);
+                            PCB a = Shell.PM.findPCB(pro);
+                            Shell.disc.closeFile(name, a);
                             System.out.println("Zamknieto plik\n\n");
-                            break;
                         }
+                        break;
                     }
                     case 7:
                     {
                         System.out.println("Podaj nazwę pliku: ");
                         String name = scan.next();
-                        disc.deleteFile(name);
+                        System.out.println("Podaj nazwę uzytkownika: ");
+                        String user = scan.next();
+                        Shell.disc.deleteFile(name,user);
                         System.out.println("Usunieto plik: " + name + "\n\n");
                         break;
                     }
@@ -119,26 +134,61 @@ public class Main {
                         String name = scan.next();
                         System.out.println("Podaj nowa nazwe (nazwa dowiazania): ");
                         String newName = scan.next();
-                        disc.createLink(name, newName);
+                        Shell.disc.createLink(name, newName);
                         break;
                     }
                     case 9:
                     {
                         System.out.println("Podaj nazwę pliku: ");
                         String name = scan.next();
+                        System.out.println("Podaj nazwę uzytkownika: ");
+                        String user = scan.next();
                         System.out.println("Podaj nowa nazwe: ");
                         String newName = scan.next();
-                        disc.renameFile(name, newName);
+                        Shell.disc.renameFile(name,user, newName);
                         break;
                     }
                     case 10:
                     {
-                        disc.ListDirectory();
+                        Shell.disc.ListDirectory();
                         break;
                     }
                     case 11:
                     {
-                        disc.printDisc();
+                        Shell.disc.printDisc();
+                        break;
+                    }
+                    case 12:
+                    {
+                        Shell.open_file_table.printTab();
+                        Shell.getPM().showAllProcesses();
+                        break;
+                    }
+                    case 13:
+                    {
+                        System.out.println("Podaj nazwę pliku: ");
+                        String name = scan.next();
+                        Shell.disc.printSingleInode(name);
+                        break;
+                    }
+                    case 14:
+                    {
+                        Shell.disc.printInodeTable();
+                        break;
+                    }
+                    case 15:
+                    {
+                        System.out.println("Podaj nazwę nowego uzytkownika: ");
+                        String user = scan.next();
+                        user_list.userAdd(user,"iksde");
+                        user_list.printUsers();
+                        break;
+                    }
+                    case 16:
+                    {
+                        System.out.println("Podaj nazwę uzytkownika: ");
+                        String user = scan.next();
+                        user_list.changeUser(user);
                         break;
                     }
                     default:
@@ -156,3 +206,4 @@ public class Main {
             e.printStackTrace();
         }
     }
+}
