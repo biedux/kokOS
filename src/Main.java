@@ -1,23 +1,23 @@
-import memory.memory;
+import Memory.Memory;
 
 public class Main {
 
     public static void main(String[] args) {
         for (int i = 0; i < 512; i++){
-            memory.write('P', i);
+            Memory.write('P', i);
         }
-        memory.printRawRam();
-        memory.writeToFrame(' ', 3, 0);
+        Memory.printRawRam();
+        Memory.writeToFrame(' ', 3, 0);
         for (int i = 0; i < 16; i++){
-            memory.writeMC('x', i);
+            Memory.writeMC('x', i);
         }
-        memory.printRawRam();
+        Memory.printRawRam();
         for (int i = 0; i < 16; i++){
-            memory.writePipe('Z', i);
+            Memory.writePipe('Z', i);
         }
-        memory.clearMC();
-        memory.printRawRam();
-        memory.writeNumMC(134, 3);
-        memory.printRawRam();
+        Memory.clearMC();
+        Memory.printRawRam();
+        Memory.writeNumMC(134, 3);
+        Memory.printRawRam();
     }
 }
