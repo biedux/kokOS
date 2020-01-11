@@ -15,13 +15,13 @@ public class Main {
         Memory ram = PM.RAM;
         VirtualMemory virt = PM.vm;
         PCB P1 = PM.fork(PM.init, "P1", 1, "proces.txt");
-        PCB P2 = PM.fork(PM.init, "P2", 10, "jjj.txt");
-        PCB P3 = PM.fork(PM.init, "P3", 7, "cos.txt");
-        PCB P4 = PM.fork(PM.init, "P4", 5, "cos.txt");
+        //PCB P2 = PM.fork(PM.init, "P2", 10, "jjj.txt");
+        //PCB P3 = PM.fork(PM.init, "P3", 7, "cos.txt");
+        //PCB P4 = PM.fork(PM.init, "P4", 5, "cos.txt");
         Interpreter interpreter = new Interpreter(ram, virt, PM, dysk);
         interpreter.processManagement.scheduler.check();
         interpreter.processManagement.showAllProcesses();
-
+/*
         int i = 0;
         while (true) {
             i++;
@@ -47,18 +47,21 @@ public class Main {
         }
         System.out.println("Koniec programu");
 
+*/
 
-         /*
-            for(int j = 1; j<100; j++){
+         //SZYBCKIE DRUKOWANIE
+            for(int j = 1; j<=15; j++){
                 System.out.println();
                 System.out.println("----------------------------------------------------------");
                 System.out.println("---------------- KROK "+j + " ----------------");
-                Memory.printRawRam();
-                VirtualMemory.printPageFile();
+                //Memory.printRawRam();
+                //VirtualMemory.printPageFile();
                 interpreter.makeStep();
                 interpreter.processManagement.showAllProcesses();
+                //Memory.printRawRam();
 
-            }*/
+            }
+        System.out.println("Koniec programu");
 
 
     }
