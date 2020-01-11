@@ -158,6 +158,28 @@ public class Memory {
         return licznik;
     }
 
+    public static int readNumMC(int adresLogicz){   //adresy od 0 do 15
+        try{
+            int i = 0;
+            char tmp;
+            String czytany = "";
+            do{
+                tmp = Memory[adresLogicz + 496 + i];
+                czytany += tmp;
+                i++;
+            } while (Memory[adresLogicz + 496 + i] != ' ');
+            int num = Integer.parseInt(czytany);
+            System.out.println("Odczytano " + num + ".");
+            return num;
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+
+    }
+
+
     //odczyt ramki MC
     public static Vector<Character> readMCFrame(){
         Vector<Character> odczyt = new Vector<Character>();

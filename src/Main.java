@@ -19,5 +19,7 @@ public class Main {
         Memory.printRawRam();
         Memory.writeNumMC(134, 3);
         Memory.printRawRam();
+        int x = Memory.readNumMC(3);
+        System.out.println(x);
     }
 }
