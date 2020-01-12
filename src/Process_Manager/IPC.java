@@ -81,24 +81,32 @@ public class IPC {
         int read = 0;
         for (PipeQueue e : Pipes) {
             if (e.descR == fd) {
-                    if (!e.eQueue.isEmpty()) {
-                        for (int i = 0; i < buffer.size(); i++) {
-
-                            Memory.readPipe(i);
-                            Character a = e.eQueue.remove();
-                           buffer.add(a);
-                            while (!buffer.isEmpty())
-                            Memory.writePipe(a, i);
-                            //Memory.readPipe(i);
+                if (1>0) {
+                            System.out.println("Enter how many chars you'd like to read: \n");
+                            Scanner c = new Scanner (System.in);
+                            int d = c.nextInt();
+                            if(d>4){
+                                break;
+                            }
+                        for (int i = 0; i < d; i++) { //buffer.size()
+                            char x = VirtualMemory.readChar(PM.init, 5+i);
+                            Memory.writePipe(x, 5+i);
                             read++;
                         }
-                    } else if (e.eQueue.isEmpty()) {
-                        Memory.writePipe((char) 0, 0);
+                            if (VirtualMemory.readChar(PM.init, 5) == '\n') {
+                                System.out.println("jprdl");
+                                Memory.writePipe((char) 0, d + 5);
+                                System.out.println("This pipe's empty AF");
+                                //break;
+                            }
+
                     }
-                    break;
+
                 }
+            System.out.print("Reading from a pipe:  ");
+            Memory.printRawRam();
             }
-        System.out.print("Reading Pipe:  ");
+        //System.out.print("Reading Pipe:  ");
         return nchar;
     }
 
@@ -208,8 +216,6 @@ for (int i= 1; i<6; i++) {
         System.out.println(en);
       //  close(pdesc[0]);
         a.closePipe();
-//
-     Memory.writePipe('x', 4);
-     Memory.printRawRam();
+
  }
 }
