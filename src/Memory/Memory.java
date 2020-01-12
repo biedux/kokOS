@@ -19,12 +19,14 @@ public class Memory {
         System.out.print("|");
         for (int i = 0; i < 512; i++) {
             System.out.print(Memory[i] + "|");
-            if(tmp % 32 == 31){
+            if(tmp == 511){
+                System.out.print("\n");
+            } else if(tmp % 32 == 31){
                 System.out.print("\n|");
             }
             tmp++;
         }
-        System.out.println("----------------------------------------------------------------\n");
+        System.out.println("-----------------------------------------------------------------\n");
     }
 
 
