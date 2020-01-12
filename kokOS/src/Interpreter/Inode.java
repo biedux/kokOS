@@ -12,11 +12,10 @@ public class Inode
     public void printInode()
     {
         System.out.println("\nStan: " + state);
-        System.out.println("\nRozmiar pliku: " + size);
-        System.out.println("\nLicznik dowiazan: " + LinkCounter);
-        //System.out.println("\nStan zamka: " + lock.tryLock());
-        System.out.println("\nNr bloku bezposredniego: " + blocks[0]);
-        System.out.println("\nNr bloku indeksowego: " + blocks[1] + "\n");
+        System.out.println("Rozmiar pliku: " + size);
+        System.out.println("Licznik dowiazan: " + LinkCounter);
+        System.out.println("Nr bloku bezposredniego: " + blocks[0]);
+        System.out.println("Nr bloku indeksowego: " + blocks[1] + "\n");
     }
 }
 

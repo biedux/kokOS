@@ -14,15 +14,8 @@ public class File
     public void printFile()
     {
         System.out.println("Nazwa: " + name);
-        System.out.println("\nNumer i-wezla: " + number);
-        System.out.println("\nPozycja czytania pliku: " + positionPtr);
-        if(type == Types.FILE)
-        {
-            System.out.println("Typ pliku: plik tekstowy");
-        }
-        else
-        {
-            System.out.println("Typ pliku: dowiazanie");
-        }
+        System.out.println("Numer i-wezla: " + number);
+        System.out.println("Pozycja czytania pliku: " + positionPtr);
+        System.out.println("Typ pliku: " + type);
     }
 }

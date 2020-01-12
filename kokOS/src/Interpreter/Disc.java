@@ -76,7 +76,6 @@ public class Disc
         int space = findFreeSpace();
         if (catalog.get(name) != null) //kiedy nazwa zostala znaleziona w katalogu
         {
-            Arrays.fill(disc, space * blockSize, space * blockSize + blockSize, (char)(0));
             throw new Exception("Plik o takiej nazwie juz istnieje"); //tu dodać swój wyjątek
         }
         else if ((catalog.get(name) == null) && (space != -1))
@@ -108,7 +107,7 @@ public class Disc
             //Wpisanie do tablicy i-węzłów
             inodes_table[file.number] = inode;
 
-            System.out.println("Plik został utworzony\n"); //testowe sprawdzenie
+            System.out.println("Plik został utworzony"); //testowe sprawdzenie
         }
         else if (space == -1)
         {
@@ -229,6 +228,7 @@ public class Disc
         {
             throw new Exception("Plik o podanej nazwie nie istnieje");
         }
+        System.out.println("Zapisano dane do pliku");
     }
     public void appendFile(String name, String userName, String newData) throws Exception //działa, zobaczymy jak długo XD
     {
@@ -361,6 +361,7 @@ public class Disc
         {
             throw new Exception("Plik o podanej nazwie nie istnieje");
         }
+        System.out.println("Zapisano dane na koniec pliku");
     }
 
     //amount - ilość znaków, które chcemy sczytać
@@ -461,7 +462,7 @@ public class Disc
                                 }
                             }
                             ret = c + "\n";
-                            if(amount >= inodes_table[num].size)
+                            if(amount == inodes_table[num].size)
                             {
                                 file.positionPtr = 0;
                             }
@@ -486,6 +487,7 @@ public class Disc
         {
             throw new Exception("Plik o podanej nazwie nie istnieje");
         }
+        System.out.println("Odczytywanie zakonczone powodzeniem");
         return ret;
     }
 
@@ -568,6 +570,7 @@ public class Disc
         {
             throw new Exception("Plik o podanej nazwie nie istnieje");
         }
+        System.out.println("Usunieto plik " + name);
     }
 
     public void createLink(String name, String newName) throws Exception
@@ -594,6 +597,7 @@ public class Disc
         {
             throw new Exception("Plik o podanej nazwie nie istnieje");
         }
+        System.out.println("Utworzono dowiazanie");
     }
 
     public void renameFile(String name, String userName, String newName) throws Exception
@@ -641,6 +645,7 @@ public class Disc
         {
             throw new Exception("Plik o podanej nazwie nie istnieje");
         }
+        System.out.println("Zmiana nazwy zakonczona powodzeniem");
     }
 
     public void ListDirectory()
@@ -726,3 +731,4 @@ public class Disc
         }
     }
 }
+
