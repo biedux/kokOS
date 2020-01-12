@@ -76,6 +76,7 @@ public class Disc
         int space = findFreeSpace();
         if (catalog.get(name) != null) //kiedy nazwa zostala znaleziona w katalogu
         {
+            Arrays.fill(disc, space * blockSize, space * blockSize + blockSize, (char)(0));
             throw new Exception("Plik o takiej nazwie juz istnieje"); //tu dodać swój wyjątek
         }
         else if ((catalog.get(name) == null) && (space != -1))
