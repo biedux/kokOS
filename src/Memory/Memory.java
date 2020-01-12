@@ -57,13 +57,16 @@ public class Memory {
     public static char readPipe(int adresLogicz){     //adresy od 0 do 15 dozwolone
         if (adresLogicz < 16){
             try {
+                System.out.println("Odczytuje z Pipe");
                 return Memory[adresLogicz + 480];
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
             }
+            System.out.println("Blad odczytu");
             return 0;
         } else {
+            System.out.println("Blad odczytu");
             return 0;
         }
     }
@@ -73,11 +76,14 @@ public class Memory {
     public static void writePipe(char data, int adresLogicz){     //adresy od 0 do 15 dozwolone
         if (adresLogicz < 16){
             try {
+                System.out.println("Zapisuje do Pipe");
                 Memory[adresLogicz + 480] = data;
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
             }
+        } else {
+            System.out.println("Blad zapisu");
         }
     }
 
@@ -92,6 +98,7 @@ public class Memory {
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        System.out.println("Odczytano ramke Pipe");
         return odczyt;
     }
 
@@ -105,7 +112,7 @@ public class Memory {
                 }
                 Memory[frame * 32 + (adress % 32) + licznik] = ' ';
                 licznik++;
-                System.out.println("Zapisano " + licznik + " bajtów");
+                System.out.println("Zapisano string");
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -124,6 +131,7 @@ public class Memory {
                 System.out.println(e.getMessage());
             }
         }
+        System.out.println("Wyczyszczono Pipe");
     }
 
 
@@ -133,13 +141,16 @@ public class Memory {
     public static char readMC(int adresLogicz){     //adresy od 0 do 15 dozwolone
         if (adresLogicz < 16){
             try {
+                System.out.println("Odczytuje");
                 return Memory[adresLogicz + 496];
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
             }
+            System.out.println("Blad odczytu");
             return 0;
         } else {
+            System.out.println("Blad odczytu");
             return 0;
         }
     }
@@ -150,6 +161,7 @@ public class Memory {
         if (adresLogicz < 16){
             try {
                 Memory[adresLogicz + 496] = data;
+                System.out.println("Zapisano");
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -169,7 +181,7 @@ public class Memory {
                 }
                 Memory[adresLogicz + 496 + licznik] = ' ';
                 licznik++;
-                System.out.println("Zapisano " + licznik + " bajtów");
+                System.out.println("Zapisano liczbe");
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -212,6 +224,7 @@ public class Memory {
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        System.out.println("Odczytano");
         return odczyt;
     }
 
@@ -225,6 +238,7 @@ public class Memory {
                 System.out.println(e.getMessage());
             }
         }
+        System.out.println("Wyczyszczono");
     }
 
     //FUNKCJE UŻYTKOWE
@@ -232,11 +246,13 @@ public class Memory {
     //tu bedzie ZAPIS STRONICY W RAMCE
     public static boolean writeFrame(Vector<Character> data, int frame){
         if ((frame < 0) || (frame > 14)){
+            System.out.println("Blad zapisu ramki");
             return false;
         }
         for (int i = 0; i < data.size(); i++){
             Memory[frame * 32 + i] = data.get(i);
         }
+        System.out.println("Zapisano ramke");
         return true;
     }
 
@@ -252,6 +268,7 @@ public class Memory {
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        System.out.println("Odczytano ramke");
         return odczyt;
     }
 
@@ -260,6 +277,7 @@ public class Memory {
     public static void writeToFrame(char data, int adress, int frame){
         try {
             Memory[frame * 32 + (adress % 32)] = data;
+            System.out.println("Zapisano");
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -271,6 +289,7 @@ public class Memory {
     //tu bedzie ODCZYT BAJTU ZGODNIE Z TABLICA STRONIC
     public static char readFromFrame(int adress, int frame){
         try {
+            System.out.println("Odczytuje");
             return Memory[frame * 32 + (adress % 32)];
         }
         catch (Exception e) {
