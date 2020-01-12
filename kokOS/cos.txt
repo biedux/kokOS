@@ -1,0 +1,15 @@
+OF pliczek2 P3
+WF pliczek2 Root BasiaMaPsa
+RF pliczek2 Root 10
+AF pliczek2 Root ChujoPsa
+RF pliczek2 Root 20
+AF pliczek2 Root KasiaMaEmu
+RF pliczek2 Root 30
+AF pliczek2 Root ChujoEmu
+RF pliczek2 Root 40
+AF pliczek2 Root OlaMaWilka
+RF pliczek2 Root 50
+AF pliczek2 Root ChujoWilka
+RF pliczek2 Root 60
+FC pliczek2 P3
+KP P3

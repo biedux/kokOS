@@ -1,0 +1,29 @@
+MO A 3
+MV B A
+AX B 5
+ML A B
+SX A 22
+MX A 10
+SB A B
+MO C 70
+AD A C
+SB C B
+HL
+
+
+.data
+400
+sciagnij z adresu 400(100)->tymczasowy na 400
+101 lec dalej
+findchar(nrznaku)
+
+
+52
+
+
+mov [500]
+
+
+
+
+32

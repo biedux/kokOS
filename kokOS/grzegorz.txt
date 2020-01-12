@@ -1,0 +1,7 @@
+OF pliczek2 P4
+AF pliczek2 Root AlaMaKota
+RF pliczek2 Root 70
+AF pliczek2 Root SuperKota
+RF pliczek2 Root 80
+FC pliczek2 P4
+KP P4

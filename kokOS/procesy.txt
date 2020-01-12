@@ -1,0 +1,3 @@
+CP P2 10 proces.txt
+KP P1
+HL
