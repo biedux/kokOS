@@ -287,7 +287,7 @@ public class VirtualMemory {
     /**
      * Funkcje dla Ciechana
      */
-    int matchPage(PCB proces, int pageID) {
+ public static int matchPage(PCB proces, int pageID) {
         //System.out.println("WESZLISMY DO MATCGH PAGE");
         // Interpreter.processManagement.showAllProcesses();
         //System.out.println(proces.getID());
@@ -314,7 +314,7 @@ public class VirtualMemory {
         }
     }
 
-    int find(PCB proces, int adress) {
+    public static int find(PCB proces, int adress) {
         //System.out.println("find");
 
         int pageid = (((adress - (adress % 32))) / 32);
@@ -325,7 +325,7 @@ public class VirtualMemory {
         return frameid;
     }
 
-    char readChar(PCB proces, int adress) {
+    public  static char readChar(PCB proces, int adress) {
         //System.out.println("read char");
 
         int frameid = find(proces, adress);
@@ -335,11 +335,16 @@ public class VirtualMemory {
         //System.out.println("w READCHAR:-----------frame id: " + frameid+"  czytany: " + czytany+".");
         return czytany;
     }
-    void writechar(PCB proces, int adress, char data) {
+    public static void writechar(PCB proces, int adress, char data) {
         int frameid = find(proces, adress);
         Memory.writeToFrame(data,adress, frameid);
     }
 
+    public static int saveString(PCB proces, int adress, String data){
+        int frameid = find(proces, adress);
+        int bajty = Memory.writeString(data, adress, frameid);
+        return bajty;
+    }
     /**
      * Metody do wyświetlania
      */
