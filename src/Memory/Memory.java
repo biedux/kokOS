@@ -95,6 +95,25 @@ public class Memory {
         return odczyt;
     }
 
+    public static int writeString(String napis, int adress, int frame){
+        int licznik = 0;
+            try {
+                for (int i = 0; i < napis.length();i++){
+                    char wsadz = napis.charAt(i);
+                    Memory[frame * 32 + (adress % 32) + i] = wsadz;
+                    licznik++;
+                }
+                Memory[frame * 32 + (adress % 32) + licznik] = ' ';
+                licznik++;
+                System.out.println("Zapisano " + licznik + " bajtów");
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+                return 0;
+            }
+        return licznik;
+    }
+
     //czyszczenie PIPE
     public static void clearPIPE(){
         for (int i = 0; i < 16; i++){

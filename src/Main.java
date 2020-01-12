@@ -26,5 +26,7 @@ public class Main {
         Memory.printRawRam();
         x = Memory.readNumMC(0+y);
         System.out.println(x);
+        Memory.writeString("abcd", 2, 0);
+        Memory.printRawRam();
     }
 }
