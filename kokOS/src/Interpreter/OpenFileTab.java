@@ -81,11 +81,11 @@ public class OpenFileTab
         }
     }
 
-    public File findFile(PCB pcb) throws Exception
+    public File findFile(PCB pcb)
     {
         if(tab.size() == 0)
         {
-            throw new Exception("Zaden plik nie jest otwarty");
+            return null;
         }
         else
         {
@@ -100,10 +100,10 @@ public class OpenFileTab
                 }
                 else
                 {
-                    throw new Exception("Zaden plik nie jest otwarty przez ten proces");
+                    return null;
                 }
             }
         }
-        throw new Exception("Zaden plik nie jest otwarty");
+        return null;
     }
 }
