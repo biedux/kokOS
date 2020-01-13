@@ -179,10 +179,6 @@ public class VirtualMemory {
             }
         }
 
-      
-
-
-
     private static int findVictim() {
         return victimQueue.poll();
     }
@@ -273,7 +269,7 @@ public class VirtualMemory {
 
     public static void usunproces(PCB proces)
     {
-       // System.out.println("Removing Process " + proces.getName() + " with ID " + proces.getID());
+        System.out.println("Usuwamy proces " + proces.getName() + " o ID " + proces.getID());
         Queue<Integer> tmpQueue = victimQueue, beginQ = new LinkedList<>();
         int frame, Qsize;
         for(int i = 0; i<15; i++)
@@ -295,7 +291,7 @@ public class VirtualMemory {
                 beginQ.removeAll(beginQ);
                 RamStatus[i].ProcessID = -1;
                 RamStatus[i].PageID = -1;
-             //   System.out.println("Victim queue updated, removed: pID:" + proces.getID() + " from queue position: " + i);
+             // System.out.println("Victim queue updated, removed: pID:" + proces.getID() + " from queue position: " + i);
             }
         }
         //czyszczenie kolejki glownej
@@ -305,7 +301,7 @@ public class VirtualMemory {
         /**Removing all records from PageFile and PageTables maps*/
         PageFile.remove(proces.getID());
         PageTables.remove(proces.getID());
-        //System.out.println("Process " + proces.getName() + " with ID " + proces.getID() + " has been removed");
+        System.out.println("Proces " + proces.getName() + " o ID " + proces.getID() + " pomyslnie usunieto");
     }
 
 
