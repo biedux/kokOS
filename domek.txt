@@ -1,0 +1,9 @@
+MO A 10
+AX C 2
+AD D C
+MO B 1
+MO [7] B
+SX A 1
+JZ 57
+JP 38
+HL

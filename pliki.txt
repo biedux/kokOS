@@ -1,0 +1,3 @@
+PW
+CP P10 15 czytaj.txt
+HL
