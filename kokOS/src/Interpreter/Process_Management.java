@@ -5,6 +5,7 @@ package Interpreter;
 //import VirtualMemory.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 public class Process_Management {
@@ -31,15 +32,17 @@ public class Process_Management {
     }
 
     public String readFile(String fName) throws Exception {
-        String programm="";
-        if (fName != "") {
-            File file = new File(fName);
-            Scanner prog = new Scanner(file);
-            while(prog.hasNextLine()){
-                programm+=prog.nextLine()+" ";
+
+            String programm="";
+            if (fName != "") {
+                File file = new File(fName);
+                Scanner prog = new Scanner(file);
+                while(prog.hasNextLine()){
+                    programm+=prog.nextLine()+" ";
+                }
+                return programm;
             }
-        }
-        return programm;
+            return programm;
     }
 
     // Nowy proces
@@ -53,21 +56,23 @@ public class Process_Management {
             }
         }
         if(possible==true) {
-            PCB.setCountProcess(PCB.getCountProcess()+1);
-            PCB process=new PCB(name,fName);
-            process.setParentID(parent.getID());
-            process.setState(process.State.Ready);
-            process.setPriority(priority);
-            ProcessList.add(process);
-            parent.ChildrenList.add(process);
-            System.out.println("Id nowego procesu: "+process.getID());
-
-            process.setCode(readFile(fName));
-
-            VirtualMemory.nowyproces(process);
-
-            this.scheduler.Insert(process);
-            return process;
+            try{
+                PCB.setCountProcess(PCB.getCountProcess()+1);
+                PCB process=new PCB(name,fName);
+                process.setParentID(parent.getID());
+                process.setState(process.State.Ready);
+                process.setPriority(priority);
+                ProcessList.add(process);
+                parent.ChildrenList.add(process);
+                System.out.println("Id nowego procesu: "+process.getID());
+                this.scheduler.Insert(process);
+                process.setCode(readFile(fName));
+                VirtualMemory.nowyproces(process);
+                return process;
+            }
+            catch(Exception e) {
+                System.out.println(e.getLocalizedMessage());
+            }
         }
         else if(possible==false){
             throw new Exception("Nie mozna utworzyc procesu o danej nazwie");
