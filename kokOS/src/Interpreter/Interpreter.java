@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-//todo
-//  pipe
-// programy dokonczyc
+
 enum Rozkazy {
     //nie bedzie tych enumów, ale chwilowo fajnie sie to tu rozpisuje
     AD, // AD A B           dodaje rejestr A + rejestr B
@@ -22,7 +20,7 @@ enum Rozkazy {
     JP, // JP 100           skok do adresu
     JZ, // JZ 100           skok do adresu jesli po poprzedniej operacji jest gdzies zero
 
-    CP, // CP               tworzy proces
+    CP, // CP idRodzica, priorytet, plik.txt               tworzy proces
     KP, // KP               zabija proces
 
     //uzupelnij mozliwe argumenty
@@ -63,7 +61,11 @@ class Interpreter {
     Interpreter() throws FileNotFoundException {
         ram = new Memory();
         virtual = new VirtualMemory(ram);
-        processManagement = new Process_Management();
+        try {
+            processManagement = new Process_Management();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         disc = new Disc();
         ipc = new IPC();
         open_file_table = new OpenFileTab();
@@ -76,10 +78,10 @@ class Interpreter {
         return result;
     }
 
-   /* public static OpenFileTab getOpenFileTab()
-    {
-        return open_file_table;
-    }*/
+    /* public static OpenFileTab getOpenFileTab()
+     {
+         return open_file_table;
+     }*/
     public static Process_Management getPM() { return processManagement;}
     public static Memory getRam() {return ram;}
     public static Disc getDisc() {return disc;}
@@ -136,6 +138,10 @@ class Interpreter {
     }
 
     public void makeStep() throws Exception {
+        //System.out.println("weszlismy do make step (interpreter)");
+        //Memory.printRawRam();
+        //VirtualMemory.printPageTable();
+
         //processManagement.scheduler.check();
         processManagement.scheduler.check();
         System.out.println("id wykonywanego procesu w obecnym : "+processManagement.scheduler.running.getID());
@@ -415,8 +421,9 @@ class Interpreter {
         }
         //JZ
         if(    (cmd.equals("JZ"))  ){
-            if(    pcb.getAX()==0 || pcb.getBX()==0 || pcb.getCX()==0 || pcb.getDX()==0  ){
+
                 args = getArgs(counter, 1);
+            if(    pcb.getAX()==0 || pcb.getBX()==0 || pcb.getCX()==0 || pcb.getDX()==0  ){
                 String temp = args.get(0);
                 int result = Integer.parseInt(temp);
                 pcb.setCounter(result);
@@ -426,18 +433,18 @@ class Interpreter {
 
         //CP
         if(    (cmd.equals("CP"))  ){
-                args = getArgs(counter, 3);
-                int prio = Integer.parseInt(args.get(1));
-                //PCB.setCountProcess(PCB.getCountProcess()-1);
-                PCB New=processManagement.fork(processManagement.findPCB(pcb.getName()), args.get(0), prio, args.get(2));
+            args = getArgs(counter, 3);
+            int prio = Integer.parseInt(args.get(1));
+            //PCB.setCountProcess(PCB.getCountProcess()-1);
+            PCB New=processManagement.fork(processManagement.findPCB(pcb.getName()), args.get(0), prio, args.get(2));
         }
 
         //CS = create shorter
         if(    (cmd.equals("CS"))  ){
-                args = getArgs(counter, 2);
-                int prio = Integer.parseInt(args.get(1));
-                //PCB.setCountProcess(PCB.getCountProcess()-1);
-                PCB New=processManagement.fork(processManagement.findPCB(pcb.getName()), args.get(0), prio, "");
+            args = getArgs(counter, 2);
+            int prio = Integer.parseInt(args.get(1));
+            //PCB.setCountProcess(PCB.getCountProcess()-1);
+            PCB New=processManagement.fork(processManagement.findPCB(pcb.getName()), args.get(0), prio, "");
         }
 
         //KP
@@ -455,47 +462,48 @@ class Interpreter {
         //CF
         if (   (cmd.equals("CF"))  ) {
 
-                args = getArgs(counter, 2);
-                String name = args.get(0);
-                String userName = args.get(1);
-                disc.createFile(name, userName);
+            args = getArgs(counter, 2);
+            String name = args.get(0);
+            String userName = args.get(1);
+            disc.createFile(name, userName);
 
         }
 
         //OF
         if(    (cmd.equals("OF"))  ){
 
-                args = getArgs(counter, 2);
-                String name = args.get(0);
-                disc.openFile(name, processManagement.findPCB(args.get(1)));
+            args = getArgs(counter, 2);
+            String name = args.get(0);
+            disc.openFile(name, processManagement.findPCB(args.get(1)));
 
         }
 
         //WF
         if(    (cmd.equals("WF"))  ){
 
-                args = getArgs(counter, 3);
-                String name = args.get(0);
-                String user = args.get(1);
-                String data = args.get(2);
-                disc.writeFile(name, user, data);
+            args = getArgs(counter, 3);
+            String name = args.get(0);
+            String user = args.get(1);
+            String data = args.get(2);
+            disc.writeFile(name, user, data);
         }
 
         //AF
         if(    (cmd.equals("AF"))  ) {
-                args = getArgs(counter, 3);
-                String name = args.get(0);
-                String user = args.get(1);
-                String newData = args.get(2);
-                disc.appendFile(name, user, newData);
+            args = getArgs(counter, 3);
+            String name = args.get(0);
+            String user = args.get(1);
+            String newData = args.get(2);
+            disc.appendFile(name, user, newData);
         }
 
         //DF
         if(    (cmd.equals("DF"))  ){
-                args = getArgs(counter, 2);
-                String name = args.get(0);
-                String user = args.get(1);
-                disc.deleteFile(name, user);
+            args = getArgs(counter, 2);
+            String name = args.get(0);
+            String user = args.get(1);
+            System.out.println("przed lukaszem");
+            disc.deleteFile(name, user);
         }
 
         //RF
@@ -509,9 +517,9 @@ class Interpreter {
 
         //FC
         if(    (cmd.equals("FC"))  ){
-                args = getArgs(counter, 2);
-                String name = args.get(0);
-                disc.closeFile(name, processManagement.findPCB(args.get(1)));
+            args = getArgs(counter, 2);
+            String name = args.get(0);
+            disc.closeFile(name, processManagement.findPCB(args.get(1)));
         }
 
 
