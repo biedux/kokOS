@@ -1,6 +1,8 @@
 package VirtualMemory;
 
 
+package Interpreter;
+
 import java.util.*;
 
 public class VirtualMemory {
@@ -130,7 +132,7 @@ public class VirtualMemory {
                         fID = victimQueue.element();
                         //  System.out.println("Frameid w pętli "+fID);
                         if (PageTables.get(key).get(j).nrramki == fID) {
-                            if (PageTables.get(key).get(j).odnieienia == true) {
+                            if (PageTables.get(key).get(j).odniesienia == true) {
 
                                 victimQueue.remove(fID);
                                 updateodniesienia(key, j, false);
@@ -138,7 +140,7 @@ public class VirtualMemory {
                                 victimQueue.add(fID);
                                 //printQueue();
 
-                            } else if (PageTables.get(key).get(j).odnieienia == false) {
+                            } else if (PageTables.get(key).get(j).odniesienia == false) {
                                 // if(j) {
                                 if (wstawianieramki == false) {
                                     wstawianieramki = true;
@@ -246,7 +248,7 @@ public class VirtualMemory {
     }
     public  static void updateodniesienia(int procID,int pageID,boolean value)
     {
-        PageTables.get(procID).get(pageID).odnieienia = value;
+        PageTables.get(procID).get(pageID).odniesienia = value;
     }
     static void updateRamStatus(int procID, int pageID, int fID)
     {
@@ -375,7 +377,7 @@ public class VirtualMemory {
             System.out.println("Tablica stronic dla procesu o id: " + processID);
             System.out.println("Page id " +"   \t" + "Frame id" + "   \t" + " Bit valid " + "   \t" + " Bit odniesienia ");
             for (int i = 0; i < PageTables.get(processID).size(); i++) {
-                System.out.println(i + "          \t" + PageTables.get(processID).get(i).nrramki + "         \t" + PageTables.get(processID).get(i).valid + "         \t" + PageTables.get(processID).get(i).odnieienia);
+                System.out.println(i + "          \t" + PageTables.get(processID).get(i).nrramki + "         \t" + PageTables.get(processID).get(i).valid + "         \t" + PageTables.get(processID).get(i).odniesienia);
             }
         } else System.out.println("Error: process with given ID doesn't exist.");
     }
@@ -386,7 +388,7 @@ public class VirtualMemory {
             for (int j = 0; j < PageTables.get(key).size(); j++) {
                 System.out.println("Page no." + j);
                 // System.out.println("Nr procesu w pliku wymiany "+i);
-                System.out.println(j + "          \t" + PageTables.get(key).get(j).nrramki + "         \t" + PageTables.get(key).get(j).valid + "         \t" + PageTables.get(key).get(j).odnieienia );
+                System.out.println(j + "          \t" + PageTables.get(key).get(j).nrramki + "         \t" + PageTables.get(key).get(j).valid + "         \t" + PageTables.get(key).get(j).odniesienia );
             }
         }
         System.out.println(" ");
