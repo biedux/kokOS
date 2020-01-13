@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
 //todo
 //  pipe
@@ -53,7 +52,7 @@ class Interpreter {
     static IPC ipc;
     static Disc disc;
     static OpenFileTab open_file_table;
-    //IPC ipc;
+    //Interpreter.IPC ipc;
     private int counter;
     private int id;
     private boolean czyDoRamu;
@@ -531,7 +530,7 @@ class Interpreter {
         //PR
         if(    (cmd.equals("PR"))  ){
             System.out.println("weszlismy do read pipe");
-            IPC.ReadPipe();
+            IPC.readFromPipe();
         }
 
 
