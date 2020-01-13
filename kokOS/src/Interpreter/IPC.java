@@ -2,7 +2,7 @@ package com.company;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-
+//todo dodac fcje Create Pipe do assmbly i wwsolac Create Pipe w Interpreterze
 public class IPC {
     public static final Vector<PipeQueue> Pipes = new Vector<>();
     public static final Vector<Integer> descriptor = new Vector<>();
