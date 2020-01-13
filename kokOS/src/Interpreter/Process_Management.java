@@ -48,7 +48,8 @@ public class Process_Management {
     // Nowy proces
     public PCB fork(PCB parent, String name, int priority, String fName) throws Exception {
         boolean possible=true;
-
+        PCB.setCountProcess(PCB.getCountProcess()+1);
+        PCB process=new PCB(name,fName);
         // Nowy proces
         for(PCB p:ProcessList){
             if(p.getName()==name){
@@ -57,8 +58,6 @@ public class Process_Management {
         }
         if(possible==true) {
             try{
-                PCB.setCountProcess(PCB.getCountProcess()+1);
-                PCB process=new PCB(name,fName);
                 process.setParentID(parent.getID());
                 process.setState(process.State.Ready);
                 process.setPriority(priority);
@@ -72,6 +71,8 @@ public class Process_Management {
             }
             catch(Exception e) {
                 System.out.println(e.getLocalizedMessage());
+                PCB.setCountProcess(PCB.getCountProcess()-1);
+                kill(process);
             }
         }
         else if(possible==false){
