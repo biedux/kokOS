@@ -500,65 +500,69 @@ public class Disc
             int num = file.number;
             if(inodes_table[num] != null)
             {
-                for(int l = 0; l < inodes_table[num].permissions.PermList.size(); l++)
+                if(inodes_table[num].permissions.PermList.isEmpty())
                 {
-                    if(inodes_table[num].permissions.PermList.get(l).getUserID().equals(userName) && inodes_table[num].permissions.PermList.get(l).getRW() == 3)
+                    for(int l = 0; l < inodes_table[num].permissions.PermList.size(); l++)
                     {
-                        if (!inodes_table[num].state)
+                        if(inodes_table[num].permissions.PermList.get(l).getUserID().equals(userName) && inodes_table[num].permissions.PermList.get(l).getRW() == 3)
                         {
-                            if(inodes_table[num].LinkCounter > 1)
+                            if (!inodes_table[num].state)
                             {
-                                catalog.remove(name);
-                                --inodes_table[num].LinkCounter;
+                                if(inodes_table[num].LinkCounter > 1)
+                                {
+                                    catalog.remove(name);
+                                    --inodes_table[num].LinkCounter;
+                                }
+                                else
+                                {
+                                    int amountIn = inodes_table[num].size > 32 ? 2:1;
+                                    int direct;
+                                    int inDirect;
+                                    if(amountIn == 1)
+                                    {
+                                        direct = inodes_table[num].blocks[0];
+                                        Arrays.fill(disc, direct*32, direct*32+32, (char)0);
+                                        bitArray.set(direct);
+                                        inodes_table[num] = null;
+                                        catalog.remove(name);
+                                        ++freeBlockAmount;
+                                    }
+                                    else if (amountIn == 2)
+                                    {
+                                        direct = inodes_table[num].blocks[0];
+                                        Arrays.fill(disc, direct*32, direct*32+32, (char)0);
+                                        bitArray.set(direct);
+                                        ++freeBlockAmount;
+                                        inDirect = inodes_table[num].blocks[1];
+                                        int tmp = 0;
+
+                                        while((int)disc[inDirect*32+tmp] != 65535)
+                                        {
+                                            int f = disc[inDirect*32+tmp];
+                                            Arrays.fill(disc, f*32, f*32+32, (char)0);
+                                            bitArray.set(f);
+                                            ++freeBlockAmount;
+                                            tmp++;
+
+                                        }
+
+                                        Arrays.fill(disc, inDirect*32, inDirect*32+32, (char)0);
+                                        bitArray.set(inDirect);
+                                        inodes_table[num] = null;
+                                        catalog.remove(name);
+                                        System.out.println("Usunieto plik " + name);
+                                    }
+                                }
                             }
                             else
                             {
-                                int amountIn = inodes_table[num].size > 32 ? 2:1;
-                                int direct;
-                                int inDirect;
-                                if(amountIn == 1)
-                                {
-                                    direct = inodes_table[num].blocks[0];
-                                    Arrays.fill(disc, direct*32, direct*32+32, (char)0);
-                                    bitArray.set(direct);
-                                    inodes_table[num] = null;
-                                    catalog.remove(name);
-                                    ++freeBlockAmount;
-                                }
-                                else if (amountIn == 2)
-                                {
-                                    direct = inodes_table[num].blocks[0];
-                                    Arrays.fill(disc, direct*32, direct*32+32, (char)0);
-                                    bitArray.set(direct);
-                                    ++freeBlockAmount;
-                                    inDirect = inodes_table[num].blocks[1];
-                                    int tmp = 0;
-
-                                    while((int)disc[inDirect*32+tmp] != 65535)
-                                    {
-                                        int f = disc[inDirect*32+tmp];
-                                        Arrays.fill(disc, f*32, f*32+32, (char)0);
-                                        bitArray.set(f);
-                                        ++freeBlockAmount;
-                                        tmp++;
-
-                                    }
-
-                                    Arrays.fill(disc, inDirect*32, inDirect*32+32, (char)0);
-                                    bitArray.set(inDirect);
-                                    inodes_table[num] = null;
-                                    catalog.remove(name);
-                                }
+                                throw new Exception("Plik jest otwarty");
                             }
                         }
                         else
                         {
-                            throw new Exception("Plik jest otwarty");
+                            throw new Exception("Brak uprawnien");
                         }
-                    }
-                    else
-                    {
-                        throw new Exception("Brak uprawnien");
                     }
                 }
             }
@@ -571,7 +575,6 @@ public class Disc
         {
             throw new Exception("Plik o podanej nazwie nie istnieje");
         }
-        System.out.println("Usunieto plik " + name);
     }
 
     public void createLink(String name, String newName) throws Exception
@@ -732,4 +735,3 @@ public class Disc
         }
     }
 }
-
