@@ -31,18 +31,7 @@ public class Perm {
     {
         this.Owner = Owner;
     }
-// dla pliku
 
-
-/*
-
-
-   public String getPermission(User user) {
-        System.out.println("Owner: " +  );
-        System.out.println("User_rights: " + getRW());
-        System.out.println(("Other_rights: " + " "));
-}
-*/
 
     public void setUserId(String userId)
     {
@@ -54,14 +43,4 @@ public class Perm {
         this.rw = rw;
     }
 
-
-
-
-
 }
-
-
-
-
-//dostarczam obiekt dla pliku, wywolanie, dla uzytkownika do tego pliku zmiana uprawnien
-

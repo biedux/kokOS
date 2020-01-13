@@ -1,18 +1,10 @@
 package Interpreter;
 
-import java.util.Hashtable;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class User_List {
     public ArrayList<User> UserList= new ArrayList<>();
-//funkcja zmiana uzytkownika, nazwa i haslo,
-    //zaloguj, czy username jest na liscie
-    //zmieniam isLogged na false staremu
-    //true nowemu
-    //komentarz
-
-    //jak stworzyc admina przy starcie
-    //jak przypisac adminowi argumenty
 
     User_List()
     {
@@ -34,24 +26,47 @@ public class User_List {
         }
     }
 
-    public void userAdd(String Name, String Password)
-    {
-        UserList.add(new User(Name, Password));
+    public void userAdd(String Name, String Password) throws Exception {
+        boolean flag = false;
+        for (int i = 0; i < UserList.size(); i++) {
+            if (UserList.get(i).getUserName().equals(Name)) {
+                flag = true;
+            }
+        }
+        if (flag) {
+            throw new Exception("Istnieje podany uzytkownik!");
+        } else {
+            // for (int i = 0; i < UserList.size(); i++) {
+            //   if (UserList.get(i).getUserName().equals((Name))) {
+//
+            //                  } else {
+            UserList.add(new User(Name, Password));
+            System.out.println("Dodano uzytkownika: " + Name);
+        }
     }
+    //  }
+    //    }
 
-
-    public void userRemove(String ID)
-    {
-        for(int i=0; i<UserList.size(); i++)
-        {
-            if(UserList.get(i).getUserName()==ID)
-            {
-                UserList.remove(i);
+    public void userRemove(String ID) throws Exception {
+        boolean flag = false;
+        for (int i = 0; i < UserList.size(); i++) {
+            if (UserList.get(i).getUserName().equals(ID)) {
+                flag = true;
+            }
+        }
+        if (!flag) {
+            throw new Exception("Podany uzytkownik nie istnieje!");
+        } else {
+            for (int i = 0; i < UserList.size(); i++) {
+                if (UserList.get(i).getUserName().equals(ID)) {
+                    System.out.println("Usunieto uzytkownika: " + UserList.get(i).getUserName());
+                    UserList.remove(i);
+                }
             }
         }
     }
 
-    public void changeUser(String userName)
+    public void changeUser(String userName) throws Exception
     {
         boolean flag = false;
         for(int i=0; i<UserList.size(); i++)
@@ -62,37 +77,45 @@ public class User_List {
         }
         if (!flag)
         {
-            System.out.println("Nie ma takiego uzytkownika na liscie!");
+            throw new Exception("Nie ma takiego uzytkownika na liscie!");
         }
         else
         {
-            for(int i=0; i<UserList.size(); i++)
-            {
-                if(UserList.get(i).getIsLogged()==true) {
-                    UserList.get(i).setLogged(false);
-                }
-                else if(UserList.get(i).getUserName().equals(userName)) {
-                    UserList.get(i).setLogged(true);
+            for(int i=0; i<UserList.size(); i++) {
+                if(UserList.get(i).getUserName().equals(userName)) {
+                    Scanner scan = new Scanner(System.in);
+                    System.out.println("Podaj haslo: ");
+                    String Password = scan.nextLine();
+                    if (Password.equals(UserList.get(i).getPassword())) {
+                        for (int j = 0; j < UserList.size(); j++) {
+                            if (UserList.get(j).getIsLogged() == true && !UserList.get(j).getUserName().equals(userName)) {
+                                UserList.get(j).setLogged(false);
+                            } else if (UserList.get(j).getUserName().equals(userName)) {
+                                UserList.get(j).setLogged(true);
+                                System.out.println("Zalogowano uzytkownika: " + UserList.get(j).getUserName());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Bledne haslo!");
+                    }
                 }
             }
         }
     }
 
-
-/*    public void changeUser (String userID, String newUser)
+    public String printLoggedUser()
     {
+        String Name = "";
+        for(int i=0; i<UserList.size(); i++)
         {
-            if(UserList.get(userID).getIsLogged() == true)
-            {
-                UserList.get(userID).setLogged(false);
-                UserList.get(newUser).setLogged(true);
+            if(UserList.get(i).getIsLogged()==true) {
+                Name = UserList.get(i).getUserName();
             }
+
         }
+        return Name;
     }
-*/
-
-
-
-
 
 }

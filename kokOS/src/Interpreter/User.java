@@ -3,8 +3,7 @@ package Interpreter;
 public class User {
     private String UserName;
     private String Password;
-    private boolean isLogged; //dla admina domyslnie true,
-    //set i get  do islogged
+    private boolean isLogged;
 
     User(String UserName)
     {
@@ -46,9 +45,5 @@ public class User {
     {
         this.isLogged = isLogged;
     }
-
-
-    //zmiana
-
 
 }

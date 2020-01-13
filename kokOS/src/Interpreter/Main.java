@@ -15,8 +15,12 @@ import java.io.FileNotFoundException;
 /*
 
  */
-public class Main{
-public static void main(String[] arg) throws FileNotFoundException {
+public class Main {
+    public static void main(String[] arg) throws FileNotFoundException {
+        Shell shell = new Shell();
+        shell.start();
+    }
+}
         //  Scan();
 //        int[] pdesc = new int[2];
 //        IPC a = new IPC();
@@ -48,22 +52,22 @@ public static void main(String[] arg) throws FileNotFoundException {
 //        }
 
 
-            Interpreter interpreter = new Interpreter();
-            Process_Management PM = Interpreter.getPM();
-            Disc dysk = Interpreter.getDisc();
-            Memory ram = Interpreter.getRam();
-            VirtualMemory virt = Interpreter.getVirtual();
+//            Interpreter interpreter = new Interpreter();
+//            Process_Management PM = Interpreter.getPM();
+//            Disc dysk = Interpreter.getDisc();
+//            Memory ram = Interpreter.getRam();
+//            VirtualMemory virt = Interpreter.getVirtual();
             //PCB P2 = PM.fork(PM.init, "P2", 1, "jjj.txt");
             //PCB P5 = PM.fork(PM.init, "P5", 3, "otwieramy.txt");
             //PCB P2 = PM.fork(PM.init, "P2", 10, "jjj.txt");
             //PCB P3 = PM.fork(PM.init, "P3", 7, "cos.txt");
             //PCB P4 = PM.fork(PM.init, "P4", 5, "cos.txt");
 
-        PCB P6 = PM.fork(PM.init, "P6", 3, "pliki.txt");
-
-
-        PM.scheduler.check();
-            PM.showAllProcesses();
+//        PCB P6 = PM.fork(PM.init, "P6", 3, "pliki.txt");
+//
+//
+//        PM.scheduler.check();
+//            PM.showAllProcesses();
 ///*
 //        int i = 0;
 //        while (true) {
@@ -92,34 +96,34 @@ public static void main(String[] arg) throws FileNotFoundException {
 //
 //*/
 
-            //SZYBCKIE DRUKOWANIE
-            for (int j = 1; j <= 100; j++) {
-
-                    System.out.println();
-                    System.out.println("----------------------------------------------------------");
-                    System.out.println("---------------- KROK " + j + " ----------------");
-                    //Memory.printRawRam();
-                    //VirtualMemory.printPageFile();
-                try
-                {
-                    interpreter.makeStep();
-                }
-                catch(Exception e)
-                {
-                    System.out.println(e.getMessage());
-                }
-                    PM.showAllProcesses();
-              PM.showTree(P6);
-                    //interpreter.disc.printDisc();
-                    //interpreter.disc.ListDirectory();
-                    Memory.printRawRam();
-                    //VirtualMemory.printQueue();
-
-
-            }
-
-        System.out.println("-----------------Koniec programu MISIE--------------");
-
-    }
-}
-
+//            //SZYBCKIE DRUKOWANIE
+//            for (int j = 1; j <= 100; j++) {
+//
+//                    System.out.println();
+//                    System.out.println("----------------------------------------------------------");
+//                    System.out.println("---------------- KROK " + j + " ----------------");
+//                    //Memory.printRawRam();
+//                    //VirtualMemory.printPageFile();
+//                try
+//                {
+//                    interpreter.makeStep();
+//                }
+//                catch(Exception e)
+//                {
+//                    System.out.println(e.getMessage());
+//                }
+//                    PM.showAllProcesses();
+//              PM.showTree(P6);
+//                    //interpreter.disc.printDisc();
+//                    //interpreter.disc.ListDirectory();
+//                    Memory.printRawRam();
+//                    //VirtualMemory.printQueue();
+//
+//
+//            }
+//
+//        System.out.println("-----------------Koniec programu MISIE--------------");
+//
+//    }
+//}
+//

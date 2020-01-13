@@ -1,6 +1,5 @@
 package Interpreter;
 
-
 //import Processor.*;
 //import VirtualMemory.*;
 import java.io.File;
@@ -11,7 +10,7 @@ import java.util.*;
 public class Process_Management {
 
     public Memory RAM;
-    public VirtualMemory vm=new VirtualMemory(RAM);
+    public VirtualMemory vm = new VirtualMemory(RAM);
 
     // Lista procesów
     public List<PCB> ProcessList=new LinkedList<PCB>();
@@ -19,13 +18,12 @@ public class Process_Management {
     // Proces główny
     public PCB init;
 
-    public Scheduler scheduler=new Scheduler();
+    public Scheduler scheduler=Shell.getScheduler();
 
     public Process_Management() throws Exception {
-
         // Inicjalizacja głównego procesu przy starcie rodzica
-        init=this.scheduler.dummy;
-        this.scheduler.InsertFirst(init);
+        init=scheduler.dummy;
+        scheduler.InsertFirst(init);
         ProcessList.add(init);
         init.setCode(readFile("init.txt"));
         VirtualMemory.nowyproces(init);
@@ -33,16 +31,16 @@ public class Process_Management {
 
     public String readFile(String fName) throws Exception {
 
-            String programm="";
-            if (fName != "") {
-                File file = new File(fName);
-                Scanner prog = new Scanner(file);
-                while(prog.hasNextLine()){
-                    programm+=prog.nextLine()+" ";
-                }
-                return programm;
+        String programm="";
+        if (fName != "") {
+            File file = new File(fName);
+            Scanner prog = new Scanner(file);
+            while(prog.hasNextLine()){
+                programm+=prog.nextLine()+" ";
             }
             return programm;
+        }
+        return programm;
     }
 
     // Nowy proces
@@ -52,7 +50,7 @@ public class Process_Management {
         PCB process=new PCB(name,fName);
         // Nowy proces
         for(PCB p:ProcessList){
-            if(p.getName()==name){
+            if(p.getName().equals(name)){
                 possible=false;
             }
         }
@@ -76,6 +74,7 @@ public class Process_Management {
             }
         }
         else if(possible==false){
+            PCB.setCountProcess(PCB.getCountProcess()-1);
             throw new Exception("Nie mozna utworzyc procesu o danej nazwie");
         }
         return null;
@@ -138,9 +137,9 @@ public class Process_Management {
                 }
             }
             ProcessList.remove(process);
-            this.scheduler.Delete(process);
+            scheduler.Delete(process);
             VirtualMemory.usunproces(process);
-            Interpreter.open_file_table.removeFile(process,Interpreter.open_file_table.findFile(process));
+            //Shell.open_file_table.removeFile(process,Shell.open_file_table.findFile(process));
         }
         if(possible==false){
             throw new Exception("Nie mozna zabic procesu ktory nie istnieje");

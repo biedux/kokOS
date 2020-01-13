@@ -7,17 +7,6 @@ public class IPC {
     public static final Vector<PipeQueue> Pipes = new Vector<>();
     public final Vector<Integer> descriptor = new Vector<>();
 
-    private static Process_Management PM;
-
-    static {
-        try {
-            PM = new Process_Management();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public IPC() throws FileNotFoundException {}
 
@@ -33,7 +22,7 @@ public class IPC {
         Scanner myObj1 = new Scanner (System.in);
         System.out.println("Enter data");
         String c = myObj1.nextLine();
-        VirtualMemory.saveString(PM.init, 5, c);
+        VirtualMemory.saveString(Shell.getPM().init, 5, c);
         Memory.printRawRam();
 
     }
@@ -42,7 +31,7 @@ public class IPC {
         Scanner myObj1 = new Scanner (System.in);
         System.out.println("Enter data");
         String c = myObj1.nextLine();
-        VirtualMemory.saveString(PM.init, 5, c);
+        VirtualMemory.saveString(Shell.getPM().init, 5, c);
         Memory.printRawRam();
         int written = 0;
 
@@ -54,16 +43,16 @@ public class IPC {
 
 
                     for (int i = 0; i < 4; i++) { //buffer.size()
-                        if (VirtualMemory.readChar(PM.init, 5+i) == ' '){
+                        if (VirtualMemory.readChar(Shell.getPM().init, 5+i) == ' '){
                             break;
                         }
 
-                        char x = VirtualMemory.readChar(PM.init, 5+i);
+                        char x = VirtualMemory.readChar(Shell.getPM().init, 5+i);
                         Memory.writePipe(x, i);
                         written++;
 
                     }
-                    if(VirtualMemory.readChar(PM.init, 5) == ' '){
+                    if(VirtualMemory.readChar(Shell.getPM().init, 5) == ' '){
                         Memory.writePipe((char) 0, 0);
 
                     }
@@ -107,11 +96,11 @@ public class IPC {
                     } while(d>4);
                 }
                 for (int i = 0; i < d; i++) { //buffer.size()
-                    char x = VirtualMemory.readChar(PM.init, 5+i);
+                    char x = VirtualMemory.readChar(Shell.getPM().init, 5+i);
                     Memory.writePipe(x, 5+i);
                     read++;
                 }
-                if (VirtualMemory.readChar(PM.init, 5) == ' ') {
+                if (VirtualMemory.readChar(Shell.getPM().init, 5) == ' ') {
                     Memory.writePipe((char) 0, d + 5);
                     System.out.println("This pipe's empty");
                     //break;
@@ -120,7 +109,7 @@ public class IPC {
             }
 
         }
-        System.out.print("Reading from a pipe:  ");
+        System.out.println("Reading from a pipe:  ");
         Memory.printRawRam();
     }
     //System.out.print("Reading Pipe:  ");
@@ -129,14 +118,14 @@ public class IPC {
 
     public static void closePipe () {
         Memory.clearPIPE();
-        System.out.print("The pipe has been closed\n");
+        System.out.println("The pipe has been closed\n");
         Memory.printRawRam();
 
     }
 
     public static void close (int pdesc){
         //pdesc =null;
-        System.out.print("The descriptor is closed\n");
+        System.out.println("The descriptor is closed\n");
     }
 
     public int Pipe(int[] pdesc) {
