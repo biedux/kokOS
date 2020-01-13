@@ -52,6 +52,7 @@ public class OpenFileTab
                 int s = tab.size();
                 System.out.println(s);
                 tab.put(flag,file);
+                file.positionPtr = 0;
                 System.out.println("Plik " + file.name + " zostal otworzony przez inny proces");
             }
         }
@@ -82,7 +83,7 @@ public class OpenFileTab
 
     public File findFile(PCB pcb) throws Exception
     {
-        if(tab.isEmpty())
+        if(tab.size() == 0)
         {
             throw new Exception("Zaden plik nie jest otwarty");
         }
@@ -103,6 +104,6 @@ public class OpenFileTab
                 }
             }
         }
-        return null;
+        throw new Exception("Zaden plik nie jest otwarty");
     }
 }
