@@ -1,4 +1,4 @@
-package Interpreter;
+package com.company;
 import java.io.FileNotFoundException;
 import java.util.*;
 
@@ -50,18 +50,22 @@ public class IPC {
 
                 if (1>0) {
 
-                    for (int i = 0; i < 4; i++) { //buffer.size()
 
+                    for (int i = 0; i < 4; i++) { //buffer.size()
                         if (VirtualMemory.readChar(PM.init, 5+i) == ' '){
                             break;
                         }
-                      else  if (VirtualMemory.readChar(PM.init, 5) == ' '){
-                            Memory.writePipe((char) 0, 0);
-                        }
+
                         char x = VirtualMemory.readChar(PM.init, 5+i);
                         Memory.writePipe(x, i);
                         written++;
+
                     }
+                    if(VirtualMemory.readChar(PM.init, 5) == ' '){
+                        Memory.writePipe((char) 0, 0);
+
+                    }
+
                 }
                 else if (nchar > 4 - e.eQueue.size()) {
                     Memory.writePipe((char)written, 0);
@@ -69,6 +73,7 @@ public class IPC {
                     //System.out.println(a);
                 }
                 else if (nchar==1) {
+                    System.out.println("I've nothing to read. Closing this pipe ;(");
                     Memory.writePipe((char)0, 0);
                     Memory.printRawRam();
                     //System.out.println(a);
@@ -89,34 +94,34 @@ public class IPC {
         int read = 0;
         for (PipeQueue e : Pipes) {
 
-                if (1>0) {
-                    System.out.println("Enter how many chars you'd like to read: \n");
-                    Scanner c = new Scanner (System.in);
-                    int d = c.nextInt();
-                    if(d>4){
-                        do{
-                            System.out.println("The number must be between 0 and 4! ");
-                            d=c.nextInt();
-                        } while(d>4);
-                    }
-                    for (int i = 0; i < d; i++) { //buffer.size()
-                        char x = VirtualMemory.readChar(PM.init, 5+i);
-                        Memory.writePipe(x, 5+i);
-                        read++;
-                    }
-                    if (VirtualMemory.readChar(PM.init, 5) == ' ') {
-                        Memory.writePipe((char) 0, d + 5);
-                        System.out.println("This pipe's empty");
-                        //break;
-                    }
-
+            if (1>0) {
+                System.out.println("Enter how many chars you'd like to read: \n");
+                Scanner c = new Scanner (System.in);
+                int d = c.nextInt();
+                if(d>4){
+                    do{
+                        System.out.println("The number must be between 0 and 4! ");
+                        d=c.nextInt();
+                    } while(d>4);
+                }
+                for (int i = 0; i < d; i++) { //buffer.size()
+                    char x = VirtualMemory.readChar(PM.init, 5+i);
+                    Memory.writePipe(x, 5+i);
+                    read++;
+                }
+                if (VirtualMemory.readChar(PM.init, 5) == ' ') {
+                    Memory.writePipe((char) 0, d + 5);
+                    System.out.println("This pipe's empty");
+                    //break;
                 }
 
             }
-            System.out.print("Reading from a pipe:  ");
-            Memory.printRawRam();
+
         }
-        //System.out.print("Reading Pipe:  ");
+        System.out.print("Reading from a pipe:  ");
+        Memory.printRawRam();
+    }
+    //System.out.print("Reading Pipe:  ");
 
 
 
@@ -195,7 +200,7 @@ public class IPC {
    /* Memory.readPipeFrame();
     P6.pipe.close(pdesc[0]);
     P5.pipe.close(pdesc[1]);*/
-        Memory.printRawRam();
+           Memory.printRawRam();
 
 
     }
@@ -225,9 +230,10 @@ public class IPC {
         //System.out.println("Zapis do pipe" + be);
         // close(pdesc[1]);
         // en.add(c);
-       // a.readFromPipe(pdesc[0], en, 0);
-        System.out.println(en);
+        // a.readFromPipe(pdesc[0], en, 0);
+        //System.out.println(en);
         //  close(pdesc[0]);
+        readFromPipe();
         a.closePipe();
 //
     }
