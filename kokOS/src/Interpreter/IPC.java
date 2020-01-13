@@ -4,7 +4,7 @@ import java.util.*;
 
 
 public class IPC {
-    public final Vector<PipeQueue> Pipes = new Vector<>();
+    public static final Vector<PipeQueue> Pipes = new Vector<>();
     public final Vector<Integer> descriptor = new Vector<>();
 
     private static Process_Management PM;
@@ -55,6 +55,9 @@ public class IPC {
                         if (VirtualMemory.readChar(PM.init, 5+i) == ' '){
                             break;
                         }
+                      else  if (VirtualMemory.readChar(PM.init, 5) == ' '){
+                            Memory.writePipe((char) 0, 0);
+                        }
                         char x = VirtualMemory.readChar(PM.init, 5+i);
                         Memory.writePipe(x, i);
                         written++;
@@ -81,31 +84,40 @@ public class IPC {
         return written;
     }
 
-    public int readFromPipe (int fd, Vector<Character> buffer, int nchar)
+    public static void readFromPipe()
     {
         int read = 0;
         for (PipeQueue e : Pipes) {
-            if (e.descR == fd) {
-                if (!e.eQueue.isEmpty()) {
-                    for (int i = 0; i < buffer.size(); i++) {
 
-                        Memory.readPipe(i);
-                        Character a = e.eQueue.remove();
-                        buffer.add(a);
-                        while (!buffer.isEmpty())
-                            Memory.writePipe(a, i);
-                        //Memory.readPipe(i);
+                if (1>0) {
+                    System.out.println("Enter how many chars you'd like to read: \n");
+                    Scanner c = new Scanner (System.in);
+                    int d = c.nextInt();
+                    if(d>4){
+                        do{
+                            System.out.println("The number must be between 0 and 4! ");
+                            d=c.nextInt();
+                        } while(d>4);
+                    }
+                    for (int i = 0; i < d; i++) { //buffer.size()
+                        char x = VirtualMemory.readChar(PM.init, 5+i);
+                        Memory.writePipe(x, 5+i);
                         read++;
                     }
-                } else if (e.eQueue.isEmpty()) {
-                    Memory.writePipe((char) 0, 0);
+                    if (VirtualMemory.readChar(PM.init, 5) == ' ') {
+                        Memory.writePipe((char) 0, d + 5);
+                        System.out.println("This pipe's empty");
+                        //break;
+                    }
+
                 }
-                break;
+
             }
+            System.out.print("Reading from a pipe:  ");
+            Memory.printRawRam();
         }
-        System.out.print("Reading Pipe:  ");
-        return nchar;
-    }
+        //System.out.print("Reading Pipe:  ");
+
 
 
     public static void closePipe () {
@@ -213,7 +225,7 @@ public class IPC {
         //System.out.println("Zapis do pipe" + be);
         // close(pdesc[1]);
         // en.add(c);
-        a.readFromPipe(pdesc[0], en, 0);
+       // a.readFromPipe(pdesc[0], en, 0);
         System.out.println(en);
         //  close(pdesc[0]);
         a.closePipe();
