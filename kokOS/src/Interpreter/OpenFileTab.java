@@ -21,8 +21,8 @@ public class OpenFileTab
             if(flag)
             {
                 inodeTab[num].state = inodeTab[num].lock.tryLock();
-                tab.put(pcb.getID(),file);
                 file.positionPtr = 0;
+                tab.put(pcb.getID(),file);
                 System.out.println("Otworzono plik o nazwie " + file.name);
             }
             else
@@ -49,10 +49,8 @@ public class OpenFileTab
             {
                 int PID = pcb.getID();
                 tab.remove(PID, file);
-                int s = tab.size();
-                System.out.println(s);
-                tab.put(flag,file);
                 file.positionPtr = 0;
+                tab.put(flag,file);
                 System.out.println("Plik " + file.name + " zostal otworzony przez inny proces");
             }
         }
