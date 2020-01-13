@@ -140,6 +140,7 @@ public class Process_Management {
             ProcessList.remove(process);
             this.scheduler.Delete(process);
             VirtualMemory.usunproces(process);
+            Interpreter.open_file_table.removeFile(process,Interpreter.open_file_table.findFile(process));
         }
         if(possible==false){
             throw new Exception("Nie mozna zabic procesu ktory nie istnieje");
