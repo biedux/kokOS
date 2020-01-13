@@ -1,12 +1,21 @@
-package Interpreter;
+package com.company;
 import java.io.FileNotFoundException;
 import java.util.*;
 
 
 public class IPC {
     public static final Vector<PipeQueue> Pipes = new Vector<>();
-    public final Vector<Integer> descriptor = new Vector<>();
+    public static final Vector<Integer> descriptor = new Vector<>();
 
+    private static Process_Management PM;
+
+    static {
+        try {
+            PM = new Process_Management();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     public IPC() throws FileNotFoundException {}
 
@@ -22,7 +31,7 @@ public class IPC {
         Scanner myObj1 = new Scanner (System.in);
         System.out.println("Enter data");
         String c = myObj1.nextLine();
-        VirtualMemory.saveString(Shell.getPM().init, 5, c);
+        VirtualMemory.saveString(PM.init, 5, c);
         Memory.printRawRam();
 
     }
@@ -31,7 +40,7 @@ public class IPC {
         Scanner myObj1 = new Scanner (System.in);
         System.out.println("Enter data");
         String c = myObj1.nextLine();
-        VirtualMemory.saveString(Shell.getPM().init, 5, c);
+        VirtualMemory.saveString(PM.init, 5, c);
         Memory.printRawRam();
         int written = 0;
 
@@ -43,20 +52,18 @@ public class IPC {
 
 
                     for (int i = 0; i < 4; i++) { //buffer.size()
-                        if (VirtualMemory.readChar(Shell.getPM().init, 5+i) == ' '){
+                        if (VirtualMemory.readChar(PM.init, 5 + i) == ' ') {
                             break;
                         }
+                        if (VirtualMemory.readChar(PM.init, 5 + i) != ' ') {
+                            char x = VirtualMemory.readChar(PM.init, 5 + i);
+                            Memory.writePipe(x, i);
+                            written++;
+                        } else if (VirtualMemory.readChar(PM.init, 5) == ' ') {
+                            Memory.writePipe((char) 0, 0);
 
-                        char x = VirtualMemory.readChar(Shell.getPM().init, 5+i);
-                        Memory.writePipe(x, i);
-                        written++;
-
+                        }
                     }
-                    if(VirtualMemory.readChar(Shell.getPM().init, 5) == ' '){
-                        Memory.writePipe((char) 0, 0);
-
-                    }
-
                 }
                 else if (nchar > 4 - e.eQueue.size()) {
                     Memory.writePipe((char)written, 0);
@@ -96,11 +103,11 @@ public class IPC {
                     } while(d>4);
                 }
                 for (int i = 0; i < d; i++) { //buffer.size()
-                    char x = VirtualMemory.readChar(Shell.getPM().init, 5+i);
+                    char x = VirtualMemory.readChar(PM.init, 5+i);
                     Memory.writePipe(x, 5+i);
                     read++;
                 }
-                if (VirtualMemory.readChar(Shell.getPM().init, 5) == ' ') {
+                if (VirtualMemory.readChar(PM.init, 5) == ' ') {
                     Memory.writePipe((char) 0, d + 5);
                     System.out.println("This pipe's empty");
                     //break;
@@ -109,7 +116,7 @@ public class IPC {
             }
 
         }
-        System.out.println("Reading from a pipe:  ");
+        System.out.print("Reading from a pipe:  ");
         Memory.printRawRam();
     }
     //System.out.print("Reading Pipe:  ");
@@ -118,17 +125,17 @@ public class IPC {
 
     public static void closePipe () {
         Memory.clearPIPE();
-        System.out.println("The pipe has been closed\n");
+        System.out.print("The pipe has been closed\n");
         Memory.printRawRam();
 
     }
 
-    public static void close (int pdesc){
+    public static void close (int [] pdesc){
         //pdesc =null;
-        System.out.println("The descriptor is closed\n");
+        System.out.print("The descriptor's closed\n");
     }
 
-    public int Pipe(int[] pdesc) {
+    public static int Pipe(int[] pdesc) {
         Random rand = new Random();
         int read = rand.nextInt(4);
         int write = rand.nextInt(4);
@@ -147,6 +154,10 @@ public class IPC {
 
         PipeQueue queueToAdd = new PipeQueue(write, read);
         Pipes.add(queueToAdd);
+        System.out.println("Pipe's created\n");
+        System.out.println(write);
+        System.out.println(read);
+        System.out.println(queueToAdd);
         return 0;
     }
 
@@ -154,6 +165,7 @@ public class IPC {
         int[] pdesc = new int[2];
         IPC a = new IPC();
         a.Pipe(pdesc);
+        Pipe(pdesc);
         Vector<Character> be = new Vector<Character>(4);
         Vector<Character> en = new Vector<Character>(4);
 
@@ -191,7 +203,7 @@ public class IPC {
    /* Memory.readPipeFrame();
     P6.pipe.close(pdesc[0]);
     P5.pipe.close(pdesc[1]);*/
-        Memory.printRawRam();
+           Memory.printRawRam();
 
 
     }
@@ -202,6 +214,7 @@ public class IPC {
         //  Scan();
         int[] pdesc = new int[2];
         IPC a = new IPC();
+      //  a.Pipe(pdesc);
         a.Pipe(pdesc);
         Vector<Character> be = new Vector<Character>(4);
         Vector<Character> en = new Vector<Character>(4);
@@ -225,6 +238,7 @@ public class IPC {
         //System.out.println(en);
         //  close(pdesc[0]);
         readFromPipe();
+
         a.closePipe();
 //
     }
