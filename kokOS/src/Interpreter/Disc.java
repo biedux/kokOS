@@ -463,7 +463,7 @@ public class Disc
                                 }
                             }
                             ret = c + "\n";
-                            if(amount == inodes_table[num].size)
+                            if(amount >= inodes_table[num].size)
                             {
                                 file.positionPtr = 0;
                             }
