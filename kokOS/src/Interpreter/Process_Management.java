@@ -94,13 +94,12 @@ public class Process_Management {
         for (PCB parent : ProcessList) {
             if (process.getParentID() == parent.getID()) {
                 parent.ChildrenList.remove(process);
-                if (process.getState() == PCB.StateList.Waiting) {
                     for (PCB child : process.ChildrenList) {
                         child.setParentID(process.getParentID());
                         parent.ChildrenList.add(child);
                     }
                     process.setState(PCB.StateList.Terminated);
-                }
+
             }
         }
         ProcessList.remove(process);
@@ -108,46 +107,13 @@ public class Process_Management {
         VirtualMemory.usunproces(process);
     }
 
-    private List<PCB> Killed=new LinkedList<PCB>();
-
-    public void setRemoved(PCB process){
-        for(PCB parent:ProcessList){
-            if(process.getParentID()==parent.getID()){
-                parent.ChildrenList.remove(process);
-                if(process.getState() == PCB.StateList.Waiting || process.getChildrenList()!=null) {
-                    for (PCB child : process.ChildrenList) {
-                        setRemoved(child);
-                    }
-                }
-            }
-        }
-        process.setState(PCB.StateList.Terminated);
-        this.scheduler.Delete(process);
-        Killed.add(process);
-    }
-
     public void killByGroup(PCB process){
-        setRemoved(process);
-        for(PCB proc:Killed){
-            ProcessList.remove(proc);
+        kill(process);
+        for(PCB child:process.ChildrenList){
+            killByGroup(child);
+            kill(child);
         }
     }
-
-    // Wait
-
-    //bez argumentu - wykonanie ostatniego procesu
-    //argument - wykonanie procesu o danym id
-    //dziecko się wykona - staje się zombie
-    public boolean wait(PCB proc){
-        for(PCB child:proc.ChildrenList){
-            if(child.getState() != PCB.StateList.Terminated){
-                return false;
-            }
-        }
-        return true;
-    }
-
-
 
     // Drzewo procesów
     public void showTree(PCB proc){
