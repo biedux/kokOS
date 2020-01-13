@@ -20,7 +20,7 @@ public class Process_Management {
 
     public Scheduler scheduler=new Scheduler();
 
-    public Process_Management() throws FileNotFoundException {
+    public Process_Management() throws Exception {
 
         // Inicjalizacja głównego procesu przy starcie rodzica
         init=this.scheduler.dummy;
@@ -30,7 +30,7 @@ public class Process_Management {
         VirtualMemory.nowyproces(init);
     }
 
-    public String readFile(String fName) throws FileNotFoundException {
+    public String readFile(String fName) throws Exception {
         String programm="";
         if (fName != "") {
             File file = new File(fName);
@@ -43,44 +43,66 @@ public class Process_Management {
     }
 
     // Nowy proces
-    public PCB fork(PCB parent, String name, int priority, String fName) throws FileNotFoundException {
+    public PCB fork(PCB parent, String name, int priority, String fName) throws Exception {
+        boolean possible=true;
 
-        PCB.setCountProcess(PCB.getCountProcess()+1);
         // Nowy proces
-        PCB process=new PCB(name,fName);
-        process.setParentID(parent.getID());
-        process.setState(process.State.Ready);
-        process.setPriority(priority);
-        ProcessList.add(process);
-        parent.ChildrenList.add(process);
-        System.out.println("Id nowego procesu: "+process.getID());
+        for(PCB p:ProcessList){
+            if(p.getName()==name){
+                possible=false;
+            }
+        }
+        if(possible==true) {
+            PCB.setCountProcess(PCB.getCountProcess()+1);
+            PCB process=new PCB(name,fName);
+            process.setParentID(parent.getID());
+            process.setState(process.State.Ready);
+            process.setPriority(priority);
+            ProcessList.add(process);
+            parent.ChildrenList.add(process);
+            System.out.println("Id nowego procesu: "+process.getID());
 
-        process.setCode(readFile(fName));
+            process.setCode(readFile(fName));
 
-        VirtualMemory.nowyproces(process);
+            VirtualMemory.nowyproces(process);
 
-        this.scheduler.Insert(process);
-        return process;
+            this.scheduler.Insert(process);
+            return process;
+        }
+        else if(possible==false){
+            throw new Exception("Nie mozna utworzyc procesu o danej nazwie");
+        }
+        return null;
     }
 
     public PCB getInit(){
         return this.init;
     }
 
-    public PCB findPCB(String pName){
+    public PCB findPCB(String pName) throws Exception{
+        boolean exists=false;
         for(PCB proc:ProcessList){
             if(pName.equals(proc.getName())){
+                exists=true;
                 return proc;
             }
+        }
+        if(exists==false){
+            throw new Exception("Nie ma procesu o tej nazwie");
         }
         return null;
     }
 
-    public PCB findById(int ID){
+    public PCB findById(int ID) throws Exception{
+        boolean exists=false;
         for(PCB proc:ProcessList){
             if(proc.getID()==ID){
                 return proc;
             }
+        }
+        if(exists==false){
+            exists=true;
+            throw new Exception("Nie ma procesu o tej nazwie");
         }
         return null;
     }
@@ -90,24 +112,35 @@ public class Process_Management {
     //Dwie opcje, zabija dzieci lub nie (pgit=null)
 
     //skok do inita w ostatnim ifie
-    public void kill(PCB process) {
-        for (PCB parent : ProcessList) {
-            if (process.getParentID() == parent.getID()) {
-                parent.ChildrenList.remove(process);
+    public void kill(PCB process) throws Exception{
+        boolean possible=false;
+        for(PCB proc:ProcessList){
+            if(proc.equals(process)){
+                possible=true;
+            }
+        }
+        if(possible==true){
+            for (PCB parent : ProcessList) {
+                if (process.getParentID() == parent.getID()) {
+                    parent.ChildrenList.remove(process);
                     for (PCB child : process.ChildrenList) {
                         child.setParentID(process.getParentID());
                         parent.ChildrenList.add(child);
                     }
                     process.setState(PCB.StateList.Terminated);
 
+                }
             }
+            ProcessList.remove(process);
+            this.scheduler.Delete(process);
+            VirtualMemory.usunproces(process);
         }
-        ProcessList.remove(process);
-        this.scheduler.Delete(process);
-        VirtualMemory.usunproces(process);
+        if(possible==false){
+            throw new Exception("Nie mozna zabic procesu ktory nie istnieje");
+        }
     }
 
-    public void killByGroup(PCB process){
+    public void killByGroup(PCB process) throws Exception {
         kill(process);
         for(PCB child:process.ChildrenList){
             killByGroup(child);
@@ -121,13 +154,13 @@ public class Process_Management {
         String parent="";
         if(ProcessList.contains(proc)){
             String lev="";
-            if(proc.getID()!=0){
-                lev+="+-";
-                for(int i=proc.getParentID();i>=0;i--){
-                    if(proc.getParentID()>1) i--;
-                    lev+="--";
-                }
-            }
+//            if(proc.getID()!=0){
+//                lev+="+-";
+//                for(int i=proc.getParentID();i>=0;i--){
+//                    if(proc.getParentID()>1) i--;
+//                    lev+="--";
+//                }
+//            }
             for(PCB p:proc.ChildrenList){
                 children+=(p.getID()+" ");
             }
