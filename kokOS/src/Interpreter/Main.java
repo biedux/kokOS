@@ -60,7 +60,7 @@ public class Main {
 
 
 
-        //  Scan();
+//  Scan();
 //        int[] pdesc = new int[2];
 //        IPC a = new IPC();
 //        a.Pipe(pdesc);
@@ -96,11 +96,11 @@ public class Main {
 //            Disc dysk = Interpreter.getDisc();
 //            Memory ram = Interpreter.getRam();
 //            VirtualMemory virt = Interpreter.getVirtual();
-            //PCB P2 = PM.fork(PM.init, "P2", 1, "jjj.txt");
-            //PCB P5 = PM.fork(PM.init, "P5", 3, "otwieramy.txt");
-            //PCB P2 = PM.fork(PM.init, "P2", 10, "jjj.txt");
-            //PCB P3 = PM.fork(PM.init, "P3", 7, "cos.txt");
-            //PCB P4 = PM.fork(PM.init, "P4", 5, "cos.txt");
+//PCB P2 = PM.fork(PM.init, "P2", 1, "jjj.txt");
+//PCB P5 = PM.fork(PM.init, "P5", 3, "otwieramy.txt");
+//PCB P2 = PM.fork(PM.init, "P2", 10, "jjj.txt");
+//PCB P3 = PM.fork(PM.init, "P3", 7, "cos.txt");
+//PCB P4 = PM.fork(PM.init, "P4", 5, "cos.txt");
 
 //        PCB P6 = PM.fork(PM.init, "P6", 3, "pliki.txt");
 //

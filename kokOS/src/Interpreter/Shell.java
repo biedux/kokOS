@@ -146,23 +146,16 @@ public class Shell {
 
 
         //Wirtualna
-        allCommands.put("PAGE_TABLE_PROCESS","Wyświetla tablice stronnic dla danego procesu");
-        argCommands.put("PAGE_TABLE_PROCESS","[ID_procesu]");
-
-        allCommands.put("PAGE_TABLE","Wyświetla wszystkie tablice stronnic");
-        argCommands.put("PAGE_TABLE"," ");
+        allCommands.put("PAGE_TABLE","Wyświetla tablice stronnic dla procesów");
+        argCommands.put("PAGE_TABLE","[ID_procesu] lub pozostaw puste aby wyświetlić wszystkie");
 
         allCommands.put("VICTIM_QUEUE","Wyświetla kolejke ofiar");
         argCommands.put("VICTIM_QUEUE"," ");
         //printQueue()
-        allCommands.put("","Program od procesu");
-        argCommands.put("","");
-        //printPageFile(ID procesu)
-        allCommands.put("","-||- wszystkie ");
-        argCommands.put("","");
-        //printPageFile()
+        allCommands.put("PAGE_FILE","Wyświetla ");
+        argCommands.put("PAGE_FILE","[ID procesu] lub pozostaw puste aby wyświetlić wszystkie");
 
-        allCommands.put("STEP","");
+        allCommands.put("STEP"," ");
         argCommands.put("STEP"," ");
     }
 
@@ -298,8 +291,8 @@ public class Shell {
                 {
                     try
                     {
-                        //nowy proces dla zamykania?
-                        //disc.closeFile(command[1],);
+                        int P_id = open_file_table.findPID(command[1]);
+                        disc.closeFile(command[1], PM.findById(P_id));
                     }
                     catch (Exception e)
                     {
@@ -511,9 +504,9 @@ public class Shell {
                 {
                     try
                     {
-                        int amount;
-                        amount = Integer.parseInt(command[3]);
-                        PM.fork(PM.findPCB(command[4]), command[1], amount, command[2]);
+                        int priority;
+                        priority = Integer.parseInt(command[3]);
+                        PM.fork(PM.findPCB(command[4]), command[1], priority, command[2]);
                         if (PM.ProcessList.size() == 2)
                             PM.scheduler.check();
                     }
@@ -594,8 +587,12 @@ public class Shell {
                 break;
             }
 
-            case "PAGE_TABLE_PROCESS": {
-                if(command.length == 2)
+            case "PAGE_TABLE": {
+                if(command.length == 1)
+                {
+                    virtual.printPageTable();
+                }
+                else if(command.length == 2)
                 {
                     try
                     {
@@ -611,15 +608,6 @@ public class Shell {
 
                 break;
             }
-            case "PAGE_TABLE":{
-                if(command.length == 1)
-                {
-                    virtual.printPageTable();
-                }
-                else
-                    command_check(command,argCommands);
-                break;
-            }
             case "VICTIM_QUEUE": {
                 if(command.length == 1)
                 {
@@ -629,7 +617,26 @@ public class Shell {
                     command_check(command,argCommands);
                 break;
             }
-
+            case "PAGE_FILE": {
+                if(command.length == 2)
+                {
+                    try
+                    {
+                        virtual.printPageFile(PM.findPCB(command[1]).getID());
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getLocalizedMessage());
+                    }
+                }
+                else if(command.length == 1)
+                {
+                    virtual.printPageFile();
+                }
+                else
+                    command_check(command,argCommands);
+                break;
+            }
 
             case "STEP":{
                 if(command.length == 1)
@@ -645,6 +652,18 @@ public class Shell {
                 }
                 else
                     command_check(command,argCommands);
+                break;
+            }
+            case "RAM": {
+                if(command.length == 1)
+                {
+                    ram.printRawRam();
+                }
+                else
+                {
+                    command_check(command,argCommands);
+                }
+
                 break;
             }
             default: {

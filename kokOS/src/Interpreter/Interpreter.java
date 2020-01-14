@@ -416,7 +416,7 @@ class Interpreter {
             }
         }
 
-        
+
         //CF
         if (   (cmd.equals("CF"))  ) {
 
@@ -482,7 +482,7 @@ class Interpreter {
 
         //PN - pipe new - (create pipe)
         if(    (cmd.equals("PN"))  ){
-         //   IPC.createPipe();
+            //   IPC.createPipe();
         }
 
         //PC

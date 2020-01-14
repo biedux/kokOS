@@ -79,6 +79,27 @@ public class OpenFileTab
         }
     }
 
+    public int findPID(String name) //zwraca id procesu
+    {
+        if(tab.size() == 0)
+        {
+            return -1;
+        }
+        else
+        {
+            for(Map.Entry<Integer, File> e : tab.entrySet())
+            {
+                File file = e.getValue();
+                int PID = e.getKey();
+                if(file.name.equals(name))
+                {
+                    return PID;
+                }
+            }
+        }
+        return -1;
+    }
+
     public File findFile(PCB pcb)
     {
         if(tab.size() == 0)
