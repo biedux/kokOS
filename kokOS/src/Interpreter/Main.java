@@ -1,20 +1,14 @@
 package Interpreter;
-//
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
-//
-//public class Main {
-//    public static void main(String[] args) throws Exception {
-//
 
 import java.io.FileNotFoundException;
-/*
 
- */
 public class Main {
     public static void main(String[] arg) throws FileNotFoundException {
         Shell shell = new Shell();
@@ -122,7 +116,7 @@ public class Main {
 //
 //            }
 //
-//        System.out.println("-----------------Koniec programu MISIE--------------");
+//        System.out.println("-----------------Koniec programu WSZYSTKO POSZLO ZGODNIE Z PLANEM--------------");
 //
 //    }
 //}
