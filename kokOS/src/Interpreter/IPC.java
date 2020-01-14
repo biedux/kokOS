@@ -1,8 +1,3 @@
-
-
-//todo dodac fcje Create Pipe do assmbly i wwsolac Create Pipe w Interpreterze zapisywanie 0 kurwa nie dziala
-
-
 package Interpreter;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -29,7 +24,7 @@ public class IPC {
         System.out.println("Enter data");
         String c = myObj1.nextLine();
         VirtualMemory.saveString(Shell.getPM().init, 5, c);
-        
+        Memory.printRawRam();
 
     }
 
@@ -38,7 +33,7 @@ public class IPC {
         System.out.println("Enter data");
         String c = myObj1.nextLine();
         VirtualMemory.saveString(Shell.getPM().init, 5, c);
-      
+        Memory.printRawRam();
         int written = 0;
 
         for (PipeQueue e : Pipes) {
@@ -65,12 +60,12 @@ public class IPC {
 
                 } else if (nchar > 4 - e.eQueue.size()) {
                     Memory.writePipe((char) written, 0);
-                   
+                    Memory.printRawRam();
                     //System.out.println(a);
                 } else if (nchar == 1) {
                     System.out.println("I've nothing to read. Closing this pipe ;(");
                     Memory.writePipe((char) 0, 0);
-                    
+                    Memory.printRawRam();
                     //System.out.println(a);
                 }
                /* else if (buffer.capacity()>4){
@@ -79,6 +74,7 @@ public class IPC {
             }
             System.out.print("Writing to a pipe:  ");
 
+            Memory.printRawRam();
         }
         return written;
     }
@@ -112,7 +108,7 @@ public class IPC {
 
         }
         System.out.println("Reading from a pipe:  ");
-        
+        Memory.printRawRam();
     }
     //System.out.print("Reading Pipe:  ");
 
@@ -128,38 +124,33 @@ public class IPC {
         //pdesc =null;
         System.out.println("The descriptor is closed\n");
     }
-    
-        public static void CreatePipe() {
-        //pdesc =null;
-        System.out.println("IPC started");
-    }
 
-//    public int Pipe() {
-//        Random rand = new Random();
-//        int read = rand.nextInt(4);
-//        int write = rand.nextInt(4);
-//
-//        while (descriptor.contains(write)) {
-//            write = rand.nextInt(4);
-//        }
-//        write = pdesc[1];
-//        //descriptor.add(write);
-//
-//        while (descriptor.contains(read)) {
-//            read = rand.nextInt(4);
-//        }
-//        read = pdesc[0];
-//        //descriptor.add(read);
-//
-//        PipeQueue queueToAdd = new PipeQueue(write, read);
-//        Pipes.add(queueToAdd);
-//        return 0;
-//    }
+    public int Pipe(int[] pdesc) {
+        Random rand = new Random();
+        int read = rand.nextInt(4);
+        int write = rand.nextInt(4);
+
+        while (descriptor.contains(write)) {
+            write = rand.nextInt(4);
+        }
+        write = pdesc[1];
+        descriptor.add(write);
+
+        while (descriptor.contains(read)) {
+            read = rand.nextInt(4);
+        }
+        read = pdesc[0];
+        descriptor.add(read);
+
+        PipeQueue queueToAdd = new PipeQueue(write, read);
+        Pipes.add(queueToAdd);
+        return 0;
+    }
 
     public static void WritePipe() throws FileNotFoundException {
         int[] pdesc = new int[2];
         IPC a = new IPC();
-        //  a.Pipe(pdesc);
+        a.Pipe(pdesc);
         Vector<Character> be = new Vector<Character>(4);
         Vector<Character> en = new Vector<Character>(4);
 
@@ -197,9 +188,9 @@ public class IPC {
    /* Memory.readPipeFrame();
     P6.pipe.close(pdesc[0]);
     P5.pipe.close(pdesc[1]);*/
-        
+        Memory.printRawRam();
+
 
     }
 
 }
-
