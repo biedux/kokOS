@@ -74,6 +74,9 @@ public class Process_Management {
             }
             catch(Exception e) {
                 System.out.println(e.getLocalizedMessage());
+                parent.ChildrenList.remove(process);
+                scheduler.Delete(process);
+                ProcessList.remove(process);
                 PCB.setCountProcess(PCB.getCountProcess()-1);
             }
         }
