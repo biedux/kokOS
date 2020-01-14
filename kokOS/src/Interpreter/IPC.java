@@ -21,14 +21,14 @@ public class IPC {
 
     public static void Scan() {
         Scanner myObj1 = new Scanner(System.in);
-        System.out.println("Enter data");
+        System.out.println("Wprowadz dane:\n");
         String c = myObj1.nextLine();
         if ( c == "\n "){
             VirtualMemory.saveString(Shell.getPM().init, 12, "0");
         }
         else
             VirtualMemory.saveString(Shell.getPM().init, 5, c);
-        Memory.printRawRam();
+      //  Memory.printRawRam();
 
     }
 
@@ -72,18 +72,18 @@ public class IPC {
                     Memory.printRawRam();
                     //System.out.println(a);
                 } else if (nchar == 1) {
-                    System.out.println("I've nothing to read. Closing this pipe ;(");
+                    System.out.println("Nic do odczytu, zamykam pipe");
                     Memory.writePipe((char) 0, 0);
-                    Memory.printRawRam();
+                   // Memory.printRawRam();
                     //System.out.println(a);
                 }
                /* else if (buffer.capacity()>4){
                     break;
                 }*/
             }
-            System.out.print("Writing to a pipe:  ");
+            //System.out.print("Writing to a pipe:  ");
 
-            Memory.printRawRam();
+          //  Memory.printRawRam();
         }
         return written;
     }
@@ -93,12 +93,12 @@ public class IPC {
         for (PipeQueue e : Pipes) {
 
             if (1 > 0) {
-                System.out.println("Enter how many chars you'd like to read: \n");
+                System.out.println("Wpisz ile znakow chcesz odczytac: \n");
                 Scanner c = new Scanner(System.in);
                 int d = c.nextInt();
                 if (d > 4) {
                     do {
-                        System.out.println("The number must be between 0 and 4! ");
+                        System.out.println("Wybierz liczbe z przedzialu  0 - 4! ");
                         d = c.nextInt();
                     } while (d > 4);
                 }
@@ -109,23 +109,23 @@ public class IPC {
                 }
                 if (VirtualMemory.readChar(Shell.getPM().init, 5) == ' ') {
                     Memory.writePipe((char) 0, d + 5);
-                    System.out.println("This pipe's empty");
+                    System.out.println("Ten pipe jest pusty");
                     //break;
                 }
 
             }
 
         }
-        System.out.println("Reading from a pipe:  ");
-        Memory.printRawRam();
+        //System.out.println("Reading from a pipe:  ");
+       // Memory.printRawRam();
     }
     //System.out.print("Reading Pipe:  ");
 
 
     public static void closePipe() {
         Memory.clearPIPE();
-        System.out.println("The pipe has been closed\n");
-        Memory.printRawRam();
+        System.out.println("Pipe zostal zamkniety\n");
+       // Memory.printRawRam();
 
     }
 
@@ -197,13 +197,14 @@ public class IPC {
    /* Memory.readPipeFrame();
     P6.pipe.close(pdesc[0]);
     P5.pipe.close(pdesc[1]);*/
-        Memory.printRawRam();
+       // Memory.printRawRam();
 
 
     }
 
     public static void CreatePipe(){
-        System.out.println("Pipe created");
+        System.out.println("Utworzono pipe'a");
+        Memory.writePipe(" ", 4);
     }
 
 }
