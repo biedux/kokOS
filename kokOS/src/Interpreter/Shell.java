@@ -10,8 +10,6 @@ public class Shell {
     public User_List user_list = new User_List();
     static IPC ipc;
     static OpenFileTab open_file_table = new OpenFileTab();
-    static Memory ram;
-    static VirtualMemory virtual;
     static Scheduler scheduler=new Scheduler();
     private Map<String, String> allCommands = new LinkedHashMap<>();
     private Map<String, String> argCommands = new LinkedHashMap<>();
@@ -31,7 +29,6 @@ public class Shell {
 
     public static Process_Management getPM() { return PM;}
     public static Scheduler getScheduler() {return scheduler;}
-    // GETY DO INTERPRETERA
 
     public void start()
     {
@@ -68,17 +65,14 @@ public class Shell {
         allCommands.put("CLOSE_FILE" , "Zamyka plik");
         argCommands.put("CLOSE_FILE" , "[Nazwa pliku]");
 
-
         allCommands.put("DELETE_FILE" , "Usuwa plik");
         argCommands.put("DELETE_FILE" , "[Nazwa pliku]");
 
         allCommands.put("RENAME_FILE" , "Zmienia nazwe pliku");
         argCommands.put("RENAME_FILE" , "[Nazwa pliku] , [Nowa nazwa pliku]");
 
-
         allCommands.put("CREATE_LINK" , "Tworzy dowiązanie");                                       //
         argCommands.put("CREATE_LINK" , "[Nazwa pliku] [Nazwa dowiązania] ");                                      // dodac argumenty
-
 
         allCommands.put("DISC" , "Wyświetla zawartość dysku");
         argCommands.put("DISC" , " ");
@@ -86,19 +80,17 @@ public class Shell {
         allCommands.put("DIRECTORY" , "Wyświetla zawartość katalogu");
         argCommands.put("DIRECTORY" , " ");
 
-        allCommands.put("TAB_OPEN_FILES" , "Wyświetla tablice otwartych plików");    //               //print TAB_OPEN_FILE
+        allCommands.put("TAB_OPEN_FILES" , "Wyświetla tablice otwartych plików");
 
+        allCommands.put("INODE_FILE" , "Wyświetla zawartość i-wezła pliku");
+        argCommands.put("INODE_FILE" , "[Nazwa]");
 
-        allCommands.put("INODE_FILE" , "Wyświetla zawartość i-wezła pliku");           //             //
-
-
-        allCommands.put("INODE_TAB" , "Wyświetla tablice i-węzłów");                     //           //
-
-
+        allCommands.put("INODE_TAB" , "Wyświetla tablice i-węzłów");                               // ???                     //           //
+        argCommands.put("INODE_TAB" , " ");
 
         //Uprawnienia w plikach
         allCommands.put("CHANGE_FILE_PERM" , ""); // zmiana uprawnien w pliku           //
-
+        argCommands.put("CHANGE_FILE_PERM" , "");
 
 
         // Uprawnienia
@@ -122,20 +114,29 @@ public class Shell {
         allCommands.put("CREATE_PROCESS_PARENT" , " ");
         argCommands.put("CREATE_PROCESS_PARENT" , "[Nazwa procesu] [Nazwa pliku] [Priorytet] [Nazwa rodzica]");
 
+        allCommands.put("PROCESS_LIST" , " ");
+        argCommands.put("PROCESS_LIST" , " ");
+
+        allCommands.put("PROCESS_TREE" , " ");
+        argCommands.put("PROCESS_TREE" , " "); //init
+
+        allCommands.put("PCB" , " ");
+        argCommands.put("PCB" , " ");
+
         allCommands.put("DELETE_PROCESS" , " ");
         argCommands.put("DELETE_PROCESS" , "[Nazwa procesu]");
-
 
         allCommands.put("DELETE_PROCESS_GROUP" , " ");
         argCommands.put("DELETE_PROCESS_GROUP" , "[Nazwa procesu]");
 
 
+        //Wirtualna
         allCommands.put("PAGE_TABLE_PROCESS","Wyświetla tablice stronnic dla danego procesu");
         argCommands.put("PAGE_TABLE_PROCESS","[ID_procesu]");
-        //VIRTUALMEMORY.printPageTable(ID)
+
         allCommands.put("PAGE_TABLE","Wyświetla wszystkie tablice stronnic");
         argCommands.put("PAGE_TABLE"," ");
-        //printPageTable()
+
         allCommands.put("VICTIM_QUEUE","Wyświetla kolejke ofiar");
         argCommands.put("VICTIM_QUEUE"," ");
         //printQueue()
@@ -145,16 +146,7 @@ public class Shell {
         allCommands.put("","-||- wszystkie ");
         argCommands.put("","");
         //printPageFile()
-        allCommands.put("","Wyświetla ");
-        argCommands.put("","");
 
-
-        allCommands.put("PROCESS_LIST" , " ");
-        argCommands.put("PROCESS_LIST" , " ");
-
-
-        allCommands.put("PROCESS_TREE" , " ");
-        argCommands.put("PROCESS_TREE" , " "); //init
 
 //        allCommands.put("PCB" , " ");
 //        allCommands.put("PCB" , " ");
@@ -183,7 +175,7 @@ public class Shell {
     private void read()
     {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Podaj komende");
+        System.out.println("Wpisz komende");
         String input = scan.nextLine();
         String[] command = input.split(" ");
         command[0] = command[0].toUpperCase();
@@ -204,6 +196,7 @@ public class Shell {
                     command_check(command,argCommands);
                 break;
             }
+
             case "CREATE_FILE": {
                 if(command.length == 2) {
                     try {
@@ -280,12 +273,13 @@ public class Shell {
                 break;
             }
             case "READ_FILE":{
-                if(command.length == 2)
+                if(command.length == 3)
                 {
                     try{
                         int amount;
                         amount = Integer.parseInt(command[2]);
-                        disc.readFile(command[1], user_list.printLoggedUser(), amount);
+                        String text = disc.readFile(command[1], user_list.printLoggedUser(), amount);
+                        System.out.println(text);
                     }
                     catch(NumberFormatException e )
                     {
@@ -295,13 +289,27 @@ public class Shell {
                     {
                         System.out.println(e.getLocalizedMessage());
                     }
+
                 }
                 else
                     command_check(command,argCommands);
                 break;
             }
             case "CLOSE_FILE":{
-                //GDZIE JEST ZAMKNIĘCIE??
+                if(command.length == 2)
+                {
+                    try
+                    {
+                        //nowy proces dla zamykania?
+                        //disc.closeFile(command[1],);
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getLocalizedMessage());
+                    }
+                }
+                else
+                    command_check(command,argCommands);
 
                 break;
             }
@@ -352,6 +360,7 @@ public class Shell {
                     command_check(command,argCommands);
                 break;
             }
+
             case "DISC":{
                 if(command.length == 1)
                     disc.printDisc();
@@ -383,13 +392,41 @@ public class Shell {
                 break;
             }
             case "INODE_FILE":{
-
+                if(command.length == 2)
+                {
+                    try
+                    {
+                        disc.printSingleInode(command[1]);
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getLocalizedMessage());
+                    }
+                }
+                else
+                    command_check(command,argCommands);
+                break;
             }
             case "INODE_TAB":{
-
+                if(command.length == 1)
+                {
+                    try
+                    {
+                        disc.printInodeTable();
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getLocalizedMessage());
+                    }
+                }
+                else
+                    command_check(command,argCommands);
+                break;
             }
+
             case "CHANGE_FILE_PERM":{
 
+                break;
             }
             case "USERS": {
                 user_list.printUsers();
@@ -431,10 +468,22 @@ public class Shell {
                 break;
             }
             case "DELETE_USER":{
-
-
+                if(command.length == 2)
+                {
+                    try
+                    {
+                        user_list.userRemove(command[1]);
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getLocalizedMessage());
+                    }
+                }
+                else
+                    command_check(command,argCommands);
                 break;
             }
+
             case "CREATE_PROCESS":{
                 if(command.length == 4)
                 {
@@ -459,8 +508,7 @@ public class Shell {
                     command_check(command,argCommands);
                 break;
             }
-            case "CREATE_PROCESS_PARENT":
-            {
+            case "CREATE_PROCESS_PARENT": {
                 if(command.length == 5)
                 {
                     try
@@ -501,8 +549,7 @@ public class Shell {
                     command_check(command,argCommands);
                 break;
             }
-            case "PCB":
-            {
+            case "PCB": {
                 if (command.length == 2) {
                     try {
                         PM.findPCB(command[1]).printProcessInfo();
@@ -512,8 +559,7 @@ public class Shell {
                 }
                 break;
             }
-            case "DELETE_PROCESS":
-            {
+            case "DELETE_PROCESS": {
                 if(command.length == 2)
                 {
                     try{
@@ -532,8 +578,7 @@ public class Shell {
                     command_check(command,argCommands);
                 break;
             }
-            case "DELETE_PROCESS_GROUP":
-            {
+            case "DELETE_PROCESS_GROUP": {
              if(command.length == 2)
              {
                  try
@@ -550,6 +595,45 @@ public class Shell {
                  command_check(command,argCommands);
                 break;
             }
+
+            case "PAGE_TABLE_PROCESS": {
+                if(command.length == 2)
+                {
+                    try
+                    {
+                        Interpreter.getVirtual().printPageTable(PM.findPCB(command[1]).getID());
+                    }
+                    catch(Exception e )
+                    {
+                        System.out.println(e.getLocalizedMessage());
+                    }
+                }
+                else
+                    command_check(command,argCommands);
+
+                break;
+            }
+            case "PAGE_TABLE":{
+                if(command.length == 1)
+                {
+                    Interpreter.getVirtual().printPageTable();
+                }
+                else
+                    command_check(command,argCommands);
+                break;
+            }
+            case "VICTIM_QUEUE":
+            {
+                if(command.length == 1)
+                {
+                    Interpreter.getVirtual().printQueue();
+                }
+                else
+                    command_check(command,argCommands);
+                break;
+            }
+
+
             default: {
                 System.out.println("Błędna komenda");
                 man();
@@ -562,13 +646,13 @@ public class Shell {
     {
         for (String command : allCommands.keySet())
         {
-//            int j = 0;
+            int j = 0;
             String space = "";
-//            j = command.length() + argCommands.get(command).length();
-//            for (int i = 0; i < (60 - j); i++)
-//            {
-//                space = space + " ";
-//            }
+            j = command.length() + argCommands.get(command).length();
+            for (int i = 0; i < (80 - j); i++)
+            {
+                space = space + " ";
+            }
             System.out.println(command + " " + argCommands.get(command) + space + ": " + allCommands.get(command));
         }
     }
@@ -578,206 +662,3 @@ public class Shell {
         System.exit(0);
     }
 }
-
-
-//    public static void spis_tresci()
-//    {
-//        System.out.println("********************");
-//        System.out.println("ZARZADZANIE DYSKIEM");
-//        System.out.println("********************\n");
-//
-//        System.out.println("1. Stworz plik");
-//        System.out.println("2. Otworz plik");
-//        System.out.println("3. Zapisz do pliku");
-//        System.out.println("4. Dopisz na koniec pliku");
-//        System.out.println("5. Odczytaj z pliku");
-//        System.out.println("6. Zamknij plik");
-//        System.out.println("7. Usun plik");
-//        System.out.println("8. Utworz dowiazanie");
-//        System.out.println("9. Zmien nazwe pliku");
-//        System.out.println("10. Wyswietl zawartosc katalogu");
-//        System.out.println("11. Wyswietl zawartosc dysku");
-//        System.out.println("12. Wyswietl zawartosc tablicy otwartych plikow");
-//        System.out.println("13. Wyswietl zawartosc i-wezla pliku");
-//        System.out.println("14. Wyswietl zawartosc tablicy i-wezlow");
-//        System.out.println("15. Utworz uzytkownika");
-//        System.out.println("16. Zmien uzytkownika");
-//
-//        System.out.println("Podaj nr polecenia: ");
-//    }
-//
-//        try
-//        {
-//            Disc disc = new Disc();
-//            User_List user_list = new User_List();
-//            Hashtable <String, PCB> pcblist = new Hashtable<String, PCB>();
-//            char znak;
-//            do {
-//                spis_tresci();
-//                Scanner scan = new Scanner(System.in);
-//                int x = scan.nextInt();
-//                switch(x)
-//                {
-//                    case 1:
-//                    {
-//                        System.out.println("Podaj nazwę pliku: ");
-//                        String name = scan.next(); System.out.println("Podaj nazwę uzytkownika: ");
-//                        String user = scan.next();
-//                        disc.createFile(name, user);
-//                        System.out.println("Utworzono plik: " + name + "\n\n");
-//                        break;
-//                    }
-//                    case 2:
-//                    {
-//                        System.out.println("Podaj nazwę pliku: ");
-//                        String name = scan.next();
-//                        System.out.println("Podaj nazwę procesu: ");
-//                        String pro = scan.next();
-//                        PCB process = new PCB("process1", "file");
-//                        pcblist.put(pro, process);
-//                        disc.openFile(name, process);
-//                        System.out.println("Pomyslnie otworzono plik\n\n");
-//                        break;
-//                    }
-//                    case 3:
-//                    {
-//                        System.out.println("Podaj nazwę pliku: ");
-//                        String name = scan.next();
-//                        System.out.println("Podaj nazwę uzytkownika: ");
-//                        String user = scan.next();
-//                        System.out.println("Podaj dane do zapisania: ");
-//                        String data = scan.next();
-//                        disc.writeFile(name, user, data);
-//                        System.out.println("Pomyslnie zapisano do pliku\n\n");
-//                        break;
-//                    }
-//                    case 4:
-//                    {
-//                        System.out.println("Podaj nazwę pliku: ");
-//                        String name = scan.next();
-//                        System.out.println("Podaj nazwę uzytkownika: ");
-//                        String user = scan.next();
-//                        System.out.println("Podaj dane do zapisania: ");
-//                        String data = scan.next();
-//                        disc.appendFile(name,user, data);
-//                        System.out.println("Pomyslnie zapisano do pliku\n\n");
-//                        break;
-//                    }
-//                    case 5:
-//                    {
-//                        System.out.println("Podaj nazwę pliku: ");
-//                        String name = scan.next();
-//                        System.out.println("Podaj nazwę uzytkownika: ");
-//                        String user = scan.next();
-//                        System.out.println("Podaj ilosc danych do sczytania: ");
-//                        int amount = scan.nextInt();
-//                        System.out.println("Dane sczytane z pliku:");
-//                        System.out.println(disc.readFile(name,user, amount) + "\n\n");
-//                        break;
-//                    }
-//                    case 6:
-//                    {
-//                        System.out.println("Podaj nazwę pliku: ");
-//                        String name = scan.next();
-//                        System.out.println("Podaj nazwę procesu: ");
-//                        String pro = scan.next();
-//                        if (pcblist.get(pro) == null)
-//                        {
-//                            System.out.println("Proces nie istnieje");
-//                            break;
-//                        }
-//                        else
-//                        {
-//                            disc.closeFile(name, pcblist.get(pro));
-//                            pcblist.remove(pro);
-//                            System.out.println("Zamknieto plik\n\n");
-//                            break;
-//                        }
-//                    }
-//                    case 7:
-//                    {
-//                        System.out.println("Podaj nazwę pliku: ");
-//                        String name = scan.next();
-//                        System.out.println("Podaj nazwę uzytkownika: ");
-//                        String user = scan.next();
-//                        disc.deleteFile(name,user);
-//                        System.out.println("Usunieto plik: " + name + "\n\n");
-//                        break;
-//                    }
-//                    case 8:
-//                    {
-//                        System.out.println("Podaj nazwę pliku: ");
-//                        String name = scan.next();
-//                        System.out.println("Podaj nowa nazwe (nazwa dowiazania): ");
-//                        String newName = scan.next();
-//                        disc.createLink(name, newName);
-//                        break;
-//                    }
-//                    case 9:
-//                    {
-//                        System.out.println("Podaj nazwę pliku: ");
-//                        String name = scan.next();
-//                        System.out.println("Podaj nazwę uzytkownika: ");
-//                        String user = scan.next();
-//                        System.out.println("Podaj nowa nazwe: ");
-//                        String newName = scan.next();
-//                        disc.renameFile(name,user, newName);
-//                        break;
-//                    }
-//                    case 10:
-//                    {
-//                        disc.ListDirectory();
-//                        break;
-//                    }
-//                    case 11:
-//                    {
-//                        disc.printDisc();
-//                        break;
-//                    }
-//                    case 12:
-//                    {
-//                        disc.open_file_table.printTab();
-//                        break;
-//                    }
-//                    case 13:
-//                    {
-//                        System.out.println("Podaj nazwę pliku: ");
-//                        String name = scan.next();
-//                        disc.printSingleInode(name);
-//                        break;
-//                    }
-//                    case 14:
-//                    {
-//                        disc.printInodeTable();
-//                        break;
-//                    }
-//                    case 15:
-//                    {
-//                        System.out.println("Podaj nazwę nowego uzytkownika: ");
-//                        String user = scan.next();
-//                        user_list.userAdd(user,"iksde");
-//                        user_list.printUsers();
-//                        break;
-//                    }
-//                    case 16:
-//                    {
-//                        System.out.println("Podaj nazwę uzytkownika: ");
-//                        String user = scan.next();
-//                        user_list.changeUser(user);
-//                        break;
-//                    }
-//                    default:
-//                    {
-//                        System.out.println("Blad! Podaj poprawny nr z listy\n\n");
-//                        break;
-//                    }
-//                }
-//                System.out.println("Czy chcesz zamknac program? (t/n): ");
-//                znak = scan.next().charAt(0);
-//
-//            } while (znak != 't');
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
