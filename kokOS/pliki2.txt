@@ -1,0 +1,8 @@
+OF pliczek2 P4
+AF pliczek2 Root KtoryWszedl
+RF pliczek2 Root 50
+AF pliczek2 Root DoDomku
+RF pliczek2 Root 60
+FC pliczek2 P4
+DF pliczek2 Root
+KP P4

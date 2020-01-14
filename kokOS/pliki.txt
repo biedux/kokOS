@@ -1,3 +1,5 @@
-PW
-CP P10 15 czytaj.txt
+CF pliczek2 Root
+CP P3 10 pliki1.txt
+CP P4 5 pliki2.txt
+CP P9 5 pliki3.txt
 HL
