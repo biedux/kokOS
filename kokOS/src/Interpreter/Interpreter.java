@@ -114,7 +114,6 @@ class Interpreter {
         //Memory.printRawRam();
         //VirtualMemory.printPageTable();
 
-        processManagement.scheduler.check();
         System.out.println("id wykonywanego procesu w obecnym : "+processManagement.scheduler.running.getID());
         this.pcb= processManagement.scheduler.running;
 
@@ -483,7 +482,7 @@ class Interpreter {
             disc.closeFile(name, processManagement.findPCB(args.get(1)));
         }
 
-        //PN - pipe new - (create pipe)
+       // PN - pipe new - (create pipe)
         if(    (cmd.equals("PN"))  ){
             IPC.CreatePipe();
         }
@@ -509,10 +508,11 @@ class Interpreter {
             System.out.println("Koniec procesu "+processManagement.scheduler.running.getName());
             processManagement.kill(processManagement.scheduler.running);
             //processManagement.scheduler.Delete(processManagement.scheduler.running);
-            processManagement.scheduler.showHeap();
+            //processManagement.scheduler.showHeap();
             if(processManagement.ProcessList.size()==1){
                 VirtualMemory.nowyproces(processManagement.init);
             }
         }
+        processManagement.scheduler.check();
     }
 }
