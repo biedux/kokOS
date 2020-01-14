@@ -29,7 +29,7 @@ public class IPC {
         System.out.println("Enter data");
         String c = myObj1.nextLine();
         VirtualMemory.saveString(Shell.getPM().init, 5, c);
-        Memory.printRawRam();
+        
 
     }
 
@@ -38,7 +38,7 @@ public class IPC {
         System.out.println("Enter data");
         String c = myObj1.nextLine();
         VirtualMemory.saveString(Shell.getPM().init, 5, c);
-        Memory.printRawRam();
+      
         int written = 0;
 
         for (PipeQueue e : Pipes) {
@@ -65,12 +65,12 @@ public class IPC {
 
                 } else if (nchar > 4 - e.eQueue.size()) {
                     Memory.writePipe((char) written, 0);
-                    Memory.printRawRam();
+                   
                     //System.out.println(a);
                 } else if (nchar == 1) {
                     System.out.println("I've nothing to read. Closing this pipe ;(");
                     Memory.writePipe((char) 0, 0);
-                    Memory.printRawRam();
+                    
                     //System.out.println(a);
                 }
                /* else if (buffer.capacity()>4){
@@ -79,7 +79,6 @@ public class IPC {
             }
             System.out.print("Writing to a pipe:  ");
 
-            Memory.printRawRam();
         }
         return written;
     }
@@ -113,7 +112,7 @@ public class IPC {
 
         }
         System.out.println("Reading from a pipe:  ");
-        Memory.printRawRam();
+        
     }
     //System.out.print("Reading Pipe:  ");
 
@@ -198,8 +197,7 @@ public class IPC {
    /* Memory.readPipeFrame();
     P6.pipe.close(pdesc[0]);
     P5.pipe.close(pdesc[1]);*/
-        Memory.printRawRam();
-
+        
 
     }
 
