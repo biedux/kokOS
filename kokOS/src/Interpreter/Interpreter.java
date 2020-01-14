@@ -4,34 +4,28 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-//todo
-//  pipe
-// programy dokonczyc
 enum Rozkazy {
-    //nie bedzie tych enumów, ale chwilowo fajnie sie to tu rozpisuje
     AD, // AD A B           dodaje rejestr A + rejestr B
     AX, // AX A 3           dodaje liczbę do A
     SB, // SB A B           odejmuje od rejestru A rejestr B
     SX, // SX A 7           odejmuje od rejestru A LICZBE
     ML, // ML A B           mnozy A razy B
     MX, // MX A 5           mnozy A razy liczbe
-    MV, // MV A B           kopiuje B do A
+    MV, // MV A B           kopiuje B do A, ADRESY TEZ
     MO, // MO A 4           umieszcza wartosc w rejestrze
 
     JP, // JP 100           skok do adresu
     JZ, // JZ 100           skok do adresu jesli po poprzedniej operacji jest gdzies zero
 
-    CP, // CP               tworzy proces
-    KP, // KP               zabija proces
+    CP, // CP idrodzica, priorytet, plik.txt  tworzy proces
+    KP, // KP idprocesu             zabija proces
 
-    //uzupelnij mozliwe argumenty
-
-    CF, // CF nazwa         tworzy plik o nazwie nazwa
-    OF, // OF nazwa         otwiera plik o nazwie nazwa
-    WF, // WF nazwa tresc   do pustego pliku nazwa wpisuje tresc
-    AF, // AF nazwa tresc   dopisuje tresc na koniec pliku nazwa
-    DF, // DF nazwa         usuwa plik nazwa
-    RF, // RF nazwa         wyswietla zawartosc pliku nazwa
+    CF, // CF nazwa username         tworzy plik o nazwie nazwa
+    OF, // OF nazwa username        otwiera plik o nazwie nazwa
+    WF, // WF nazwa username tresc   do pustego pliku nazwa wpisuje tresc
+    AF, // AF nazwa username tresc   dopisuje tresc na koniec pliku nazwa
+    DF, // DF nazwa username         usuwa plik nazwa
+    RF, // RF nazwa username         wyswietla zawartosc pliku nazwa
     FC, // FC nazwa         zamyka plik File Close
 
     PC, // PC               close pipe
@@ -47,11 +41,9 @@ class Interpreter {
     VirtualMemory virtual;
     PCB pcb;
     Process_Management processManagement;
-    //static OpenFileTab open_file_table;
     IPC ipc;
     Disc disc;
     OpenFileTab open_file_table;
-    //Interpreter.IPC ipc;
     private int counter;
     private int id;
     private boolean czyDoRamu;
@@ -76,10 +68,6 @@ class Interpreter {
         return result;
     }
 
-    /* public static OpenFileTab getOpenFileTab()
-     {
-         return open_file_table;
-     }*/
 
     public ArrayList<String> getArgs(int counter, int ilePobieram) {
         ArrayList<String> args = new ArrayList<>();
@@ -88,24 +76,18 @@ class Interpreter {
         for(int i =0; i<ilePobieram; i++){
             do{
                 czytany = virtual.readChar(pcb,counter);
-                //System.out.println("pobrano znak" + czytany);
                 if(czytany.equals('[')){                //tylko do pracy na adresach
                     czyDoRamu = true;
                     ktoryArgDoRamu = i;
                     counter++;
                     do{
                         czytany = virtual.readChar(pcb,counter);
-                        //System.out.println("pobrano znak" + czytany);
                         arg += czytany;
                         counter++;
 
                     }while(czytany!=']');
-                    //System.out.println("pobrano argument" + arg);
 
                     arg=usunOstatni(arg);
-                    //System.out.println("pobrano argument" + arg);
-
-                    //System.out.println("argument po usunieciu ostatniego: " + arg);
 
                 }else {
                     arg += czytany;
@@ -113,10 +95,8 @@ class Interpreter {
                 }
 
             } while(czytany!=' ');
-            // System.out.println("Stan czy do ramu" + czyDoRamu + " stan ktory do ramu: "  + ktoryArgDoRamu);
             arg=usunOstatni(arg);
             System.out.println("Pobrano argument: " + arg);
-            //System.out.println("wsadzany do args argument: " + arg);
 
             args.add(arg);
 
@@ -131,18 +111,15 @@ class Interpreter {
         //Memory.printRawRam();
         //VirtualMemory.printPageTable();
 
-        //processManagement.scheduler.check();
         processManagement.scheduler.check();
         System.out.println("id wykonywanego procesu w obecnym : "+processManagement.scheduler.running.getID());
         this.pcb= processManagement.scheduler.running;
 
-//        System.out.println("id wykonywanego procesu : "+processManagement.scheduler.running.getID());
         this.counter = this.pcb.getCounter();
         this.id = this.pcb.getID();
 
         boolean step = true;
         List<String> args = new LinkedList<>();
-        int czytany = 0;
         String cmd = "";
         Character tmp = '.';
 
@@ -150,7 +127,6 @@ class Interpreter {
         while (step) {
             do {
                 tmp = virtual.readChar(pcb,counter);
-                //System.out.println("pobrano znak w rozkazie"+tmp);
                 cmd += tmp;
                 counter++;
             } while (tmp != ' ');
@@ -373,11 +349,6 @@ class Interpreter {
                 }
             }
 
-            //podmien argument w miescu ktorydoramu na ten pobranyy
-            //int temporary = Integer.parseInt(args.get(ktoryArgDoRamu));
-            //System.out.println(temporary);
-
-
             else if (args.get(0).equals("A")) {
                 String temp = args.get(1);
                 int result = Integer.parseInt(temp);
@@ -445,9 +416,7 @@ class Interpreter {
             }
         }
 
-
-        //pliki beda jeszcze zgrane z prawami dostepu
-
+        
         //CF
         if (   (cmd.equals("CF"))  ) {
 
@@ -519,14 +488,11 @@ class Interpreter {
 
         //PW
         if(    (cmd.equals("PW"))  ){
-            System.out.println("weszlismy do write pipe");
-
             IPC.WritePipe();
         }
 
         //PR
         if(    (cmd.equals("PR"))  ){
-            System.out.println("weszlismy do read pipe");
             IPC.readFromPipe();
         }
 
@@ -541,7 +507,5 @@ class Interpreter {
                 VirtualMemory.nowyproces(processManagement.init);
             }
         }
-//        processManagement.scheduler.check();
-//        System.out.println("id wykonywanego procesu w obecnym : "+processManagement.scheduler.running.getID());
     }
 }
