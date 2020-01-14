@@ -46,6 +46,7 @@ public class Process_Management {
     // Nowy proces
     public PCB fork(PCB parent, String name, int priority, String fName) throws Exception {
         boolean possible=true;
+
         PCB.setCountProcess(PCB.getCountProcess()+1);
         PCB process=new PCB(name,fName);
         // Nowy proces
@@ -54,7 +55,11 @@ public class Process_Management {
                 possible=false;
             }
         }
-        if(possible==true) {
+        if(99>priority || priority>140){
+            PCB.setCountProcess(PCB.getCountProcess()-1);
+            throw new Exception("Nieprawidlowy priorytet");
+        }
+        else if(possible==true) {
             try{
                 process.setParentID(parent.getID());
                 process.setState(process.State.Ready);
@@ -70,7 +75,6 @@ public class Process_Management {
             catch(Exception e) {
                 System.out.println(e.getLocalizedMessage());
                 PCB.setCountProcess(PCB.getCountProcess()-1);
-                kill(process);
             }
         }
         else if(possible==false){
@@ -176,20 +180,62 @@ public class Process_Management {
 //        }
     }
 
-
+    String lev="";
     // Drzewo procesów
     public void showTree(PCB proc){
+//        System.out.println(proc.getName()+" (ID: "+proc.getID()+")");
+//        System.out.println("|");
+//        int i=0;
+//        int j=0;
+//        int k=0;
+//        for(PCB p:proc.ChildrenList){
+//            System.out.println("+--->"+p.getName()+" (ID: "+p.getID()+")");
+//                for(PCB child:p.ChildrenList){
+//                    System.out.println("|    |");
+//                    lev+="|    +--->";
+//                    System.out.println(lev+child.getName()+" (ID: "+child.getID()+")");
+//                    if(child.ChildrenList.size()!=0){
+//                        System.out.println("|         |");
+//                    }
+//                    lev="";
+//                    i++;
+//                    if(i==proc.ChildrenList.size() && proc.ChildrenList.size()!=0){
+//                        System.out.println("|");
+//                    }
+//                    j=0;
+//                    for(PCB grand:child.ChildrenList){
+//                        lev="|         +--->";
+//                        System.out.println(lev+grand.getName()+" (ID: "+grand.getID()+")");
+//                        if(grand.ChildrenList.size()!=0){
+//                            System.out.println("|              |");
+//                        }
+//                        lev="";
+//                        j++;
+//                        if(j==proc.ChildrenList.size() && child.ChildrenList.size()!=0){
+//                            System.out.println("|");
+//                        }
+//                        k=0;
+//                        for(PCB greatgrand:grand.ChildrenList){
+//                            lev="|              +--->";
+//                            System.out.println(lev+greatgrand.getName()+" (ID: "+greatgrand.getID()+")");
+//                            if(greatgrand.ChildrenList.size()!=0){
+//                                System.out.println("|              |");
+//                            }
+//                            lev="";
+//                            k++;
+//                            if(k==proc.ChildrenList.size() && grand.ChildrenList.size()!=0){
+//                                System.out.println("|");
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+
+
         String children="";
         String parent="";
         if(ProcessList.contains(proc)){
             String lev="";
-//            if(proc.getID()!=0){
-//                lev+="+-";
-//                for(int i=proc.getParentID();i>=0;i--){
-//                    if(proc.getParentID()>1) i--;
-//                    lev+="--";
-//                }
-//            }
             for(PCB p:proc.ChildrenList){
                 children+=(p.getID()+" ");
             }
