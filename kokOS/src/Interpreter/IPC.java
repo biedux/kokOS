@@ -129,6 +129,11 @@ public class IPC {
         //pdesc =null;
         System.out.println("The descriptor is closed\n");
     }
+    
+        public static void CreatePipe() {
+        //pdesc =null;
+        System.out.println("IPC started");
+    }
 
 //    public int Pipe() {
 //        Random rand = new Random();
