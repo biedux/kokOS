@@ -1,0 +1,14 @@
+----INSTRUKCJA---
+
+---MATEMATYCZNO-LOGICZNY:
+--tri.txt
+
+---KOMUNIKACJA:
+--pipewrite.txt
+--piperead.txt
+
+---PLIKI:
+--pliki.txt
+-pliki1.txt
+-pliki2.txt
+-pliki3.txt
