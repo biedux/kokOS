@@ -480,6 +480,10 @@ class Interpreter {
             disc.closeFile(name, processManagement.findPCB(args.get(1)));
         }
 
+        //PN - pipe new - (create pipe)
+        if(    (cmd.equals("PN"))  ){
+         //   IPC.createPipe();
+        }
 
         //PC
         if(    (cmd.equals("PC"))  ){
