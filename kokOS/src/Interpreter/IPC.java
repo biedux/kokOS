@@ -130,7 +130,7 @@ public class IPC {
         System.out.println("The descriptor is closed\n");
     }
 
-    public int Pipe(int[] pdesc) {
+    public int Pipe() {
         Random rand = new Random();
         int read = rand.nextInt(4);
         int write = rand.nextInt(4);
@@ -139,13 +139,13 @@ public class IPC {
             write = rand.nextInt(4);
         }
         write = pdesc[1];
-        descriptor.add(write);
+        //descriptor.add(write);
 
         while (descriptor.contains(read)) {
             read = rand.nextInt(4);
         }
         read = pdesc[0];
-        descriptor.add(read);
+        //descriptor.add(read);
 
         PipeQueue queueToAdd = new PipeQueue(write, read);
         Pipes.add(queueToAdd);
@@ -155,7 +155,7 @@ public class IPC {
     public static void WritePipe() throws FileNotFoundException {
         int[] pdesc = new int[2];
         IPC a = new IPC();
-        a.Pipe(pdesc);
+      //  a.Pipe(pdesc);
         Vector<Character> be = new Vector<Character>(4);
         Vector<Character> en = new Vector<Character>(4);
 
