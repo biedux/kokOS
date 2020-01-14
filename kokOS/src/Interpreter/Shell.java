@@ -197,6 +197,7 @@ public class Shell {
                     }
                 } else
                     command_check(command, argCommands);
+
                 break;
             }
             case "OPEN_FILE":{
@@ -447,11 +448,30 @@ public class Shell {
                 {
                     try
                     {
-                        user_list.changeUser(command[1]);
+                        user_list.changeUser(command[1], command[2]);
                     }
                     catch(Exception e)
                     {
                         System.out.println(e.getLocalizedMessage());
+                    }
+                }
+                else if(command.length == 2)
+                {
+                    if(command[1].equals("Root"))
+                    {
+                        try
+                        {
+                            user_list.changeUser("Root","");
+                        }
+                        catch(Exception e)
+                        {
+                            System.out.println(e.getLocalizedMessage());
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("To nie root");
+                        command_check(command,argCommands);
                     }
                 }
                 else
@@ -650,6 +670,30 @@ public class Shell {
                         System.out.println(e.getLocalizedMessage());
                     }
                 }
+                else if (command.length == 2)
+                {
+                    try
+                    {
+                        int number;
+                        number = Integer.parseInt(command[1]);
+                        for ( int i = number; i!=0;i--)
+                        {
+                            try
+                            {
+                                interpreter.makeStep();
+                            }
+                            catch (Exception e)
+                            {
+                                System.out.println(e.getLocalizedMessage());
+                            }
+                        }
+                    }
+                    catch(NumberFormatException e )
+                    {
+                        command_check(command,argCommands);
+                    }
+
+                }
                 else
                     command_check(command,argCommands);
                 break;
@@ -693,4 +737,5 @@ public class Shell {
     {
         System.exit(0);
     }
+
 }

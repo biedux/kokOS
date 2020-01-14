@@ -1,5 +1,4 @@
-package sososo;
-
+package Interpreter;
 
 public class User {
     private String UserName;
