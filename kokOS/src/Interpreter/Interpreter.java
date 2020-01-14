@@ -45,6 +45,7 @@ class Interpreter {
     Disc disc;
     OpenFileTab open_file_table;
     private int counter;
+    private int ileStep = 0;
     private int id;
     private boolean czyDoRamu;
     int ktoryArgDoRamu;
@@ -107,6 +108,8 @@ class Interpreter {
     }
 
     public void makeStep() throws Exception {
+        ileStep++;
+        System.out.println("-----------------------------KROK NR " + ileStep);
         //System.out.println("weszlismy do make step (interpreter)");
         //Memory.printRawRam();
         //VirtualMemory.printPageTable();
@@ -482,7 +485,7 @@ class Interpreter {
 
         //PN - pipe new - (create pipe)
         if(    (cmd.equals("PN"))  ){
-            //   IPC.createPipe();
+               //IPC.CreatePipe();
         }
 
         //PC

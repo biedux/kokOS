@@ -143,7 +143,7 @@ public class Memory {
     public static char readMC(int adresLogicz){     //adresy od 0 do 15 dozwolone
         if (adresLogicz < 16){
             try {
-                System.out.println("Odczytuje");
+                //System.out.println("Odczytuje");
                 return Memory[adresLogicz + 496];
             }
             catch (Exception e) {
@@ -226,7 +226,7 @@ public class Memory {
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        System.out.println("Odczytano");
+       // System.out.println("Odczytano");
         return odczyt;
     }
 
@@ -291,7 +291,7 @@ public class Memory {
     //tu bedzie ODCZYT BAJTU ZGODNIE Z TABLICA STRONIC
     public static char readFromFrame(int adress, int frame){
         try {
-            System.out.println("Odczytuje");
+            //System.out.println("Odczytuje");
             return Memory[frame * 32 + (adress % 32)];
         }
         catch (Exception e) {

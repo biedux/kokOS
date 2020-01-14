@@ -92,6 +92,7 @@ public class Disc
             inode.size = 0; //poczatkowo 0, bo nic nie zawiera
             inode.owner = new User(userName);
             inode.permissions = new Perm_List(userName);
+            inode.permissions.printAllPermission();
 
             //PIERWSZY NUMER BLOKU DYSKOWEGO//
             inode.blocks[0] = space; // nadanie nr bloku bezposredniego
@@ -502,9 +503,11 @@ public class Disc
             int num = file.number;
             if(inodes_table[num] != null)
             {
-                if(inodes_table[num].permissions.PermList.isEmpty())
+                if(!inodes_table[num].permissions.PermList.isEmpty())
                 {
-                    for(int l = 0; l < inodes_table[num].permissions.PermList.size(); l++)
+                    //inodes_table[num].permissions.printAllPermission();
+                    int sizeP = inodes_table[num].permissions.PermList.size();
+                    for(int l = 0; l < sizeP; l++)
                     {
                         if(inodes_table[num].permissions.PermList.get(l).getUserID().equals(userName) && inodes_table[num].permissions.PermList.get(l).getRW() == 3)
                         {
@@ -552,7 +555,6 @@ public class Disc
                                         bitArray.set(inDirect);
                                         inodes_table[num] = null;
                                         catalog.remove(name);
-                                        System.out.println("Usunieto plik " + name);
                                     }
                                 }
                             }
@@ -565,7 +567,12 @@ public class Disc
                         {
                             throw new Exception("Brak uprawnien");
                         }
+                        sizeP--;
                     }
+                }
+                else
+                {
+                    System.out.println("eluwa");
                 }
             }
             else
@@ -577,6 +584,7 @@ public class Disc
         {
             throw new Exception("Plik o podanej nazwie nie istnieje");
         }
+        System.out.println("Usunieto plik " + name);
     }
 
     public void createLink(String name, String newName) throws Exception
@@ -666,8 +674,22 @@ public class Disc
             System.out.println("  " + inodes_table[num].size + " B");
             System.out.println("  " + file.type);
             System.out.println("  Stan: " + inodes_table[num].state);
-            System.out.println("*********************************\n");
-        }
+            System.out.println("  Numer bloku bezposredniego: " + inodes_table[num].blocks[0]);
+            System.out.println("  Numer bloku indeksowego: " + inodes_table[num].blocks[1]);
+            if(inodes_table[num].blocks[1] > -1)
+            {
+                int tmp = 0;
+                System.out.print("  Zawartosc bloku indeksowego: ");
+                while((int)disc[inodes_table[num].blocks[1]*32+tmp] != 65535 && inodes_table[num].blocks[1] != -1)
+                {
+                    int f = disc[inodes_table[num].blocks[1]*32+tmp];
+                    System.out.print(f + " ");
+                    tmp++;
+                }
+                System.out.println("\n*********************************\n");
+            }
+            }
+
         System.out.println("|||||||||||||||||||||||||||||||||||\n");
     }
 
@@ -735,5 +757,10 @@ public class Disc
                 //throw new Exception("Dany i-wezel nie istnieje");
             //}
         }
+    }
+
+    public Perm_List getPermissions(String name)
+    {
+
     }
 }

@@ -417,7 +417,15 @@ public class Shell {
             }
 
             case "CHANGE_FILE_PERM":{
+                //CHANGE [PLIK] [UŻYTKOWNIK] [PERM]
+                if(command.length == 4)
+                {
 
+                }
+                else
+                {
+                 command_check(command,argCommands);
+                }
                 break;
             }
             case "USERS": {

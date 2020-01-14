@@ -1,5 +1,4 @@
-package sososo;
-
+package Interpreter;
 
 public class Perm {
     private String UserId;
@@ -45,5 +44,3 @@ public class Perm {
     }
 
 }
-
-
