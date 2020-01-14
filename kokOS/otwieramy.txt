@@ -1,4 +1,0 @@
-CF pliczek2 Root
-CP P3 10 cos.txt
-CP P4 5 grzegorz.txt
-HL
