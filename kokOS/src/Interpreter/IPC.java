@@ -23,17 +23,22 @@ public class IPC {
         Scanner myObj1 = new Scanner(System.in);
         System.out.println("Enter data");
         String c = myObj1.nextLine();
+        if ( c == "\n "){
+     VirtualMemory.saveString(Shell.getPM().init, 12, "0");
+        }
+        else
         VirtualMemory.saveString(Shell.getPM().init, 5, c);
         Memory.printRawRam();
 
     }
 
     public int writeToPipe(int fd, Vector<Character> buffer, int nchar) {
-        Scanner myObj1 = new Scanner(System.in);
-        System.out.println("Enter data");
-        String c = myObj1.nextLine();
-        VirtualMemory.saveString(Shell.getPM().init, 5, c);
-        Memory.printRawRam();
+        Scan();
+//        Scanner myObj1 = new Scanner(System.in);
+//        System.out.println("Enter data");
+//        String c = myObj1.nextLine();
+//        VirtualMemory.saveString(Shell.getPM().init, 5, c);
+//        Memory.printRawRam();
         int written = 0;
 
         for (PipeQueue e : Pipes) {
@@ -44,13 +49,17 @@ public class IPC {
 
 
                     for (int i = 0; i < 4; i++) { //buffer.size()
+                        if (VirtualMemory.readChar(Shell.getPM().init, 5 ) == ' ') {
+                            VirtualMemory.saveString(Shell.getPM().init, 12, "0");
+                        }
                         if (VirtualMemory.readChar(Shell.getPM().init, 5 + i) == ' ') {
                             break;
                         }
-
-                        char x = VirtualMemory.readChar(Shell.getPM().init, 5 + i);
-                        Memory.writePipe(x, i);
-                        written++;
+else {
+                            char x = VirtualMemory.readChar(Shell.getPM().init, 5 + i);
+                            Memory.writePipe(x, i);
+                            written++;
+                        }
 
                     }
                     if (VirtualMemory.readChar(Shell.getPM().init, 5) == ' ') {
@@ -192,7 +201,7 @@ public class IPC {
 
 
     }
-    
+
     public static void CreatePipe(){
         System.out.println("Pipe created");
     }
