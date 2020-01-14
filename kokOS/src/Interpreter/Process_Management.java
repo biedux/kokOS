@@ -2,10 +2,10 @@ package Interpreter;
 
 //import Processor.*;
 //import VirtualMemory.*;
-        import java.io.File;
-        import java.io.FileNotFoundException;
-        import java.io.IOException;
-        import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
 
 public class Process_Management {
 
@@ -139,8 +139,8 @@ public class Process_Management {
             ProcessList.remove(process);
             scheduler.Delete(process);
             VirtualMemory.usunproces(process);
-            //Shell.open_file_table.removeFile(process,Shell.open_file_table.findFile(process));
             scheduler.check();
+            //Shell.open_file_table.removeFile(process,Shell.open_file_table.findFile(process));
         }
         if(possible==false){
             throw new Exception("Nie mozna zabic procesu ktory nie istnieje");

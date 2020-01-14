@@ -108,7 +108,7 @@ public class PCB {
     // Rozmiar pliku.
     private int sizeOfFile;
 
-    // public IPC pipe;
+   // public IPC pipe;
 
     public PCB(String Name, String fileName){
 
@@ -208,37 +208,25 @@ public class PCB {
 
     public void setAX(int AX) {
         //System.out.println("Poprzedni stan rejestru AX: " + this.AX);
-        if(AX<0){
-            this.AX=0;
-        }
-        else this.AX = AX;
+        this.AX = AX;
         //System.out.println("Obecny stan rejestru AX: " + this.AX);
     }
 
     public void setBX(int BX) {
         //System.out.println("Poprzedni stan rejestru BX: " + this.BX);
-        if(BX<0){
-            this.BX=0;
-        }
-        else this.BX = BX;
+        this.BX = BX;
         //System.out.println("Obecny stan rejestru BX: " + this.BX);
     }
 
     public void setCX(int CX) {
         //System.out.println("Poprzedni stan rejestru CX: " + this.CX);
-        if(CX<0){
-            this.CX=0;
-        }
-        else this.CX = CX;
+        this.CX = CX;
         //System.out.println("Obecny stan rejestru CX: " + this.CX);
     }
 
     public void setDX(int DX) {
         //System.out.println("Poprzedni stan rejestru DX: " + this.DX);
-        if(DX<0){
-            this.DX=0;
-        }
-        else this.DX = DX;
+        this.DX = DX;
         //System.out.println("Obecny stan rejestru DX: " + this.DX);
     }
 

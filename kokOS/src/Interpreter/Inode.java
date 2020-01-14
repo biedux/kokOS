@@ -18,4 +18,3 @@ public class Inode
         System.out.println("Nr bloku indeksowego: " + blocks[1] + "\n");
     }
 }
-

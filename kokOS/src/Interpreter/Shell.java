@@ -6,21 +6,34 @@ import java.util.*;
 public class Shell {
 
     private static Process_Management PM;
-    Disc disc = new Disc();
+    static Disc disc = new Disc();
     public User_List user_list = new User_List();
     static IPC ipc;
     static OpenFileTab open_file_table = new OpenFileTab();
     static Scheduler scheduler=new Scheduler();
+    static VirtualMemory virtual;
+    static Memory ram;
+    static  Interpreter interpreter;
     private Map<String, String> allCommands = new LinkedHashMap<>();
     private Map<String, String> argCommands = new LinkedHashMap<>();
 
     static {
         try {
             PM = new Process_Management();
+            interpreter = new Interpreter();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    public static Memory getRam() {return ram;}
+    public static Disc getDisc() {return disc;}
+    public static VirtualMemory getVirtual() {return virtual;}
+    public static OpenFileTab getOpenFileTab()
+    {
+        return open_file_table;
+    }
+    public static IPC getIpc() {return ipc;}
 
     public Shell()
     {
@@ -43,6 +56,7 @@ public class Shell {
     {
         allCommands.put("MAN" , "Wyswietla liste komend");
         argCommands.put("MAN", " ");
+
         allCommands.put("EXIT", "Kończy prace systemu");
         argCommands.put("EXIT", " ");
 
@@ -81,6 +95,7 @@ public class Shell {
         argCommands.put("DIRECTORY" , " ");
 
         allCommands.put("TAB_OPEN_FILES" , "Wyświetla tablice otwartych plików");
+        argCommands.put("TAB_OPEN_FILES" , " ");
 
         allCommands.put("INODE_FILE" , "Wyświetla zawartość i-wezła pliku");
         argCommands.put("INODE_FILE" , "[Nazwa]");
@@ -147,25 +162,8 @@ public class Shell {
         argCommands.put("","");
         //printPageFile()
 
-
-//        allCommands.put("PCB" , " ");
-//        allCommands.put("PCB" , " ");
-//
-//                        System.out.println("CREATE_PROCESS -> Stworzenie procesu");
-//                        //PM.fork(PM.init,"nazwa",priorytet-pewnie domyslnu,"plik z programem assemblerowyn");
-//
-//                        System.out.println("DELETE_PROCESS -> Usunięcie procesu");
-//                        //PM.kill(PM.findPCB("nazwa procesu"));          usuwa jeden
-//                        //PM.killByGroup(PM.findPCB("nazwa procesu"));
-//
-//                        System.out.println("PROCESS_LIST -> Wyświetla liste procesów");
-//                        //PM.showAllProcesses();
-//
-//                        System.out.println("PROCESS_TREE -> Wyswietla drzewo procesów");
-//                        //
-//
-//                        //PCB-infom
-//                        //PM.findPCB("nazwa").printProcessInfo();
+        allCommands.put("STEP","");
+        argCommands.put("STEP"," ");
     }
 
     private static void command_check(String[] command, Map<String, String> argCommands) {
@@ -601,7 +599,7 @@ public class Shell {
                 {
                     try
                     {
-                        Interpreter.getVirtual().printPageTable(PM.findPCB(command[1]).getID());
+                        virtual.printPageTable(PM.findPCB(command[1]).getID());
                     }
                     catch(Exception e )
                     {
@@ -616,17 +614,16 @@ public class Shell {
             case "PAGE_TABLE":{
                 if(command.length == 1)
                 {
-                    Interpreter.getVirtual().printPageTable();
+                    virtual.printPageTable();
                 }
                 else
                     command_check(command,argCommands);
                 break;
             }
-            case "VICTIM_QUEUE":
-            {
+            case "VICTIM_QUEUE": {
                 if(command.length == 1)
                 {
-                    Interpreter.getVirtual().printQueue();
+                    virtual.printQueue();
                 }
                 else
                     command_check(command,argCommands);
@@ -634,6 +631,22 @@ public class Shell {
             }
 
 
+            case "STEP":{
+                if(command.length == 1)
+                {
+                    try
+                    {
+                        interpreter.makeStep();
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getLocalizedMessage());
+                    }
+                }
+                else
+                    command_check(command,argCommands);
+                break;
+            }
             default: {
                 System.out.println("Błędna komenda");
                 man();

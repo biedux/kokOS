@@ -22,8 +22,8 @@ public class Lock {
         {
             queue.add(ProcessCB);
             ProcessCB.setState(PCB.StateList.Waiting);
-            Interpreter.getPM().scheduler.running = Interpreter.getPM().scheduler.dummy;
-            Interpreter.getPM().scheduler.Delete(ProcessCB);
+            Shell.getPM().scheduler.running = Shell.getPM().scheduler.dummy;
+            Shell.getPM().scheduler.Delete(ProcessCB);
             return false;
         }
         else
@@ -46,11 +46,11 @@ public class Lock {
             while (check) {
                 if (queue.size() > 0) {
                     PCB nextProcessCB = queue.removeFirst();
-                    if(Interpreter.getPM().ProcessList.contains(nextProcessCB))
+                    if(Shell.getPM().ProcessList.contains(nextProcessCB))
                     {
                         holdersID = nextProcessCB.getID();
                         nextProcessCB.setState(PCB.StateList.Ready);
-                        Interpreter.getPM().scheduler.Insert(nextProcessCB);
+                        Shell.getPM().scheduler.Insert(nextProcessCB);
                         check = false;
                         isLocked = true;
                     }

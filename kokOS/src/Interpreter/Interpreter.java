@@ -1,11 +1,12 @@
 package Interpreter;
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-
+//todo
+//  pipe
+// programy dokonczyc
 enum Rozkazy {
     //nie bedzie tych enumów, ale chwilowo fajnie sie to tu rozpisuje
     AD, // AD A B           dodaje rejestr A + rejestr B
@@ -20,7 +21,7 @@ enum Rozkazy {
     JP, // JP 100           skok do adresu
     JZ, // JZ 100           skok do adresu jesli po poprzedniej operacji jest gdzies zero
 
-    CP, // CP idRodzica, priorytet, plik.txt               tworzy proces
+    CP, // CP               tworzy proces
     KP, // KP               zabija proces
 
     //uzupelnij mozliwe argumenty
@@ -42,14 +43,14 @@ enum Rozkazy {
 }
 
 class Interpreter {
-    static Memory ram;
-    static VirtualMemory virtual;
+    Memory ram;
+    VirtualMemory virtual;
     PCB pcb;
-    static Process_Management processManagement;
+    Process_Management processManagement;
     //static OpenFileTab open_file_table;
-    static IPC ipc;
-    static Disc disc;
-    static OpenFileTab open_file_table;
+    IPC ipc;
+    Disc disc;
+    OpenFileTab open_file_table;
     //Interpreter.IPC ipc;
     private int counter;
     private int id;
@@ -59,17 +60,14 @@ class Interpreter {
 
 
     Interpreter() throws FileNotFoundException {
-        ram = new Memory();
-        virtual = new VirtualMemory(ram);
-        try {
-            processManagement = new Process_Management();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        disc = new Disc();
-        ipc = new IPC();
-        open_file_table = new OpenFileTab();
+        ram = Shell.getRam();
+        virtual = Shell.getVirtual();
+        processManagement = Shell.getPM();
+        disc = Shell.getDisc();
+        ipc = Shell.getIpc();
+        open_file_table = Shell.getOpenFileTab();
     }
+
     public static String usunOstatni(String str) {
         String result = null;
         if ((str != null) && (str.length() > 0)) {
@@ -82,15 +80,6 @@ class Interpreter {
      {
          return open_file_table;
      }*/
-    public static Process_Management getPM() { return processManagement;}
-    public static Memory getRam() {return ram;}
-    public static Disc getDisc() {return disc;}
-    public static VirtualMemory getVirtual() {return virtual;}
-    public static OpenFileTab getOpenFileTab()
-    {
-        return open_file_table;
-    }
-    public static IPC getIpc() {return ipc;}
 
     public ArrayList<String> getArgs(int counter, int ilePobieram) {
         ArrayList<String> args = new ArrayList<>();
@@ -422,7 +411,7 @@ class Interpreter {
         //JZ
         if(    (cmd.equals("JZ"))  ){
 
-                args = getArgs(counter, 1);
+            args = getArgs(counter, 1);
             if(    pcb.getAX()==0 || pcb.getBX()==0 || pcb.getCX()==0 || pcb.getDX()==0  ){
                 String temp = args.get(0);
                 int result = Integer.parseInt(temp);

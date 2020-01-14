@@ -124,7 +124,7 @@ public class Disc
             int i = file.number;
             if (inodes_table[i] != null)
             {
-                Interpreter.getOpenFileTab().addFile(pcb, file);
+                Shell.getOpenFileTab().addFile(pcb, file);
                 file.positionPtr = 0;
             }
         }
@@ -142,7 +142,7 @@ public class Disc
             int i = file.number;
             if (inodes_table[i] != null)
             {
-                Interpreter.getOpenFileTab().removeFile(pcb, file);
+                Shell.getOpenFileTab().removeFile(pcb, file);
                 file.positionPtr = 0;
             }
         }
@@ -170,6 +170,7 @@ public class Disc
                             if(data.length() <= 32)
                             {
                                 int direct = inodes_table[num].blocks[0];
+                                //Arrays.fill(disc, direct * blockSize, direct * blockSize + blockSize, (char)(-1));
                                 for (int k = 0; k < data.length(); k++)
                                 {
                                     disc[direct*32+k] = data.charAt(k);
@@ -183,6 +184,7 @@ public class Disc
                                 int direct = inodes_table[num].blocks[0];
                                 int inDirect = findFreeSpace();
                                 IndexBlocks.add(inDirect);
+                                //Arrays.fill(disc, inDirect * blockSize, inDirect * blockSize + blockSize, (char)(-1));
 
                                 inodes_table[num].blocks[1] = inDirect;
                                 int index = 0;
@@ -716,7 +718,7 @@ public class Disc
         }
     }
 
-    public void printInodeTable() throws Exception
+    public void printInodeTable()
     {
         for(int i = 0; i < inodesTableSize; i++)
         {
@@ -728,10 +730,10 @@ public class Disc
                 System.out.println("*********************************");
                 System.out.println("||||||||||||||||||||||||||||||||||||||||||||||\n");
             }
-            else
-            {
-                throw new Exception("Dany i-wezel nie istnieje");
-            }
+            //else
+            //{
+                //throw new Exception("Dany i-wezel nie istnieje");
+            //}
         }
     }
 }

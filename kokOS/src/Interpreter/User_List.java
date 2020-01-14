@@ -44,8 +44,6 @@ public class User_List {
             System.out.println("Dodano uzytkownika: " + Name);
         }
     }
-    //  }
-    //    }
 
     public void userRemove(String ID) throws Exception {
         boolean flag = false;
