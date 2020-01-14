@@ -2,10 +2,10 @@ package Interpreter;
 
 //import Processor.*;
 //import VirtualMemory.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
+        import java.io.File;
+        import java.io.FileNotFoundException;
+        import java.io.IOException;
+        import java.util.*;
 
 public class Process_Management {
 
@@ -146,13 +146,35 @@ public class Process_Management {
         }
     }
 
+    private List<PCB> toKill=new LinkedList<PCB>();
+
     public void killByGroup(PCB process) throws Exception {
-        kill(process);
-        for(PCB child:process.ChildrenList){
-            killByGroup(child);
-            kill(child);
+        if(process.ChildrenList!=null){
+            for(PCB child:process.ChildrenList){
+                toKill.add(child);
+                if(child.ChildrenList!=null){
+                    for(PCB great:child.ChildrenList){
+                        toKill.add(great);
+                        if(great.ChildrenList!=null){
+                            for(PCB greatgrand:great.ChildrenList){
+                                toKill.add(greatgrand);
+                            }
+                        }
+                    }
+                }
+            }
         }
+        for(PCB p:toKill){
+            kill(p);
+        }
+        kill(process);
+        //        kill(process);
+//        for(PCB child:process.ChildrenList){
+//            killByGroup(child);
+//            kill(child);
+//        }
     }
+
 
     // Drzewo procesów
     public void showTree(PCB proc){
