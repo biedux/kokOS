@@ -122,32 +122,37 @@ public class Process_Management {
 
     //skok do inita w ostatnim ifie
     public void kill(PCB process) throws Exception{
-        boolean possible=false;
-        for(PCB proc:ProcessList){
-            if(proc.equals(process)){
-                possible=true;
-            }
+        if(process.getID()==0){
+            throw new Exception("Nie mozna usunac procesu dummy");
         }
-        if(possible==true){
-            for (PCB parent : ProcessList) {
-                if (process.getParentID() == parent.getID()) {
-                    parent.ChildrenList.remove(process);
-                    for (PCB child : process.ChildrenList) {
-                        child.setParentID(process.getParentID());
-                        parent.ChildrenList.add(child);
-                    }
-                    process.setState(PCB.StateList.Terminated);
-
+        else{
+            boolean possible=false;
+            for(PCB proc:ProcessList){
+                if(proc.equals(process)){
+                    possible=true;
                 }
             }
-            ProcessList.remove(process);
-            scheduler.Delete(process);
-            VirtualMemory.usunproces(process);
-            scheduler.check();
-            //Shell.open_file_table.removeFile(process,Shell.open_file_table.findFile(process));
-        }
-        if(possible==false){
-            throw new Exception("Nie mozna zabic procesu ktory nie istnieje");
+            if(possible==true){
+                for (PCB parent : ProcessList) {
+                    if (process.getParentID() == parent.getID()) {
+                        parent.ChildrenList.remove(process);
+                        for (PCB child : process.ChildrenList) {
+                            child.setParentID(process.getParentID());
+                            parent.ChildrenList.add(child);
+                        }
+                        process.setState(PCB.StateList.Terminated);
+
+                    }
+                }
+                ProcessList.remove(process);
+                scheduler.Delete(process);
+                VirtualMemory.usunproces(process);
+                scheduler.check();
+                //Shell.open_file_table.removeFile(process,Shell.open_file_table.findFile(process));
+            }
+            if(possible==false){
+                throw new Exception("Nie mozna zabic procesu ktory nie istnieje");
+            }
         }
     }
 
