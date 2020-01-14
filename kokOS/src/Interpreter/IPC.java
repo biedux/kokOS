@@ -80,7 +80,7 @@ public class IPC {
                     break;
                 }*/
             }
-            System.out.print("Writing to a pipe:  ");
+            System.out.print("Writing to a pipe:  \n");
 
             Memory.printRawRam();
         }
@@ -109,6 +109,7 @@ public class IPC {
                 }
                 if (VirtualMemory.readChar(PM.init, 5) == ' ') {
                     Memory.writePipe((char) 0, d + 5);
+                    Memory.printRawRam();
                     System.out.println("This pipe's empty");
                     //break;
                 }
@@ -116,7 +117,7 @@ public class IPC {
             }
 
         }
-        System.out.print("Reading from a pipe:  ");
+        System.out.print("Reading from a pipe: \n ");
         Memory.printRawRam();
     }
     //System.out.print("Reading Pipe:  ");
@@ -154,10 +155,10 @@ public class IPC {
 
         PipeQueue queueToAdd = new PipeQueue(write, read);
         Pipes.add(queueToAdd);
-        System.out.println("Pipe's created\n");
-        System.out.println(write);
-        System.out.println(read);
-        System.out.println(queueToAdd);
+        System.out.println("Pipe's created: [ ] \n");
+//        System.out.println("[1]");
+//        System.out.println(read);
+       // System.out.println(queueToAdd);
         return 0;
     }
 
@@ -203,43 +204,43 @@ public class IPC {
    /* Memory.readPipeFrame();
     P6.pipe.close(pdesc[0]);
     P5.pipe.close(pdesc[1]);*/
-           Memory.printRawRam();
+        Memory.printRawRam();
 
 
     }
 
 
-
-    public static void main(String[] arg) throws FileNotFoundException {
-        //  Scan();
-        int[] pdesc = new int[2];
-        IPC a = new IPC();
-      //  a.Pipe(pdesc);
-        a.Pipe(pdesc);
-        Vector<Character> be = new Vector<Character>(4);
-        Vector<Character> en = new Vector<Character>(4);
-
-        for(int i = 0; i < 5; i++){
-            be.add('a');
-        }
-
-
-        if (be.size()>4){
-            be.setSize(4);
-        }
-        for (int i= 1; i<6; i++) {
-            // Memory.writePipe(be.get(), i);
-        }
-        a.writeToPipe(pdesc[1], be, 1);
-        //System.out.println("Zapis do pipe" + be);
-        // close(pdesc[1]);
-        // en.add(c);
-        // a.readFromPipe(pdesc[0], en, 0);
-        //System.out.println(en);
-        //  close(pdesc[0]);
-        readFromPipe();
-
-        a.closePipe();
 //
-    }
+//    public static void main(String[] arg) throws FileNotFoundException {
+//        //  Scan();
+//        int[] pdesc = new int[2];
+//        IPC a = new IPC();
+//        //  a.Pipe(pdesc);
+//        a.Pipe(pdesc);
+//        Vector<Character> be = new Vector<Character>(4);
+//        Vector<Character> en = new Vector<Character>(4);
+//
+//        for(int i = 0; i < 5; i++){
+//            be.add('a');
+//        }
+//
+//
+//        if (be.size()>4){
+//            be.setSize(4);
+//        }
+//        for (int i= 1; i<6; i++) {
+//            // Memory.writePipe(be.get(), i);
+//        }
+//        a.writeToPipe(pdesc[1], be, 1);
+//        //System.out.println("Zapis do pipe" + be);
+//        // close(pdesc[1]);
+//        // en.add(c);
+//        // a.readFromPipe(pdesc[0], en, 0);
+//        //System.out.println(en);
+//        //  close(pdesc[0]);
+//        readFromPipe();
+//
+//        a.closePipe();
+////
+//    }
 }
