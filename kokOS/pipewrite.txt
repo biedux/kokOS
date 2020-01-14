@@ -1,3 +1,4 @@
+PO
 PW
-CP P10 15 piperead.txt
+CP P6 120 piperead.txt
 HL

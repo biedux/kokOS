@@ -1,14 +1,14 @@
-----INSTRUKCJA---
+------INSTRUKCJA-------
 
 ---MATEMATYCZNO-LOGICZNY:
---tri.txt
+--tri.txt - Marta to wrzuca jako argument
 
 ---KOMUNIKACJA:
---pipewrite.txt
---piperead.txt
+--pipewrite.txt - Marta to wrzuca jako argument
+-piperead.txt
 
 ---PLIKI:
---pliki.txt
+--pliki.txt - Marta to wrzuca jako argument
 -pliki1.txt
 -pliki2.txt
 -pliki3.txt
