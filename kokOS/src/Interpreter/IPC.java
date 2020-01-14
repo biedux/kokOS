@@ -192,5 +192,9 @@ public class IPC {
 
 
     }
+    
+    public static void CreatePipe(){
+        System.out.println("Pipe created");
+    }
 
 }
