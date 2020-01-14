@@ -104,8 +104,12 @@ public class Shell {
         argCommands.put("INODE_TAB" , " ");
 
         //Uprawnienia w plikach
+
+        allCommands.put("FILE_PERM", "Wyświetla liste uprawnień dla danego pliku");
+        argCommands.put("FILE_PERM", "[Nazwa pliku}");
+
         allCommands.put("CHANGE_FILE_PERM" , ""); // zmiana uprawnien w pliku           //
-        argCommands.put("CHANGE_FILE_PERM" , "");
+        argCommands.put("CHANGE_FILE_PERM" , "[Nazwa pliku] [Nazwa użytkownika] [uprawnienie]");
 
 
         // Uprawnienia
@@ -123,25 +127,25 @@ public class Shell {
 
 
         //Procesy
-        allCommands.put("CREATE_PROCESS" , " ");
+        allCommands.put("CREATE_PROCESS" , "Tworzy proces ");
         argCommands.put("CREATE_PROCESS" , "[Nazwa procesu] [Nazwa pliku] [Priorytet]");
 
-        allCommands.put("CREATE_PROCESS_PARENT" , " ");
+        allCommands.put("CREATE_PROCESS_PARENT" , " Tworzy proces ze wskazaniem na rodzica");
         argCommands.put("CREATE_PROCESS_PARENT" , "[Nazwa procesu] [Nazwa pliku] [Priorytet] [Nazwa rodzica]");
 
-        allCommands.put("PROCESS_LIST" , " ");
+        allCommands.put("PROCESS_LIST" , "Wyświetla liste procesów ");
         argCommands.put("PROCESS_LIST" , " ");
 
-        allCommands.put("PROCESS_TREE" , " ");
-        argCommands.put("PROCESS_TREE" , " "); //init
+        allCommands.put("PROCESS_TREE" , "Wyświetla drzewo procesów ");
+        argCommands.put("PROCESS_TREE" , " ");
 
-        allCommands.put("PCB" , " ");
+        allCommands.put("PCB" , "Wyświetla PCB");
         argCommands.put("PCB" , " ");
 
-        allCommands.put("DELETE_PROCESS" , " ");
+        allCommands.put("DELETE_PROCESS" , "Usuwa proces ");
         argCommands.put("DELETE_PROCESS" , "[Nazwa procesu]");
 
-        allCommands.put("DELETE_PROCESS_GROUP" , " ");
+        allCommands.put("DELETE_PROCESS_GROUP" , "Usuwa grupe procesów ");
         argCommands.put("DELETE_PROCESS_GROUP" , "[Nazwa procesu]");
 
 
@@ -155,8 +159,11 @@ public class Shell {
         allCommands.put("PAGE_FILE","Wyświetla ");
         argCommands.put("PAGE_FILE","[ID procesu] lub pozostaw puste aby wyświetlić wszystkie");
 
-        allCommands.put("STEP"," ");
-        argCommands.put("STEP"," ");
+        allCommands.put("STEP"," Wykonuje krok");
+        argCommands.put("STEP","[Liczba kroków] lub pozostaw puste aby zrobić jeden krok");
+
+        allCommands.put("RAM", "Wyświetla pamięć RAM");
+        argCommands.put("RAM", " ");
     }
 
     private static void command_check(String[] command, Map<String, String> argCommands) {
@@ -416,11 +423,44 @@ public class Shell {
                 break;
             }
 
+
+            case "FILE_PERM": {
+                //file perm [plik]
+                if(command.length == 2)
+                {
+                    Perm_List perm = disc.getPermissions(command[1]);
+                    perm.printAllPermission();
+                }
+                else
+                    command_check(command,argCommands);
+
+                break;
+            }
             case "CHANGE_FILE_PERM":{
                 //CHANGE [PLIK] [UŻYTKOWNIK] [PERM]
                 if(command.length == 4)
                 {
-
+                    Perm_List perm = disc.getPermissions(command[1]);
+                    if(perm != null)
+                    {
+                        try{
+                            int permission;
+                            permission = Integer.parseInt(command[3]);
+                            perm.changeParam(command[2],permission);
+                        }
+                        catch(NumberFormatException e )
+                        {
+                            command_check(command,argCommands);
+                        }
+                        catch (Exception e)
+                        {
+                            System.out.println(e.getLocalizedMessage());
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("Plik o podanej nazwie nie istnieje");
+                    }
                 }
                 else
                 {
@@ -428,6 +468,7 @@ public class Shell {
                 }
                 break;
             }
+
             case "USERS": {
                 user_list.printUsers();
                 break;

@@ -485,7 +485,7 @@ class Interpreter {
 
         //PN - pipe new - (create pipe)
         if(    (cmd.equals("PN"))  ){
-               //IPC.CreatePipe();
+            IPC.CreatePipe();
         }
 
         //PC

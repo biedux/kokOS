@@ -24,10 +24,10 @@ public class IPC {
         System.out.println("Enter data");
         String c = myObj1.nextLine();
         if ( c == "\n "){
-     VirtualMemory.saveString(Shell.getPM().init, 12, "0");
+            VirtualMemory.saveString(Shell.getPM().init, 12, "0");
         }
         else
-        VirtualMemory.saveString(Shell.getPM().init, 5, c);
+            VirtualMemory.saveString(Shell.getPM().init, 5, c);
         Memory.printRawRam();
 
     }
@@ -55,7 +55,7 @@ public class IPC {
                         if (VirtualMemory.readChar(Shell.getPM().init, 5 + i) == ' ') {
                             break;
                         }
-else {
+                        else {
                             char x = VirtualMemory.readChar(Shell.getPM().init, 5 + i);
                             Memory.writePipe(x, i);
                             written++;

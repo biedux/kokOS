@@ -92,7 +92,7 @@ public class Disc
             inode.size = 0; //poczatkowo 0, bo nic nie zawiera
             inode.owner = new User(userName);
             inode.permissions = new Perm_List(userName);
-            inode.permissions.printAllPermission();
+            //inode.permissions.printAllPermission();
 
             //PIERWSZY NUMER BLOKU DYSKOWEGO//
             inode.blocks[0] = space; // nadanie nr bloku bezposredniego
@@ -570,10 +570,7 @@ public class Disc
                         sizeP--;
                     }
                 }
-                else
-                {
-                    System.out.println("eluwa");
-                }
+
             }
             else
             {
@@ -761,6 +758,19 @@ public class Disc
 
     public Perm_List getPermissions(String name)
     {
-
+        if(catalog.get(name) != null)
+        {
+            File file = catalog.get(name);
+            int num = file.number;
+            if(inodes_table[num] != null)
+            {
+                return inodes_table[num].permissions;
+            }
+        }
+        else
+        {
+            return null;
+        }
+        return null;
     }
 }
