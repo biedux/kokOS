@@ -67,7 +67,7 @@ public class Scheduler {
     public LinkedList<PCB> InsertFirst(PCB pcb) { // dodaje proces do kolejki i ja sortuje
 
         PrioToWeight(pcb);
-        pcb.setVirtualTime(999);
+        pcb.setVirtualTime(999999);
         Heap.add(pcb);
         return sort(Heap);
     }
