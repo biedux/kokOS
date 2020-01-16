@@ -1,0 +1,7 @@
+OF pliczek2 P7
+WF pliczek2 Root Przychodzi
+RF pliczek2 Root 20
+AF pliczek2 Root Baba
+RF pliczek2 Root 30
+FC pliczek2 P7
+KP P7

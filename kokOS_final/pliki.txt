@@ -1,0 +1,5 @@
+CF pliczek2 Root
+CP P7 120 pliki1.txt
+CP P8 120 pliki2.txt
+CP P9 120 pliki3.txt
+HL

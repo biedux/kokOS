@@ -1,0 +1,22 @@
+MO B 0
+MO A 1
+MO D 10
+MO [0] B
+MO [5] A
+MO [10] A
+MO A [0]
+MO B [5]
+MO C [10]
+AD A B
+AD A C
+MO [0] A
+AD B C
+AD B A
+MO [5] B
+AD C B
+AD C A
+MO [10] C
+SX D 1
+JZ 167
+JP 49
+HL

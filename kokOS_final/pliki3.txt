@@ -1,0 +1,6 @@
+OF pliczek2 P9
+AF pliczek2 Root TezBaba
+RF pliczek2 Root 80
+FC pliczek2 P9
+DF pliczek2 Root
+KP P9

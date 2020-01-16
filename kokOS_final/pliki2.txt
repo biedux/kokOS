@@ -1,0 +1,7 @@
+OF pliczek2 P8
+AF pliczek2 Root DoLekarza
+RF pliczek2 Root 80
+AF pliczek2 Root ALekarz
+RF pliczek2 Root 90
+FC pliczek2 P8
+KP P8
