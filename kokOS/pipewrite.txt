@@ -1,4 +1,0 @@
-PO
-PW
-CP P6 120 piperead.txt
-HL
